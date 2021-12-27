@@ -28,6 +28,10 @@ public:
 	inline GLuint getID() {
 		return Shader::ID;
 	}
+
+	inline int getUniformLocation(const char* location) {
+		return glGetUniformLocation(ID, location);
+	}
 };
 
 #endif

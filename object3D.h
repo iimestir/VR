@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <stdlib.h>
 
+#include "shader.h"
 #include "VBO.h"
 #include "EBO.h"
 #include "texture.h"
@@ -48,6 +49,9 @@ public:
 	}
 
 	inline void bindTexture() {
+		if (tx == NULL)
+			return;
+
 		tx->bind();
 	}
 
@@ -56,9 +60,13 @@ public:
 	}
 
 	inline void destroy() {
+		unbind();
+
 		vbo->deleteBO();
 		ebo->deleteBO();
-		tx->deleteTexture();
+
+		if (tx != NULL)
+			tx->deleteTexture();
 
 		free(vbo);
 		free(ebo);
@@ -71,19 +79,36 @@ public:
 };
 
 
-class ObjectCuboid : public Object3D {
+class ObjectRectangular : public Object3D {
 public:
-	ObjectCuboid();
+	ObjectRectangular();
+
+	ObjectRectangular(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType, Shader& shader, const char* uniform, GLuint unit) : ObjectRectangular() {
+		setTexture(image, texType, slot, format, pixelType, shader, uniform, unit);
+	}
 };
 
 class ObjectCube: public Object3D {
 public:
 	ObjectCube();
+
+	ObjectCube(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType, Shader& shader, const char* uniform, GLuint unit) : ObjectCube() {
+		setTexture(image, texType, slot, format, pixelType, shader, uniform, unit);
+	}
 };
 
-class ObjectTriangle : public Object3D {
+class ObjectPyramid : public Object3D {
 public:
-	ObjectTriangle();
+	ObjectPyramid();
+
+	ObjectPyramid(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType, Shader& shader, const char* uniform, GLuint unit) : ObjectPyramid() {
+		setTexture(image, texType, slot, format, pixelType, shader, uniform, unit);
+	}
+};
+
+class ObjectLittleCube: public Object3D {
+public:
+	ObjectLittleCube();
 };
 
 #endif

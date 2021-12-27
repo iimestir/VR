@@ -6,30 +6,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "shader.h"
-#include "VAO.h"
-#include "VBO.h"
-#include "EBO.h"
-#include "texture.h"
-#include "object3D.h"
+#include "scene.h"
+#include "camera.h"
 
 using namespace std;
-
-void setGLColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha = 1.0f) {
-	// "Adds" a color to the back buffer
-	glClearColor(red, green, blue, alpha);
-	// Clears what's in the front buffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void setBackgroundColor(GLFWwindow * window, unsigned int width, unsigned int height, GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha = 1.0f) {
-	// Creates the work zone
-	glViewport(0, 0, width, height);
-	setGLColor(red, green, blue, alpha);
-
-	// Swaps the front and back buffers
-	glfwSwapBuffers(window);
-}
+using namespace glm;
 
 int main() {
 	/*
@@ -46,15 +27,13 @@ int main() {
 	// Creates the GL window
 	GLFWwindow* window = glfwCreateWindow(width, height, "VR sandbox", NULL, NULL);
 	if (window == NULL) {
-		std::cout << "An error has occured" << std::endl;
+		cout << "An error has occured" << endl;
 
 		glfwTerminate();
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
-
-	setBackgroundColor(window, width, height, 0.07f, 0.13f, 0.17f);
 
 	/*
 	DRAWING
@@ -64,26 +43,17 @@ int main() {
 	*/
 
 	// Generates shader object using vShader and fShader files
-	Shader program("default.vert", "default.frag");
+	Scene scene("default.vert", "default.frag");
+	Camera camera(width, height, vec3(0.0f, 0.0f, 2.0f), 0.01f, 100.0f);
+	scene.setBackgroundColor(window, width, height, 0.07f, 0.13f, 0.17f);
 
-	// Generates a Vertex Array Object and binds it
-	VAO vao(true);
+	unsigned objectIndex = scene.addObject3D(
+		ObjectCube("o.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE, *scene.getShader(), "tex0", 0),
+		0.0f, 0.0f, 0.0f
+	);
+	unsigned lightIndex = scene.addLight(ObjectLittleCube(), "light.vert", "light.frag", 0.5f, 0.5f, 0.5f);
 
-	Object3D cube = ObjectTriangle();
-	cube.setTexture("bidoof.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE, program, "tex0", 0);
-
-	// Link the VBO to the VAO
-	vao.linkObject3D(cube);
-
-	// Unbind everything to be sure we won't modify it accidentally
-	vao.unbind();
-	cube.unbind();
-
-	// Uniform scale
-	GLuint uniID = glGetUniformLocation(program.getID(), "scale");
-
-	float rotation = 0.0f;
-	double previousTime = glfwGetTime();
+	scene.setLightShaderColor(lightIndex, 1.0f, 1.0f, 1.0f, 1.0f);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -91,46 +61,21 @@ int main() {
 	END DRAWING
 	*/
 	while (!glfwWindowShouldClose(window)) {
-		setGLColor(0.07f, 0.13f, 0.17f);
+		scene.setGLColor(0.07f, 0.13f, 0.17f);
 
-		program.activateShader();
+		camera.defineInputs(window);
+		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-		double currentTime = glfwGetTime();
-		if (currentTime - previousTime >= 1 / 60) {
-			rotation += 0.5f;
-			previousTime = currentTime;
-		}
+		scene.setCameraMatrix(&camera, "camera");
 
-		glm::mat4 model = glm::mat4(1.0f);
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 proj = glm::mat4(1.0f);
-
-		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -4.0f));
-		proj = glm::perspective(glm::radians(45.0f), (float)(width / height), 0.1f, 100.0f);
-
-		// Fragment Uniform variables
-		int modelLocation = glGetUniformLocation(program.getID(), "model");
-		int viewLocation = glGetUniformLocation(program.getID(), "view");
-		int projLocation = glGetUniformLocation(program.getID(), "proj");
-		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(projLocation, 1, GL_FALSE, glm::value_ptr(proj));
-
-		glUniform1f(uniID, 0.5f);
-		cube.bindTexture();
-		vao.bind();
-
-		glDrawElements(GL_TRIANGLES, cube.getISize(), GL_UNSIGNED_INT, 0);
+		scene.draw();
 
 		glfwSwapBuffers(window);						// Swap the back and front buffer
 		glfwPollEvents();								// Takes care of all GLFW events
 	}
 
 	// End
-	vao.deleteAO();
-	cube.destroy();
-	program.deleteShader();
+	scene.destroy();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
