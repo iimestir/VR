@@ -10,9 +10,9 @@ Camera::Camera(int width, int height, glm::vec3 position, float speed, float sen
 	this->initialSensitivity = sensitivity;
 }
 
-void Camera::setupMatrix(Shader& shader, const char* uniform) {
+void Camera::setupMatrix(Shader& shader) {
 	// Exports the camera matrix to the Vertex Shader
-	glUniformMatrix4fv(glGetUniformLocation(shader.getID(), uniform), 1, GL_FALSE, glm::value_ptr(matrix));
+	glUniformMatrix4fv(shader.getUniformLocation("camera"), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 void Camera::defineInputs(GLFWwindow* window) {

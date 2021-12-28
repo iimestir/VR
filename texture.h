@@ -10,9 +10,10 @@ class Texture
 {
 private:
 	GLuint ID;
-	GLenum type;
+	const char* type;
+	GLuint unit;
 public:
-	Texture(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType);
+	Texture(const char* image, const char* texType, GLuint slot);
 
 	void texUnit(Shader& shader, const char* uniform, GLuint unit);
 	void bind();
@@ -23,7 +24,7 @@ public:
 		return Texture::ID;
 	}
 
-	inline GLenum getType() {
+	inline const char* getType() {
 		return Texture::type;
 	}
 };

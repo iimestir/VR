@@ -31,7 +31,7 @@ private:
 public:
 	Camera(int, int, glm::vec3, float = 0.1f, float = 100.0f);
 
-	void setupMatrix(Shader&, const char*);
+	void setupMatrix(Shader&);
 	void updateMatrix(float, float, float);
 	void defineInputs(GLFWwindow*);
 

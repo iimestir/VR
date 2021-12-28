@@ -1,8 +1,22 @@
-#include "object3D.h"
+#include "mesh.h"
+
+
+Mesh::Mesh(vector<GLfloat> vertices, vector<GLuint> indices, vector<Texture> textures) {
+	for (Texture t : textures) {
+		if (t.getType() == "diffuse")
+			tx.push_back(t);
+		else if (t.getType() == "specular")
+			spec.push_back(t);
+	}
+
+	this->vbo = new VBO(vertices.data(), vertices.size() * sizeof(GLfloat));
+	this->ebo = new EBO(indices.data(), indices.size() * sizeof(GLuint));
+	this->iSize = indices.size() * sizeof(int);
+}
 
 ObjectRectangular::ObjectRectangular() {
 	GLfloat vertices[] = {
-		//X		Y		Z		R	  G		B		TexL  TexU
+		//X		Y		Z		R	  G		B		TexL  TexU		LiX	  LiY	 LiZ
 		// Bottom
 		-0.5f,	0.0f,	0.5f,	0.8f, 0.3f, 0.3f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,		// 0
 		-0.5f,	0.0f,	-0.5f,	0.1f, 0.3f, 0.3f,	0.0f, 1.0f,		0.0f, -1.0f, 0.0f,		// 1
@@ -160,7 +174,7 @@ ObjectPyramid::ObjectPyramid() {
 	this->iSize = sizeof(indices);
 }
 
-ObjectLittleCube::ObjectLittleCube() {
+ObjectBlank::ObjectBlank() {
 	GLfloat vertices[] = {
 		-0.1f, -0.1f,  0.1f,	1.0f, 1.0f, 1.0f,		0.0f, 0.0f,			0.0f, 0.0f, 0.0f,
 		-0.1f, -0.1f, -0.1f,	1.0f, 1.0f, 1.0f,		0.0f, 0.0f,			0.0f, 0.0f, 0.0f,
@@ -185,6 +199,24 @@ ObjectLittleCube::ObjectLittleCube() {
 		1,4,0,
 		4,5,6,
 		4,6,7
+	};
+
+	this->vbo = new VBO(vertices, sizeof(vertices));
+	this->ebo = new EBO(indices, sizeof(indices));
+	this->iSize = sizeof(indices);
+}
+
+ObjectFlat::ObjectFlat() {
+	GLfloat vertices[] = {
+		-1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
+		-1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+		 1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+		 1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f
+	};
+
+	GLuint indices[] = {
+		0, 1, 2,
+		0, 2, 3
 	};
 
 	this->vbo = new VBO(vertices, sizeof(vertices));

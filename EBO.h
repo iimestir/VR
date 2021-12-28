@@ -3,6 +3,8 @@
 
 #include <glad/glad.h>
 
+using namespace std;
+
 class EBO
 {
 private:

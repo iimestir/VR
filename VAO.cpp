@@ -7,8 +7,8 @@ VAO::VAO(bool bind) {
 		VAO::bind();
 }
 
-void VAO::addObject3D(Object3D obj) {
-	linkObject3D(obj);
+void VAO::addMesh(Mesh obj) {
+	linkMesh(obj);
 	this->objects.push_back(obj);
 }
 
@@ -24,7 +24,7 @@ void VAO::linkAttributes(VBO& VBO, GLuint layout, GLuint nComp, GLenum type, GLs
 	VBO.unbind();
 }
 
-void VAO::linkObject3D(Object3D obj) {
+void VAO::linkMesh(Mesh obj) {
 	linkAttributes(*obj.getVBO(), 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
 	linkAttributes(*obj.getVBO(), 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
 	linkAttributes(*obj.getVBO(), 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
@@ -34,30 +34,35 @@ void VAO::linkObject3D(Object3D obj) {
 void VAO::bind() {
 	glBindVertexArray(ID);
 
-	for (Object3D obj : objects)
+	for (Mesh obj : objects)
 		obj.bind();
 }
 
 void VAO::draw() {
-	for (Object3D obj : objects)
+	for (Mesh obj : objects)
 		glDrawElements(GL_TRIANGLES, obj.getISize(), GL_UNSIGNED_INT, 0);
 }
 
 void VAO::unbind() {
-	for (Object3D obj : objects)
+	for (Mesh obj : objects)
 		obj.unbind();
 
 	glBindVertexArray(0);
 }
 
 void VAO::destroy() {
-	for (Object3D obj : objects)
+	for (Mesh obj : objects)
 		obj.destroy();
 
 	glDeleteVertexArrays(1, &ID);
 }
 
-void VAO::bindObject3DTextures() {
-	for (Object3D obj : objects)
-		obj.bindTexture();
+void VAO::bindMeshTextures() {
+	for (Mesh obj : objects)
+		obj.bindTextures();
+}
+
+void VAO::registerMeshTextures(Shader& shader) {
+	for (Mesh mesh : objects)
+		mesh.registerTextures(shader);
 }

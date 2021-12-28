@@ -8,6 +8,7 @@
 
 #include "scene.h"
 #include "camera.h"
+#include "model.h"
 
 using namespace std;
 using namespace glm;
@@ -47,13 +48,36 @@ int main() {
 	Camera camera(width, height, vec3(0.0f, 0.0f, 2.0f), 0.01f, 100.0f);
 	scene.setBackgroundColor(window, width, height, 0.07f, 0.13f, 0.17f);
 
-	unsigned objectIndex = scene.addObject3D(
-		ObjectCube("o.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE, *scene.getShader(), "tex0", 0),
+	Model model("models/sword/scene.gltf");
+
+	unsigned sword;
+
+	for (int i = 0; i < model.getMeshes().size(); i++)
+		sword = scene.addMesh(model.getMeshes().at(i), 0.0f, 0.0f, 0.0f);
+
+	scene.scaleOnGlobal(sword, 0.1f, 0.1f, 0.1f);
+
+	scene.addMesh(
+		ObjectRectangular("o.jpg", NULL),
 		0.0f, 0.0f, 0.0f
 	);
-	unsigned lightIndex = scene.addLight(ObjectLittleCube(), "light.vert", "light.frag", 0.5f, 0.5f, 0.5f);
 
-	scene.setLightShaderColor(lightIndex, 1.0f, 1.0f, 1.0f, 1.0f);
+	/*
+	scene.addMesh(
+		ObjectCube("o.jpg", NULL),
+		0.0f, 0.0f, 0.0f
+	);
+	scene.addMesh(
+		ObjectPyramid("bidoof.jpg", NULL),
+		0.0f, 0.301f, 0.0f
+	);
+	scene.addMesh(
+		ObjectFlat("grass.jpg", "spec_grass.jpg"),
+		0.0f, -0.301f, 0.0f
+	);
+
+	scene.addLight(ObjectBlank(), "light.vert", "light.frag", 0.5f, 0.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f);
+	*/
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -61,17 +85,7 @@ int main() {
 	END DRAWING
 	*/
 	while (!glfwWindowShouldClose(window)) {
-		scene.setGLColor(0.07f, 0.13f, 0.17f);
-
-		camera.defineInputs(window);
-		camera.updateMatrix(45.0f, 0.1f, 100.0f);
-
-		scene.setCameraMatrix(&camera, "camera");
-
-		scene.draw();
-
-		glfwSwapBuffers(window);						// Swap the back and front buffer
-		glfwPollEvents();								// Takes care of all GLFW events
+		scene.render(window, &camera);
 	}
 
 	// End

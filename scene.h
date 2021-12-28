@@ -20,16 +20,23 @@ using namespace glm;
 class Scene {
 private:
 	Shader program;
-	vector<VAO> vertexes;
+	vector<VAO> vertices;
 	vector<pair<Shader, VAO>> lights;
 
-	void translateGlobal(Shader*, unsigned, float, float, float);
-	void colorShader(Shader*, float, float, float, float);
+	void registerOnShader(Shader&, unsigned);
+
+	void colorShader(Shader&, float, float, float, float);
 	void setLightPosition(float, float, float);
+
+	void translateOnShader(Shader&, unsigned, float, float, float, bool = false);
+	void rotateOnShader(Shader&, unsigned, float, float, float, float);
+	void scaleOnShader(Shader&, unsigned, float, float, float);
 
 	void notifyCameraPosition(Camera*);
 public:
 	Scene(const char*, const char*);
+
+	void render(GLFWwindow*, Camera*);
 
 	void activateShader();
 	void activateLightShader(unsigned);
@@ -42,15 +49,23 @@ public:
 	void setGLColor(GLfloat, GLfloat, GLfloat, GLfloat = 1.0f);
 	void setBackgroundColor(GLFWwindow*, unsigned int, unsigned int, GLfloat, GLfloat, GLfloat, GLfloat = 1.0f);
 
-	unsigned addObject3D(Object3D, float = 0.0f, float = 0.0f, float = 0.0f);
-	unsigned addLight(Object3D, const char*, const char*, float = 0.0f, float = 0.0f, float = 0.0f);
+	unsigned addMesh(Mesh, float = 0.0f, float = 0.0f, float = 0.0f);
+	unsigned addLight(Mesh, const char*, const char*, 
+		float = 0.0f, float = 0.0f, float = 0.0f, 
+		float = 0.0f, float = 0.0f, float = 0.0f, float = 1.0f
+	);
+
+	void translateOnGlobal(unsigned, float, float, float);
+	void rotateOnGlobal(unsigned, float, float, float, float);
+	void scaleOnGlobal(unsigned, float, float, float);
 
 	void translateObject(unsigned, float, float, float);
 	void translateLight(unsigned, float, float, float);
+
 	void setLightShaderColor(unsigned, float, float, float, float);
 	void setShaderColor(float, float, float, float);
 
-	void setCameraMatrix(Camera*, const char*);
+	void setCameraMatrix(Camera*);
 
 	inline Shader* getShader() {
 		return &program;
@@ -65,7 +80,7 @@ public:
 	}
 
 	inline VAO getVertex(unsigned index) {
-		return vertexes.at(index);
+		return vertices.at(index);
 	}
 };
 
