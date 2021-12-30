@@ -1,23 +1,48 @@
 #include "scene.h"
 
-void Scene::registerOnShader(Shader& shader, unsigned vertexIndex) {
+void Scene::registerVertexOnShader(unsigned vertexIndex) {
 	mat4 model = vertices.at(vertexIndex).getMatrix();
 
-	shader.activateShader();
+	program.activateShader();
 
-	glUniformMatrix4fv(shader.getUniformLocation("model"), 1, GL_FALSE, value_ptr(model));
+	glUniformMatrix4fv(program.getUniformLocation("model"), 1, GL_FALSE, value_ptr(model));
 }
 
-void Scene::colorShader(Shader& shader, float red, float green, float blue, float alpha) {
-	shader.activateShader();
-	glUniform4f(shader.getUniformLocation("lightColor"), red, green, blue, alpha);
+void Scene::registerLightOnShader(unsigned lightIndex) {
+	mat4 model = lights.at(lightIndex).getVAO().getMatrix();
+
+	lights.at(lightIndex).getShader().activateShader();
+
+	glUniformMatrix4fv(lights.at(lightIndex).getShader().getUniformLocation("model"), 1, GL_FALSE, value_ptr(model));
 }
 
-void Scene::setLightPosition(float x, float y, float z) {
+void Scene::drawLights() {
 	activateShader();
+	
+	vector<GLfloat> pos;
+	vector<GLfloat> colors;
+	vector<GLfloat> types;
+	for (int i = 0; i < lights.size(); i++) {
+		pos.push_back(lights.at(i).getVAO().getTranslation().r);
+		pos.push_back(lights.at(i).getVAO().getTranslation().g);
+		pos.push_back(lights.at(i).getVAO().getTranslation().b);
+	}
 
-	// TODO : gérer plusieures lumières
-	glUniform3f(program.getUniformLocation("lightPos"), x, y, z);
+	for (int i = 0; i < lights.size(); i++) {
+		colors.push_back(lights.at(i).getR());
+		colors.push_back(lights.at(i).getG());
+		colors.push_back(lights.at(i).getB());
+		colors.push_back(lights.at(i).getAlpha());
+	}
+
+	for (int i = 0; i < lights.size(); i++) {
+		types.push_back(float(lights.at(i).getType()));
+	}
+
+	glUniform1i(program.getUniformLocation("lightSize"), lights.size());
+	glUniform1fv(program.getUniformLocation("lightPos"), pos.size(), pos.data());
+	glUniform1fv(program.getUniformLocation("lightColor"), colors.size(), colors.data());
+	glUniform1fv(program.getUniformLocation("lightType"), types.size(), types.data());
 }
 
 void Scene::translateOnShader(Shader& shader, unsigned vertexIndex, float xd, float yd, float zd, bool light) {
@@ -25,7 +50,7 @@ void Scene::translateOnShader(Shader& shader, unsigned vertexIndex, float xd, fl
 	string uniform;
 
 	if (light)
-		vertice = &lights.at(vertexIndex).second;
+		vertice = &lights.at(vertexIndex).getVAO();
 	else
 		vertice = &vertices.at(vertexIndex);
 
@@ -71,9 +96,7 @@ void Scene::notifyCameraPosition(Camera* camera) {
 		camera->getPosition().x, camera->getPosition().y, camera->getPosition().z);
 }
 
-Scene::Scene(const char* vFile, const char* fFile) : program(Shader(vFile, fFile)) {
-	setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-}
+Scene::Scene(const char* vFile, const char* fFile) : program(Shader(vFile, fFile)) {}
 
 void Scene::render(GLFWwindow* window, Camera* camera) {
 	setGLColor(0.07f, 0.13f, 0.17f);
@@ -94,7 +117,7 @@ void Scene::activateShader() {
 }
 
 void Scene::activateLightShader(unsigned index) {
-	lights.at(index).first.activateShader();
+	lights.at(index).getShader().activateShader();
 }
 
 void Scene::destroy() {
@@ -105,9 +128,8 @@ void Scene::destroy() {
 }
 
 void Scene::draw() {
-	activateShader();
-
 	for (int i = 0; i < vertices.size(); i++) {
+		activateShader();
 		vertices.at(i).bind();
 
 		vertices.at(i).registerMeshTextures(program);
@@ -120,24 +142,25 @@ void Scene::draw() {
 		translateVertex(i, translation.r, translation.g, translation.b);
 		rotateOnShader(program, i, rotation.w, rotation.x, rotation.y, rotation.z);
 		scaleVertex(i, scaling.r, scaling.g, scaling.b);
-		registerOnShader(program, i);
+		registerVertexOnShader(i);
 
 		vertices.at(i).bindMeshTextures();
 		vertices.at(i).draw();
 	}
 
 	for (int i = 0; i < lights.size(); i++) {
-		vec3 translation = lights.at(i).second.getTranslation();
-		setLightPosition(translation.r, translation.g, translation.b);
+		vec3 translation = lights.at(i).getVAO().getTranslation();
 
-		lights.at(i).first.activateShader();
+		lights.at(i).getShader().activateShader();
+		lights.at(i).getVAO().bind();
 
-		translateOnShader(lights.at(i).first, i, translation.r, translation.g, translation.b, true);
-		registerOnShader(lights.at(i).first, i);
+		translateOnShader(lights.at(i).getShader(), i, translation.r, translation.g, translation.b, true);
+		registerLightOnShader(i);
 
-		lights.at(i).second.bind();
-		lights.at(i).second.draw();
+		lights.at(i).getVAO().draw();
 	}
+
+	drawLights();
 }
 
 void Scene::setGLColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
@@ -187,17 +210,12 @@ vector<unsigned> Scene::loadMesh(const char* dir) {
 	return ids;
 }
 
-unsigned Scene::addLight(Mesh obj, const char* vFile, const char* fFile, float posX, float posY, float posZ, float red, float green, float blue, float alpha) {
-	VAO vao(true);
-	vao.addMesh(obj);
-	vao.unbind();
-
-	lights.push_back(std::make_pair(Shader(vFile, fFile),vao));
+unsigned Scene::addLight(Light light) {
+	lights.push_back(light);
 
 	unsigned index = lights.size() - 1;
 
-	lights.at(index).second.translate(posX, posY, posZ);
-	setLightShaderColor(index, red, green, blue, alpha);
+	setLightColor(index, light.getR(), light.getG(), light.getB(), light.getAlpha());
 
 	return index;
 }
@@ -217,15 +235,10 @@ void Scene::scaleVertex(unsigned vertexIndex, float xd, float yd, float zd) {
 	scaleOnShader(program, vertexIndex, xd, yd, zd);
 }
 
-void Scene::setLightShaderColor(unsigned index, float red, float green, float blue, float alpha) {
-	colorShader(*getLightShader(index), red, green, blue, alpha);
+void Scene::setLightColor(unsigned index, float red, float green, float blue, float alpha) {
+	getLightShader(index)->activateShader();
 
-	// TODO : gérer plusieures lumières
-	setShaderColor(red, green, blue, alpha);
-}
-
-void Scene::setShaderColor(float red, float green, float blue, float alpha) {
-	colorShader(program, red, green, blue, alpha);
+	glUniform4f(getLightShader(index)->getUniformLocation("lightColor"), red, green, blue, alpha);
 }
 
 void Scene::setCameraMatrix(Camera* camera) {
@@ -234,8 +247,8 @@ void Scene::setCameraMatrix(Camera* camera) {
 	activateShader();
 	camera->setupMatrix(program);
 
-	for (pair<Shader, VAO> light : lights) {
-		light.first.activateShader();
-		camera->setupMatrix(light.first);
+	for (Light light : lights) {
+		light.getShader().activateShader();
+		camera->setupMatrix(light.getShader());
 	}
 }

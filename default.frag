@@ -8,35 +8,40 @@ in vec3 currentPos;
 
 uniform sampler2D tex0;
 uniform sampler2D tex1;
-uniform vec4 lightColor;
-uniform vec3 lightPos;
 uniform vec3 camPos;
 
-vec4 pointLight() {
-	vec3 lightV = lightPos - currentPos;
-	float dist = length(lightV);
+uniform int lightSize;
+uniform float lightPos[256];
+uniform float lightColor[256];
+uniform float lightType[256];
+
+
+vec4 pointLight(vec3 light, vec4 light_color) {
 	float a = 1.0;
 	float b = 0.04;
-	float intensity = 1.0f / (a * dist * dist+b * dist+1.0f);
-
 	float ambient = 0.15f;
+	float specLight = 0.50f;
+
+	vec3 lightV = light - currentPos;
+	float dist = length(lightV);
+
+	float intensity = 1.0f / (a * dist * dist+b * dist+1.0f);
 
 	vec3 nrm = normalize(normal);
 	vec3 lightDirection = normalize(lightV);
 
 	float diffusion = max(dot(nrm, lightDirection), 0.0f);
-
-	float specLight = 0.50f;
+	
 	vec3 viewDirection = normalize(camPos - currentPos);
 	vec3 refDirection = reflect(-lightDirection, nrm);
 
 	float specAmount = pow(max(dot(viewDirection, refDirection), 0.0f), 16);
 	float specular = specAmount * specLight;
 
-	return (texture(tex0, texCoord) * (diffusion * intensity + ambient) + texture(tex1, texCoord).r * specular * intensity) * lightColor;
+	return (texture(tex0, texCoord) * (diffusion * intensity + ambient) + texture(tex1, texCoord).r * specular * intensity) * light_color;
 }
 
-vec4 directLight() {
+vec4 directLight(vec4 light_color) {
 	vec3 source = vec3(1.0f, 1.0f, 0.0f);
 
 	float ambient = 0.15f;
@@ -53,17 +58,17 @@ vec4 directLight() {
 	float specAmount = pow(max(dot(viewDirection, refDirection), 0.0f), 16);
 	float specular = specAmount * specLight;
 
-	return (texture(tex0, texCoord) * (diffusion + ambient) + texture(tex1, texCoord).r * specular) * lightColor;
+	return (texture(tex0, texCoord) * (diffusion + ambient) + texture(tex1, texCoord).r * specular) * light_color;
 }
 
-vec4 spotLight() {
+vec4 spotLight(vec3 light, vec4 light_color) {
 	float outCone = 0.90f;
 	float inCone = 0.95f;
 
 	float ambient = 0.15f;
 
 	vec3 nrm = normalize(normal);
-	vec3 lightDirection = normalize(lightPos - currentPos);
+	vec3 lightDirection = normalize(light - currentPos);
 
 	float diffusion = max(dot(nrm, lightDirection), 0.0f);
 
@@ -77,9 +82,26 @@ vec4 spotLight() {
 	float angle = dot(vec3(0.0f, -1.0f, 0.0f), -lightDirection);
 	float intensity = clamp((angle - outCone) / (inCone - outCone), 0.0f, 1.0f);
 
-	return (texture(tex0, texCoord) * (diffusion + ambient + intensity) + texture(tex1, texCoord).r * specular * intensity) * lightColor;
+	return (texture(tex0, texCoord) * (diffusion + ambient + intensity) + texture(tex1, texCoord).r * specular * intensity) * light_color;
 }
 
 void main() {
-	FragColor = pointLight();
+	vec4 output = vec4(0.0f);
+
+	int ty = 0;
+	int d = 0;
+
+	for(int i = 0; i < lightSize*3; i+=3) {
+		vec3 pos = vec3(lightPos[i], lightPos[i+1], lightPos[i+2]);
+
+		if(lightType[ty] == 0.0f)
+			output += spotLight(pos, vec4(vec4(lightColor[i+d], lightColor[i+d+1], lightColor[i+d+2], lightColor[i+d+3])));
+		else if(lightType[ty] == 1.0f)
+			output += pointLight(pos, vec4(vec4(lightColor[i+d], lightColor[i+d+1], lightColor[i+d+2], lightColor[i+d+3])));
+
+		d++;
+		ty++;
+	}
+
+	FragColor = output;
 }

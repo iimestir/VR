@@ -1,0 +1,54 @@
+#ifndef LIGHT_H
+#define LIGHT_H
+
+#include "VAO.h"
+
+enum LightType {
+	SPOT = 0, POINT = 1
+};
+
+class Light {
+private:
+	float r;
+	float g;
+	float b;
+	float alpha;
+
+	VAO vao;
+	Shader shader;
+
+	LightType type;
+
+public:
+	Light(Mesh obj, const char* vFile, const char* fFile, LightType type, float posX = 0.0f, float posY = 0.0f, float posZ = 0.0f, float red = 1.0f, float green = 1.0f, float blue = 1.0f, float alpha = 1.0f);
+
+	inline float getR() {
+		return r;
+	}
+
+	inline float getG() {
+		return g;
+	}
+
+	inline float getB() {
+		return b;
+	}
+
+	inline float getAlpha() {
+		return alpha;
+	}
+
+	inline Shader& getShader() {
+		return shader;
+	}
+
+	inline VAO& getVAO() {
+		return vao;
+	}
+
+	inline LightType getType() {
+		return type;
+	}
+};
+
+#endif

@@ -8,6 +8,7 @@
 
 #include "scene.h"
 #include "camera.h"
+#include "light.h"
 
 using namespace std;
 using namespace glm;
@@ -65,8 +66,8 @@ int main() {
 		ObjectFlat("grass.jpg", "spec_grass.jpg"),
 		0.0f, -0.301f, 0.0f
 	);
-	scene.addLight(ObjectBlank(), "light.vert", "light.frag", 0.5f, 0.0f, 0.5f, 1.0f, 0.5f, 0.5f, 1.0f);
-	scene.addLight(ObjectBlank(), "light.vert", "light.frag", -0.5f, 0.0f, 0.5f, 1.0f, 1.0f, 0.5f, 0.5f);
+	scene.addLight(Light(ObjectBlank(), "light.vert", "light.frag", LightType::POINT, 0.5f, 0.0f, 0.5f, 1.0f, 0.25f, 0.25f, 1.0f));
+	scene.addLight(Light(ObjectBlank(), "light.vert", "light.frag", LightType::SPOT, -0.5f, 0.0f, -0.5f, 0.25f, 0.25f, 1.0f, 1.0f));
 
 	glEnable(GL_DEPTH_TEST);
 

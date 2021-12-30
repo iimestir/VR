@@ -283,7 +283,7 @@ vector<Texture> Model::getTextures() {
 			// Load diffuse texture
 			if (texPath.find("baseColor") != string::npos)
 			{
-				Texture diffuse = Texture((fileDirectory + texPath).c_str(), "diffuse", loadedTex.size());
+				Texture diffuse = Texture((fileDirectory + texPath).c_str(), "tex0", loadedTex.size());
 				textures.push_back(diffuse);
 				loadedTex.push_back(diffuse);
 				loadedTexName.push_back(texPath);
@@ -291,15 +291,13 @@ vector<Texture> Model::getTextures() {
 			// Load specular texture
 			else if (texPath.find("metallicRoughness") != string::npos)
 			{
-				Texture specular = Texture((fileDirectory + texPath).c_str(), "specular", loadedTex.size());
+				Texture specular = Texture((fileDirectory + texPath).c_str(), "tex1", loadedTex.size());
 				textures.push_back(specular);
 				loadedTex.push_back(specular);
 				loadedTexName.push_back(texPath);
 			}
 		}
 	}
-
-	cout << textures.size() << endl;
 
 	return textures;
 }

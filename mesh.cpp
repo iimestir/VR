@@ -3,9 +3,9 @@
 
 Mesh::Mesh(vector<GLfloat> vertices, vector<GLuint> indices, vector<Texture> textures) {
 	for (Texture t : textures) {
-		if (t.getType() == "diffuse")
+		if (t.getType() == "tex0")
 			tx.push_back(t);
-		else if (t.getType() == "specular")
+		else if (t.getType() == "tex1")
 			spec.push_back(t);
 	}
 

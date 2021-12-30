@@ -29,10 +29,10 @@ public:
 
 	inline void registerTextures(Shader& shader) {
 		for(Texture diffusion : tx)
-			diffusion.texUnit(shader, "diffuse", 0);
+			diffusion.texUnit(shader, "tex0", 0);
 
 		for (Texture specular : spec)
-			specular.texUnit(shader, "specular", 1);
+			specular.texUnit(shader, "tex1", 1);
 	}
 
 	inline VBO* getVBO() {
@@ -48,11 +48,11 @@ public:
 	}
 
 	inline void setTexture(const char* image) {
-		tx.push_back(Texture(image, "diffuse", 0));
+		tx.push_back(Texture(image, "tex0", 0));
 	}
 
 	inline void setSpecular(const char* specular) {
-		spec.push_back(Texture(specular, "specular", 1));
+		spec.push_back(Texture(specular, "tex1", 1));
 	}
 
 	inline void bind() {
