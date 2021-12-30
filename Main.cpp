@@ -8,7 +8,6 @@
 
 #include "scene.h"
 #include "camera.h"
-#include "model.h"
 
 using namespace std;
 using namespace glm;
@@ -48,21 +47,12 @@ int main() {
 	Camera camera(width, height, vec3(0.0f, 0.0f, 2.0f), 0.01f, 100.0f);
 	scene.setBackgroundColor(window, width, height, 0.07f, 0.13f, 0.17f);
 
-	Model model("models/sword/scene.gltf");
+	unsigned creeper = scene.loadMesh("creeper").at(0);
 
-	unsigned sword;
+	scene.scaleVertex(creeper, 0.035f, 0.05f, 0.05f);
+	scene.translateVertex(creeper, -0.5f, -0.25f, 0.5f);
+	scene.rotateVertex(creeper, 0.0f, 90.0f, 0.0f);
 
-	for (int i = 0; i < model.getMeshes().size(); i++)
-		sword = scene.addMesh(model.getMeshes().at(i), 0.0f, 0.0f, 0.0f);
-
-	scene.scaleOnGlobal(sword, 0.1f, 0.1f, 0.1f);
-
-	scene.addMesh(
-		ObjectRectangular("o.jpg", NULL),
-		0.0f, 0.0f, 0.0f
-	);
-
-	/*
 	scene.addMesh(
 		ObjectCube("o.jpg", NULL),
 		0.0f, 0.0f, 0.0f
@@ -75,9 +65,8 @@ int main() {
 		ObjectFlat("grass.jpg", "spec_grass.jpg"),
 		0.0f, -0.301f, 0.0f
 	);
-
-	scene.addLight(ObjectBlank(), "light.vert", "light.frag", 0.5f, 0.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f);
-	*/
+	scene.addLight(ObjectBlank(), "light.vert", "light.frag", 0.5f, 0.0f, 0.5f, 1.0f, 0.5f, 0.5f, 1.0f);
+	scene.addLight(ObjectBlank(), "light.vert", "light.frag", -0.5f, 0.0f, 0.5f, 1.0f, 1.0f, 0.5f, 0.5f);
 
 	glEnable(GL_DEPTH_TEST);
 

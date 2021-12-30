@@ -81,7 +81,7 @@ public:
 		return objects.at(index);
 	}
 
-	inline unsigned getMeshAmount() {
+	inline size_t getMeshAmount() {
 		return objects.size();
 	}
 };

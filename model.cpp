@@ -299,6 +299,8 @@ vector<Texture> Model::getTextures() {
 		}
 	}
 
+	cout << textures.size() << endl;
+
 	return textures;
 }
 

@@ -43,10 +43,6 @@ public:
 		return ebo;
 	}
 
-	inline Texture* getTexture(unsigned index) {
-		return &tx.at(index);
-	}
-
 	inline size_t getISize() {
 		return iSize / sizeof(int);
 	}

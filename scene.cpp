@@ -117,9 +117,9 @@ void Scene::draw() {
 		quat rotation = vertices.at(i).getRotation();
 		vec3 scaling = vertices.at(i).getScale();
 
-		translateOnGlobal(i, translation.r, translation.g, translation.b);
-		rotateOnGlobal(i, rotation.w, rotation.x, rotation.y, rotation.z);
-		scaleOnGlobal(i, scaling.r, scaling.g, scaling.b);
+		translateVertex(i, translation.r, translation.g, translation.b);
+		rotateOnShader(program, i, rotation.w, rotation.x, rotation.y, rotation.z);
+		scaleVertex(i, scaling.r, scaling.g, scaling.b);
 		registerOnShader(program, i);
 
 		vertices.at(i).bindMeshTextures();
@@ -138,11 +138,6 @@ void Scene::draw() {
 		lights.at(i).second.bind();
 		lights.at(i).second.draw();
 	}
-}
-
-void Scene::refreshTextures() {
-	for (VAO vertex : vertices)
-		vertex.bindMeshTextures();
 }
 
 void Scene::setGLColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
@@ -175,9 +170,21 @@ unsigned Scene::addMesh(Mesh obj, float posX, float posY, float posZ) {
 	vertices.push_back(vao);
 
 	unsigned index = vertices.size() - 1;
-	translateObject(index, posX, posY, posZ);
+	translateVertex(index, posX, posY, posZ);
 
 	return index;
+}
+
+vector<unsigned> Scene::loadMesh(const char* dir) {
+	string path = "models/" + string(dir) + "/scene.gltf";
+
+	Model model(path.c_str());
+
+	vector<unsigned> ids;
+	for (Mesh mesh : model.getMeshes())
+		ids.push_back(addMesh(mesh));
+
+	return ids;
 }
 
 unsigned Scene::addLight(Mesh obj, const char* vFile, const char* fFile, float posX, float posY, float posZ, float red, float green, float blue, float alpha) {
@@ -189,30 +196,25 @@ unsigned Scene::addLight(Mesh obj, const char* vFile, const char* fFile, float p
 
 	unsigned index = lights.size() - 1;
 
-	translateLight(index, posX, posY, posZ);
+	lights.at(index).second.translate(posX, posY, posZ);
 	setLightShaderColor(index, red, green, blue, alpha);
 
 	return index;
 }
 
-void Scene::translateOnGlobal(unsigned vertexIndex, float xd, float yd, float zd) {
+void Scene::translateVertex(unsigned vertexIndex, float xd, float yd, float zd) {
 	translateOnShader(program, vertexIndex, xd, yd, zd);
 }
 
-void Scene::rotateOnGlobal(unsigned vertexIndex, float wd, float xd, float yd, float zd) {
-	rotateOnShader(program, vertexIndex, wd, xd, yd, zd);
+void Scene::rotateVertex(unsigned vertexIndex, float xd, float yd, float zd) {
+	vec3 euler(xd,yd,zd);
+	quat quaterion = quat(euler);
+
+	rotateOnShader(program, vertexIndex, quaterion.w, quaterion.x, quaterion.y, quaterion.z);
 }
 
-void Scene::scaleOnGlobal(unsigned vertexIndex, float xd, float yd, float zd) {
+void Scene::scaleVertex(unsigned vertexIndex, float xd, float yd, float zd) {
 	scaleOnShader(program, vertexIndex, xd, yd, zd);
-}
-
-void Scene::translateObject(unsigned index, float xd, float yd, float zd) {
-	vertices.at(index).translate(xd, yd, zd);
-}
-
-void Scene::translateLight(unsigned index, float xd, float yd, float zd) {
-	lights.at(index).second.translate(xd, yd, zd);
 }
 
 void Scene::setLightShaderColor(unsigned index, float red, float green, float blue, float alpha) {

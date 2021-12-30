@@ -13,6 +13,7 @@
 #include "shader.h"
 #include "texture.h"
 #include "camera.h"
+#include "model.h"
 
 using namespace std;
 using namespace glm;
@@ -44,23 +45,21 @@ public:
 	void destroy();
 
 	void draw();
-	void refreshTextures();
 
 	void setGLColor(GLfloat, GLfloat, GLfloat, GLfloat = 1.0f);
 	void setBackgroundColor(GLFWwindow*, unsigned int, unsigned int, GLfloat, GLfloat, GLfloat, GLfloat = 1.0f);
 
 	unsigned addMesh(Mesh, float = 0.0f, float = 0.0f, float = 0.0f);
+	vector<unsigned> loadMesh(const char*);
+
 	unsigned addLight(Mesh, const char*, const char*, 
 		float = 0.0f, float = 0.0f, float = 0.0f, 
 		float = 0.0f, float = 0.0f, float = 0.0f, float = 1.0f
 	);
 
-	void translateOnGlobal(unsigned, float, float, float);
-	void rotateOnGlobal(unsigned, float, float, float, float);
-	void scaleOnGlobal(unsigned, float, float, float);
-
-	void translateObject(unsigned, float, float, float);
-	void translateLight(unsigned, float, float, float);
+	void translateVertex(unsigned, float, float, float);
+	void rotateVertex(unsigned, float, float, float);
+	void scaleVertex(unsigned, float, float, float);
 
 	void setLightShaderColor(unsigned, float, float, float, float);
 	void setShaderColor(float, float, float, float);
