@@ -28,14 +28,19 @@ private:
 	vector<VAO> vertices;
 	vector<Light> lights;
 
+	vec4 depthColor;
+
 	void registerVertexOnShader(unsigned);
 	void registerLightOnShader(unsigned);
 
-	void drawLights();
+	void updateLightsUni();
 
 	void translateOnShader(Shader&, unsigned, float, float, float, bool = false);
 	void rotateOnShader(Shader&, unsigned, float, float, float, float);
 	void scaleOnShader(Shader&, unsigned, float, float, float);
+	void alphaOnShader(Shader&, float);
+
+	void setDepthUniform(Shader&);
 
 	void notifyCameraPosition(Camera*);
 public:
@@ -53,9 +58,8 @@ public:
 	void setGLColor(GLfloat, GLfloat, GLfloat, GLfloat = 1.0f);
 	void setBackgroundColor(GLFWwindow*, unsigned int, unsigned int, GLfloat, GLfloat, GLfloat, GLfloat = 1.0f);
 
-	unsigned addMesh(Mesh, float = 0.0f, float = 0.0f, float = 0.0f);
+	unsigned addMesh(Mesh, float = 0.0f, float = 0.0f, float = 0.0f, float = 1.0f);
 	vector<unsigned> loadMesh(const char*);
-
 	unsigned addLight(Light);
 
 	void translateVertex(unsigned, float, float, float);

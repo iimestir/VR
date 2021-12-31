@@ -36,6 +36,16 @@ int main() {
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
 
+	// Depth
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	// Culling
+	glCullFace(GL_FRONT);
+	glFrontFace(GL_CCW);
+	glEnable(GL_CULL_FACE);
+
 	/*
 	DRAWING
 
@@ -46,7 +56,7 @@ int main() {
 	// Generates shader object using vShader and fShader files
 	Scene scene("default.vert", "default.frag");
 	Camera camera(width, height, vec3(0.0f, 0.0f, 2.0f), 0.01f, 100.0f);
-	scene.setBackgroundColor(window, width, height, 0.07f, 0.13f, 0.17f);
+	scene.setBackgroundColor(window, width, height, 0.0f, 0.0f, 0.0f, 1.0f);
 
 	unsigned creeper = scene.loadMesh("creeper").at(0);
 
@@ -66,10 +76,11 @@ int main() {
 		ObjectFlat("grass.jpg", "spec_grass.jpg"),
 		0.0f, -0.301f, 0.0f
 	);
-	scene.addLight(Light(ObjectBlank(), "light.vert", "light.frag", LightType::POINT, 0.5f, 0.0f, 0.5f, 1.0f, 0.25f, 0.25f, 1.0f));
-	scene.addLight(Light(ObjectBlank(), "light.vert", "light.frag", LightType::SPOT, -0.5f, 0.0f, -0.5f, 0.25f, 0.25f, 1.0f, 1.0f));
 
-	glEnable(GL_DEPTH_TEST);
+	scene.addLight(Light(ObjectBlank(), "light.vert", "light.frag", 
+		LightType::POINT, 0.5f, 0.0f, 0.5f, 1.0f, 0.25f, 0.25f, 0.3f));
+	scene.addLight(Light(ObjectBlank(), "light.vert", "light.frag", 
+		LightType::SPOT, -0.5f, 0.0f, -0.5f, 0.25f, 0.25f, 1.0f, 0.3f));
 
 	/*
 	END DRAWING

@@ -16,9 +16,9 @@ void Scene::registerLightOnShader(unsigned lightIndex) {
 	glUniformMatrix4fv(lights.at(lightIndex).getShader().getUniformLocation("model"), 1, GL_FALSE, value_ptr(model));
 }
 
-void Scene::drawLights() {
+void Scene::updateLightsUni() {
 	activateShader();
-	
+
 	vector<GLfloat> pos;
 	vector<GLfloat> colors;
 	vector<GLfloat> types;
@@ -32,7 +32,6 @@ void Scene::drawLights() {
 		colors.push_back(lights.at(i).getR());
 		colors.push_back(lights.at(i).getG());
 		colors.push_back(lights.at(i).getB());
-		colors.push_back(lights.at(i).getAlpha());
 	}
 
 	for (int i = 0; i < lights.size(); i++) {
@@ -89,6 +88,16 @@ void Scene::scaleOnShader(Shader& shader, unsigned vertexIndex, float xd, float 
 	glUniformMatrix4fv(shader.getUniformLocation("scale"), 1, GL_FALSE, value_ptr(scaling));
 }
 
+void Scene::alphaOnShader(Shader& shader, float alpha) {
+	shader.activateShader();
+	glUniform1i(shader.getUniformLocation("vAlpha"), alpha);
+}
+
+void Scene::setDepthUniform(Shader& shader) {
+	shader.activateShader();
+	glUniform4fv(shader.getUniformLocation("depthColor"), 1, value_ptr(depthColor));
+}
+
 void Scene::notifyCameraPosition(Camera* camera) {
 	activateShader();
 
@@ -99,7 +108,7 @@ void Scene::notifyCameraPosition(Camera* camera) {
 Scene::Scene(const char* vFile, const char* fFile) : program(Shader(vFile, fFile)) {}
 
 void Scene::render(GLFWwindow* window, Camera* camera) {
-	setGLColor(0.07f, 0.13f, 0.17f);
+	setGLColor(depthColor.r, depthColor.g, depthColor.b, depthColor.a);
 
 	camera->defineInputs(window);
 	camera->updateMatrix(45.0f, 0.1f, 100.0f);
@@ -128,20 +137,24 @@ void Scene::destroy() {
 }
 
 void Scene::draw() {
+	activateShader();
+
+	glEnable(GL_BLEND);
 	for (int i = 0; i < vertices.size(); i++) {
-		activateShader();
 		vertices.at(i).bind();
 
 		vertices.at(i).registerMeshTextures(program);
-		
+
 		mat4 matrix = vertices.at(i).getMatrix();
 		vec3 translation = vertices.at(i).getTranslation();
 		quat rotation = vertices.at(i).getRotation();
 		vec3 scaling = vertices.at(i).getScale();
 
 		translateVertex(i, translation.r, translation.g, translation.b);
-		rotateOnShader(program, i, rotation.w, rotation.x, rotation.y, rotation.z);
 		scaleVertex(i, scaling.r, scaling.g, scaling.b);
+		rotateOnShader(program, i, rotation.w, rotation.x, rotation.y, rotation.z);
+		//alphaOnShader(program, 1.0f);
+
 		registerVertexOnShader(i);
 
 		vertices.at(i).bindMeshTextures();
@@ -157,10 +170,15 @@ void Scene::draw() {
 		translateOnShader(lights.at(i).getShader(), i, translation.r, translation.g, translation.b, true);
 		registerLightOnShader(i);
 
+		setDepthUniform(lights.at(i).getShader());
+
 		lights.at(i).getVAO().draw();
 	}
+	glDisable(GL_BLEND);
 
-	drawLights();
+	updateLightsUni();
+
+	setDepthUniform(program);
 }
 
 void Scene::setGLColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
@@ -171,6 +189,8 @@ void Scene::setGLColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) 
 }
 
 void Scene::setBackgroundColor(GLFWwindow* window, unsigned int width, unsigned int height, GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
+	depthColor = vec4(red, green, blue, alpha);
+
 	// Creates the work zone
 	glViewport(0, 0, width, height);
 	setGLColor(red, green, blue, alpha);
@@ -179,7 +199,7 @@ void Scene::setBackgroundColor(GLFWwindow* window, unsigned int width, unsigned 
 	glfwSwapBuffers(window);
 }
 
-unsigned Scene::addMesh(Mesh obj, float posX, float posY, float posZ) {
+unsigned Scene::addMesh(Mesh obj, float posX, float posY, float posZ, float alpha) {
 	activateShader();
 
 	VAO vao(true);
@@ -190,6 +210,7 @@ unsigned Scene::addMesh(Mesh obj, float posX, float posY, float posZ) {
 	vao.unbind();
 	obj.unbind();
 
+	vao.setAlpha(alpha);
 	vertices.push_back(vao);
 
 	unsigned index = vertices.size() - 1;
@@ -225,7 +246,7 @@ void Scene::translateVertex(unsigned vertexIndex, float xd, float yd, float zd) 
 }
 
 void Scene::rotateVertex(unsigned vertexIndex, float xd, float yd, float zd) {
-	vec3 euler(xd,yd,zd);
+	vec3 euler(xd, yd, zd);
 	quat quaterion = quat(euler);
 
 	rotateOnShader(program, vertexIndex, quaterion.w, quaterion.x, quaterion.y, quaterion.z);

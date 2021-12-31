@@ -8,7 +8,7 @@ Light::Light(Mesh obj, const char* vFile, const char* fFile, LightType type, flo
 	r = red;
 	g = green;
 	b = blue;
-	this->alpha = alpha;
+	vao.setAlpha(alpha);
 	this->type = type;
 
 	vao.translate(posX, posY, posZ);

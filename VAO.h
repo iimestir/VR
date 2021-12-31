@@ -21,6 +21,8 @@ private:
 	quat rotation = quat(0.0f, 0.0f, 0.0f, 0.0f);
 	vec3 scaling = vec3(1.0f, 1.0f, 1.0f);
 
+	float alpha = 1.0f;
+
 
 	void linkAttributes(VBO&, GLuint, GLuint, GLenum, GLsizeiptr, void*);
 	void linkMesh(Mesh);
@@ -37,7 +39,13 @@ public:
 	void registerMeshTextures(Shader& shader);
 
 	void destroy();
-	
+
+	void setAlpha(float);
+
+	inline float getAlpha() {
+		return alpha;
+	}
+
 	inline mat4 getMatrix() {
 		return matrix;
 	}

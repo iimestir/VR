@@ -12,7 +12,6 @@ private:
 	float r;
 	float g;
 	float b;
-	float alpha;
 
 	VAO vao;
 	Shader shader;
@@ -35,7 +34,7 @@ public:
 	}
 
 	inline float getAlpha() {
-		return alpha;
+		return vao.getAlpha();
 	}
 
 	inline Shader& getShader() {

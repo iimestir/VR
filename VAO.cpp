@@ -57,6 +57,10 @@ void VAO::destroy() {
 	glDeleteVertexArrays(1, &ID);
 }
 
+void VAO::setAlpha(float alpha) {
+	this->alpha = alpha;
+}
+
 void VAO::bindMeshTextures() {
 	for (Mesh obj : objects)
 		obj.bindTextures();
