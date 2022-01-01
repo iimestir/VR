@@ -18,6 +18,7 @@
 #include "camera.h"
 #include "model.h"
 #include "light.h"
+#include "postProcess.h"
 
 using namespace std;
 using namespace glm;
@@ -27,6 +28,8 @@ private:
 	Shader program;
 	vector<VAO> vertices;
 	vector<Light> lights;
+
+	PostProcess pp;
 
 	vec4 depthColor;
 
@@ -44,7 +47,7 @@ private:
 
 	void notifyCameraPosition(Camera*);
 public:
-	Scene(const char*, const char*);
+	Scene(const char*, const char*, unsigned, unsigned);
 
 	void render(GLFWwindow*, Camera*);
 
@@ -57,6 +60,9 @@ public:
 
 	void setGLColor(GLfloat, GLfloat, GLfloat, GLfloat = 1.0f);
 	void setBackgroundColor(GLFWwindow*, unsigned int, unsigned int, GLfloat, GLfloat, GLfloat, GLfloat = 1.0f);
+	void setPPType(PPType type) {
+		pp.setPPType(type);
+	}
 
 	unsigned addMesh(Mesh, float = 0.0f, float = 0.0f, float = 0.0f, float = 1.0f);
 	vector<unsigned> loadMesh(const char*);

@@ -9,6 +9,7 @@
 #include "scene.h"
 #include "camera.h"
 #include "light.h"
+#include "postProcess.h"
 
 using namespace std;
 using namespace glm;
@@ -35,28 +36,20 @@ int main() {
 	}
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
-
-	// Depth
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	// Culling
-	glCullFace(GL_FRONT);
-	glFrontFace(GL_CCW);
-	glEnable(GL_CULL_FACE);
+	glViewport(0, 0, width, height);
 
 	/*
-	DRAWING
+	DRAWING SETUP
 
 	Shader <- VAO <- Object3D (VBO + EBO) <- Texture 
 
 	*/
 
 	// Generates shader object using vShader and fShader files
-	Scene scene("default.vert", "default.frag");
+	Scene scene("default.vert", "default.frag", width, height);
 	Camera camera(width, height, vec3(0.0f, 0.0f, 2.0f), 0.01f, 100.0f);
 	scene.setBackgroundColor(window, width, height, 0.0f, 0.0f, 0.0f, 1.0f);
+	scene.setPPType(PPType::BORDER);
 
 	unsigned creeper = scene.loadMesh("creeper").at(0);
 
@@ -83,7 +76,7 @@ int main() {
 		LightType::SPOT, -0.5f, 0.0f, -0.5f, 0.25f, 0.25f, 1.0f, 0.3f));
 
 	/*
-	END DRAWING
+	END DRAWING SETUP
 	*/
 	while (!glfwWindowShouldClose(window)) {
 		scene.render(window, &camera);

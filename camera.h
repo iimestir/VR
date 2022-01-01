@@ -28,6 +28,8 @@ private:
 	float sensitivity;	
 	float initialSpeed;
 	float initialSensitivity;
+
+	float camera_time = 0.0f;
 public:
 	Camera(int, int, glm::vec3, float = 0.1f, float = 100.0f);
 

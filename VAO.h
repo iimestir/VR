@@ -36,6 +36,7 @@ public:
 
 	void draw();
 	void bindMeshTextures();
+	void unbindMeshTextures();
 	void registerMeshTextures(Shader& shader);
 
 	void destroy();

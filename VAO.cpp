@@ -66,6 +66,11 @@ void VAO::bindMeshTextures() {
 		obj.bindTextures();
 }
 
+void VAO::unbindMeshTextures() {
+	for (Mesh obj : objects)
+		obj.unbindTextures();
+}
+
 void VAO::registerMeshTextures(Shader& shader) {
 	for (Mesh mesh : objects)
 		mesh.registerTextures(shader);

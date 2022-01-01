@@ -19,9 +19,11 @@ void Camera::defineInputs(GLFWwindow* window) {
 	// Keyboard inputs
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		position += speed * orientation;
+		camera_time += 0.04f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 		position += speed * -glm::normalize(glm::cross(orientation, up));
+		camera_time -= 0.1f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
 		position += speed * -orientation;
@@ -75,15 +77,11 @@ void Camera::defineInputs(GLFWwindow* window) {
 }
 
 void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane) {
-	// Initializes matrices since otherwise they will be the null matrix
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
 
-	// Makes camera look in the right direction from the right position
-	view = glm::lookAt(position, position + orientation, up);
-	// Adds perspective to the scene
+	view = glm::lookAt(position, (position + orientation), up);
 	projection = glm::perspective(glm::radians(FOVdeg), (float)width / height, nearPlane, farPlane);
 
-	// Sets new camera matrix
 	matrix = projection * view;
 }

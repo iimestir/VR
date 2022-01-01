@@ -105,9 +105,33 @@ void Scene::notifyCameraPosition(Camera* camera) {
 		camera->getPosition().x, camera->getPosition().y, camera->getPosition().z);
 }
 
-Scene::Scene(const char* vFile, const char* fFile) : program(Shader(vFile, fFile)) {}
+Scene::Scene(const char* vFile, const char* fFile, unsigned width, unsigned height)
+	: program(Shader(vFile, fFile)), pp(PostProcess("framebuffer.vert", "framebuffer.frag", width, height)) {
+
+	pp.activateShader();
+	pp.setFrameTextureUni(0);
+
+	vec2 dim = vec2(float(width), float(height));
+	glUniform2fv(pp.getUniformLocation("resolution"), 1, value_ptr(dim));
+
+	// Depth
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Culling
+	glCullFace(GL_FRONT);
+	glFrontFace(GL_CCW);
+	glEnable(GL_CULL_FACE);
+}
 
 void Scene::render(GLFWwindow* window, Camera* camera) {
+	pp.activateShader();
+
+	glUniform1i(pp.getUniformLocation("ppType"), pp.getPPType());
+
+	pp.bindFBO();
+
 	setGLColor(depthColor.r, depthColor.g, depthColor.b, depthColor.a);
 
 	camera->defineInputs(window);
@@ -116,6 +140,9 @@ void Scene::render(GLFWwindow* window, Camera* camera) {
 	setCameraMatrix(camera);
 
 	draw();
+
+	pp.unbindFBO();
+	pp.draw();
 
 	glfwSwapBuffers(window);						// Swap the back and front buffer
 	glfwPollEvents();								// Takes care of all GLFW events
@@ -143,8 +170,6 @@ void Scene::draw() {
 	for (int i = 0; i < vertices.size(); i++) {
 		vertices.at(i).bind();
 
-		vertices.at(i).registerMeshTextures(program);
-
 		mat4 matrix = vertices.at(i).getMatrix();
 		vec3 translation = vertices.at(i).getTranslation();
 		quat rotation = vertices.at(i).getRotation();
@@ -157,6 +182,7 @@ void Scene::draw() {
 
 		registerVertexOnShader(i);
 
+		vertices.at(i).registerMeshTextures(program);
 		vertices.at(i).bindMeshTextures();
 		vertices.at(i).draw();
 	}
@@ -190,12 +216,7 @@ void Scene::setGLColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) 
 
 void Scene::setBackgroundColor(GLFWwindow* window, unsigned int width, unsigned int height, GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
 	depthColor = vec4(red, green, blue, alpha);
-
-	// Creates the work zone
-	glViewport(0, 0, width, height);
 	setGLColor(red, green, blue, alpha);
-
-	// Swaps the front and back buffers
 	glfwSwapBuffers(window);
 }
 
