@@ -27,13 +27,18 @@ public:
 
 	Mesh(vector<GLfloat>, vector<GLuint>, vector<Texture>);
 
-	inline void registerTextures(Shader& shader) {
-		for(Texture diffusion : tx)
-			diffusion.texUnit(shader, "tex0", 0);
+	void setTexture(const char*);
+	void setSpecular(const char*);
 
-		for (Texture specular : spec)
-			specular.texUnit(shader, "tex1", 1);
-	}
+	void registerTextures(Shader&);
+
+	void bind();
+	void unbind();
+
+	void bindTextures();
+	void unbindTextures();
+
+	void destroy();
 
 	inline VBO* getVBO() {
 		return vbo;
@@ -45,57 +50,6 @@ public:
 
 	inline size_t getISize() {
 		return iSize / sizeof(int);
-	}
-
-	inline void setTexture(const char* image) {
-		tx.push_back(Texture(image, "tex0", 0));
-	}
-
-	inline void setSpecular(const char* specular) {
-		spec.push_back(Texture(specular, "tex1", 1));
-	}
-
-	inline void bind() {
-		vbo->bind();
-		ebo->bind();
-	}
-
-	inline void unbind() {
-		vbo->unbind();
-		ebo->unbind();
-	}
-
-	inline void bindTextures() {
-		for (Texture diffusion : tx)
-			diffusion.bind();
-
-		for (Texture specular : spec)
-			specular.bind();
-	}
-
-	inline void unbindTextures() {
-		for (Texture diffusion : tx)
-			diffusion.unbind();
-
-		for (Texture specular : spec)
-			specular.unbind();
-	}
-
-	inline void destroy() {
-		unbind();
-
-		vbo->deleteBO();
-		ebo->deleteBO();
-
-		for (Texture diffusion : tx)
-			diffusion.deleteTexture();
-		for (Texture specular : spec)
-			specular.deleteTexture();
-
-		free(vbo);
-		free(ebo);
-		tx.clear();
-		spec.clear();
 	}
 
 	~Mesh() {
@@ -155,6 +109,11 @@ public:
 class ObjectBlank : public Mesh {
 public:
 	ObjectBlank();
+};
+
+class ObjectEmpty : public Mesh {
+public:
+	ObjectEmpty();
 };
 
 #endif

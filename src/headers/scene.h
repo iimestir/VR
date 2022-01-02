@@ -48,7 +48,7 @@ private:
 
 	void setDepthUniform(Shader&);
 
-	vector<Texture> retrieveMeshTextures(const char*, const aiScene*, aiMesh*);
+	vector<Texture> retrieveMeshTextures(const aiScene*, aiMesh*, const char*);
 	Mesh retrieveMesh(const aiScene*, aiMesh*, const char*);
 
 	void notifyCameraPosition(Camera*);
@@ -73,6 +73,9 @@ public:
 	unsigned addMesh(Mesh, float = 0.0f, float = 0.0f, float = 0.0f, float = 1.0f);
 	vector<unsigned> loadMesh(const char*);
 	unsigned addLight(Light);
+
+	void bindVertexPosition(unsigned, float*, float*, float*);
+	void bindVertexOrientation(unsigned, float*, float*, float*);
 
 	void translateVertex(unsigned, float, float, float);
 	void rotateVertex(unsigned, float, float, float);

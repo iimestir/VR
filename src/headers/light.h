@@ -19,7 +19,28 @@ private:
 	LightType type;
 
 public:
-	Light(Mesh obj, const char* vFile, const char* fFile, LightType type, float posX = 0.0f, float posY = 0.0f, float posZ = 0.0f, float red = 1.0f, float green = 1.0f, float blue = 1.0f, float alpha = 1.0f);
+	Light(Mesh obj, const char* vFile, const char* fFile, LightType type, 
+		float posX = 0.0f, float posY = 0.0f, float posZ = 0.0f,
+		float oriX = 0.0f, float oriY = -1.0f, float oriZ = 0.0f,
+		float red = 1.0f, float green = 1.0f, float blue = 1.0f, float alpha = 1.0f
+	);
+	Light(Mesh obj, const char* vFile, const char* fFile, LightType type, 
+		float* dynPosX, float* dynPosY, float* dynPosZ,  
+		float* dynOriX, float* dynOriY, float* dynOriZ,
+		float red = 1.0f, float green = 1.0f, float blue = 1.0f, float alpha = 1.0f
+	);
+
+	inline quat getOrientation() {
+		return vao.getRotation();
+	}
+
+	inline vector<float*> getOrientationBounds() {
+		return vao.getOrientationBounds();
+	}
+
+	inline bool hasOrientationBounds() {
+		return vao.hasOrientationBounds();
+	}
 
 	inline float getR() {
 		return r;

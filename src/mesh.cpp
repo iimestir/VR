@@ -14,6 +14,68 @@ Mesh::Mesh(vector<GLfloat> vertices, vector<GLuint> indices, vector<Texture> tex
 	this->iSize = indices.size() * sizeof(int);
 }
 
+void Mesh::setTexture(const char* image) {
+	tx.push_back(Texture(image, "tex0", 0));
+}
+
+void Mesh::setSpecular(const char* specular) {
+	spec.push_back(Texture(specular, "tex1", 1));
+}
+
+void Mesh::registerTextures(Shader& shader) {
+	for (Texture diffusion : tx)
+		diffusion.texUnit(shader, "tex0", 0);
+
+	for (Texture specular : spec)
+		specular.texUnit(shader, "tex1", 1);
+}
+
+void Mesh::bind() {
+	vbo->bind();
+	ebo->bind();
+}
+
+void Mesh::unbind() {
+	vbo->unbind();
+	ebo->unbind();
+}
+
+void Mesh::bindTextures() {
+	for (Texture diffusion : tx)
+		diffusion.bind();
+
+	for (Texture specular : spec)
+		specular.bind();
+}
+
+void Mesh::unbindTextures() {
+	for (Texture diffusion : tx)
+		diffusion.unbind();
+
+	for (Texture specular : spec)
+		specular.unbind();
+}
+
+void Mesh::destroy() {
+	unbind();
+
+	vbo->deleteBO();
+	ebo->deleteBO();
+
+	for (Texture diffusion : tx)
+		diffusion.deleteTexture();
+	for (Texture specular : spec)
+		specular.deleteTexture();
+
+	free(vbo);
+	free(ebo);
+	tx.clear();
+	spec.clear();
+}
+
+
+
+
 ObjectRectangular::ObjectRectangular() {
 	GLfloat vertices[] = {
 		//X		Y		Z		R	  G		B		TexL  TexU		LiX	  LiY	 LiZ
@@ -217,6 +279,20 @@ ObjectFlat::ObjectFlat() {
 	GLuint indices[] = {
 		0, 1, 2,
 		0, 2, 3
+	};
+
+	this->vbo = new VBO(vertices, sizeof(vertices));
+	this->ebo = new EBO(indices, sizeof(indices));
+	this->iSize = sizeof(indices);
+}
+
+ObjectEmpty::ObjectEmpty() {
+	GLfloat vertices[] = {
+		0.0f, 0.0f,  0.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
+	};
+
+	GLuint indices[] = {
+		0
 	};
 
 	this->vbo = new VBO(vertices, sizeof(vertices));

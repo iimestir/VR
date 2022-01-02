@@ -9,6 +9,7 @@ in vec3 currentPos;
 uniform sampler2D tex0;
 uniform sampler2D tex1;
 uniform vec3 camPos;
+uniform vec3 lightOrientation;
 
 uniform int lightSize;
 uniform float lightPos[256];
@@ -51,7 +52,7 @@ vec4 pointLight(vec3 light, vec4 light_color) {
 	return (texture(tex0, texCoord) * (diffusion * intensity + ambient) + texture(tex1, texCoord).r * specular * intensity) * light_color;
 }
 
-vec4 spotLight(vec3 light, vec4 light_color) {
+vec4 spotLight(vec3 ori, vec3 light, vec4 light_color) {
 	float outCone = 0.90f;
 	float inCone = 0.95f;
 	float ambient = 0.15f;
@@ -68,7 +69,7 @@ vec4 spotLight(vec3 light, vec4 light_color) {
 	float specAmount = pow(max(dot(viewDirection, refDirection), 0.0f), 16);
 	float specular = specAmount * specLight;
 
-	float angle = dot(vec3(0.0f, -1.0f, 0.0f), -lightDirection);
+	float angle = dot(ori, -lightDirection);
 	float intensity = clamp((angle - outCone) / (inCone - outCone), 0.0f, 1.0f);
 
 	return (texture(tex0, texCoord) * (diffusion * intensity + ambient) + texture(tex1, texCoord).r * specular * intensity) * light_color;
@@ -99,11 +100,13 @@ void main() {
 
 	int ty = 0;
 
+	vec3 ori = vec3(0.85f, -1.0f, 0.0f);
+
 	for(int i = 0; i < lightSize*3; i+=3) {
 		vec3 pos = vec3(lightPos[i], lightPos[i+1], lightPos[i+2]);
 
 		if(lightType[ty] == 0.0f)
-			output += spotLight(pos, vec4(vec4(lightColor[i], lightColor[i+1], lightColor[i+2], 1.0f)));
+			output += spotLight(lightOrientation, pos, vec4(vec4(lightColor[i], lightColor[i+1], lightColor[i+2], 1.0f)));
 		else if(lightType[ty] == 1.0f)
 			output += pointLight(pos, vec4(vec4(lightColor[i], lightColor[i+1], lightColor[i+2], 1.0f)));
 

@@ -37,8 +37,36 @@ public:
 	void updateMatrix(float, float, float);
 	void defineInputs(GLFWwindow*);
 
+	inline glm::vec3 getOrientation() {
+		return orientation;
+	}
+
+	inline float* getPOriX() {
+		return &orientation.r;
+	}
+
+	inline float* getPOriY() {
+		return &orientation.g;
+	}
+
+	inline float* getPOriZ() {
+		return &orientation.b;
+	}
+
 	inline glm::vec3 getPosition() {
 		return position;
+	}
+
+	inline float* getPPosX() {
+		return &position.r;
+	}
+
+	inline float* getPPosY() {
+		return &position.g;
+	}
+
+	inline float* getPPosZ() {
+		return &position.b;
 	}
 
 	inline int getWidth() {

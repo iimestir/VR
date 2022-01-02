@@ -61,6 +61,10 @@ void VAO::setAlpha(float alpha) {
 	this->alpha = alpha;
 }
 
+void VAO::clearBounds() {
+	posiBinds.clear();
+}
+
 void VAO::bindMeshTextures() {
 	for (Mesh obj : objects)
 		obj.bindTextures();
@@ -74,4 +78,44 @@ void VAO::unbindMeshTextures() {
 void VAO::registerMeshTextures(Shader& shader) {
 	for (Mesh mesh : objects)
 		mesh.registerTextures(shader);
+}
+
+void VAO::translate(float x, float y, float z) {
+	translation.r = x;
+	translation.g = y;
+	translation.b = z;
+}
+
+void VAO::rotate(float w, float x, float y, float z) {
+	rotation.w = w;
+	rotation.x = x;
+	rotation.y = y;
+	rotation.z = z;
+}
+
+void VAO::rotateEuler(float x, float y, float z) {
+	vec3 euler(x, y, z);
+	quat quaterion = quat(euler);
+
+	rotate(quaterion.w, quaterion.x, quaterion.y, quaterion.z);
+}
+
+void VAO::scale(float x, float y, float z) {
+	scaling.r = x;
+	scaling.g = y;
+	scaling.b = z;
+}
+
+void VAO::bindPositionTo(float* x, float* y, float* z) {
+	posiBinds.clear();
+	posiBinds.push_back(x);
+	posiBinds.push_back(y);
+	posiBinds.push_back(z);
+}
+
+void VAO::bindRotationTo(float* x, float* y, float* z) {
+	oriBinds.clear();
+	oriBinds.push_back(x);
+	oriBinds.push_back(y);
+	oriBinds.push_back(z);
 }

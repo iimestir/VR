@@ -21,8 +21,9 @@ private:
 	quat rotation = quat(0.0f, 0.0f, 0.0f, 0.0f);
 	vec3 scaling = vec3(1.0f, 1.0f, 1.0f);
 
+	vector<float*> posiBinds;
+	vector<float*> oriBinds;
 	float alpha = 1.0f;
-
 
 	void linkAttributes(VBO&, GLuint, GLuint, GLenum, GLsizeiptr, void*);
 	void linkMesh(Mesh);
@@ -63,23 +64,29 @@ public:
 		return scaling;
 	}
 
-	inline void translate(float x, float y, float z) {
-		translation.r = x;
-		translation.g = y;
-		translation.b = z;
+	void translate(float, float, float);
+	void rotate(float, float, float, float);
+	void rotateEuler(float, float, float);
+	void scale(float, float, float);
+
+	void bindPositionTo(float*, float*, float*);
+	void bindRotationTo(float*, float*, float*);
+	void clearBounds();
+
+	inline vector<float*> getPositionBounds() {
+		return posiBinds;
 	}
 
-	inline void rotate(float w, float x, float y, float z) {
-		rotation.w = w;
-		rotation.x = x;
-		rotation.y = y;
-		rotation.z = z;
+	inline bool hasPositionBounds() {
+		return !posiBinds.empty();
 	}
 
-	inline void scale(float x, float y, float z) {
-		scaling.r = x;
-		scaling.g = y;
-		scaling.b = z;
+	inline vector<float*> getOrientationBounds() {
+		return oriBinds;
+	}
+
+	inline bool hasOrientationBounds() {
+		return !oriBinds.empty();
 	}
 
 	inline GLuint getID() {

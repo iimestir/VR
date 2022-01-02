@@ -1,6 +1,10 @@
 #include "headers/light.h"
 
-Light::Light(Mesh obj, const char* vFile, const char* fFile, LightType type, float posX, float posY, float posZ, float red, float green, float blue, float alpha) : shader(vFile, fFile) {
+Light::Light(Mesh obj, const char* vFile, const char* fFile, LightType type,
+	float posX, float posY, float posZ,
+	float oriX, float oriY, float oriZ,
+	float red, float green, float blue, float alpha)
+	: shader(vFile, fFile) {
 	vao = VAO(true);
 	vao.addMesh(obj);
 	vao.unbind();
@@ -12,4 +16,24 @@ Light::Light(Mesh obj, const char* vFile, const char* fFile, LightType type, flo
 	this->type = type;
 
 	vao.translate(posX, posY, posZ);
+	vao.rotateEuler(oriX, oriY, oriZ);
+}
+
+Light::Light(Mesh obj, const char* vFile, const char* fFile, LightType type,
+	float* dynPosX, float* dynPosY, float* dynPosZ,
+	float* dynOriX, float* dynOriY, float* dynOriZ,
+	float red, float green, float blue, float alpha)
+	: shader(vFile, fFile) {
+	vao = VAO(true);
+	vao.addMesh(obj);
+	vao.unbind();
+
+	r = red;
+	g = green;
+	b = blue;
+	vao.setAlpha(alpha);
+	this->type = type;
+
+	vao.bindPositionTo(dynPosX, dynPosY, dynPosZ);
+	vao.bindRotationTo(dynOriX, dynOriY, dynOriZ);
 }

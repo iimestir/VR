@@ -65,8 +65,10 @@ void Scene::translateOnShader(Shader& shader, unsigned vertexIndex, float xd, fl
 }
 
 void Scene::rotateOnShader(Shader& shader, unsigned vertexIndex, float wd, float xd, float yd, float zd) {
-	vertices.at(vertexIndex).rotate(wd, xd, yd, zd);
-	quat position = vertices.at(vertexIndex).getRotation();
+	VAO* vertice = &vertices.at(vertexIndex);
+
+	vertice->rotate(wd, xd, yd, zd);
+	quat position = vertice->getRotation();
 
 	mat4 rotation = mat4(1.0f);
 	rotation = mat4_cast(position);
@@ -116,8 +118,8 @@ Scene::Scene(const char* vFile, const char* fFile, unsigned width, unsigned heig
 
 	// Depth
 	glEnable(GL_DEPTH_TEST);
-	// glDepthFunc(GL_LESS);
-	// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthFunc(GL_LESS);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Culling
 	glCullFace(GL_FRONT);
@@ -174,13 +176,31 @@ void Scene::draw() {
 		vertices.at(i).bind();
 
 		mat4 matrix = vertices.at(i).getMatrix();
-		vec3 translation = vertices.at(i).getTranslation();
 		quat rotation = vertices.at(i).getRotation();
 		vec3 scaling = vertices.at(i).getScale();
 
-		translateVertex(i, translation.r, translation.g, translation.b);
+		if (vertices.at(i).hasOrientationBounds()) {
+			vector<float*> oriBinds = vertices.at(i).getOrientationBounds();
+			float x = *oriBinds.at(0);
+			float y = *oriBinds.at(1);
+			float z = *oriBinds.at(2);
+			rotateVertex(i, x, y, z);
+		}
+		else {
+			quat rotation = vertices.at(i).getRotation();
+			rotateOnShader(program, i, rotation.w, rotation.x, rotation.y, rotation.z);
+		}
+
+		if (vertices.at(i).hasPositionBounds()) {
+			vector<float*> binds = vertices.at(i).getPositionBounds();
+			translateVertex(i, *binds.at(0), *binds.at(1), *binds.at(2));
+		} else {
+			vec3 translation = vertices.at(i).getTranslation();
+			translateVertex(i, translation.r, translation.g, translation.b);
+		}
+			
 		scaleVertex(i, scaling.r, scaling.g, scaling.b);
-		rotateOnShader(program, i, rotation.w, rotation.x, rotation.y, rotation.z);
+		//rotateOnShader(program, i, rotation.w, rotation.x, rotation.y, rotation.z);
 		//alphaOnShader(program, 1.0f);
 
 		registerVertexOnShader(i);
@@ -196,7 +216,27 @@ void Scene::draw() {
 		lights.at(i).getShader().activateShader();
 		lights.at(i).getVAO().bind();
 
-		translateOnShader(lights.at(i).getShader(), i, translation.r, translation.g, translation.b, true);
+		// Light orientation
+		if (lights.at(i).hasOrientationBounds()) {
+			vector<float*> oriBinds = lights.at(i).getOrientationBounds();
+
+			vec3 orientation = vec3(*oriBinds.at(0), *oriBinds.at(1), *oriBinds.at(2));
+			glUniform3fv(program.getUniformLocation("lightOrientation"),
+				1, value_ptr(orientation));
+		}
+		else {
+			glUniform3fv(program.getUniformLocation("lightOrientation"),
+				1, value_ptr(lights.at(i).getOrientation()));
+		}
+
+		// Light position
+		if (lights.at(i).getVAO().hasPositionBounds()) {
+			vector<float*> binds = lights.at(i).getVAO().getPositionBounds();
+			translateOnShader(lights.at(i).getShader(), i, *binds.at(0), *binds.at(1), *binds.at(2), true);
+		}
+		else
+			translateOnShader(lights.at(i).getShader(), i, translation.r, translation.g, translation.b, true);
+		
 		registerLightOnShader(i);
 
 		setDepthUniform(lights.at(i).getShader());
@@ -239,7 +279,7 @@ unsigned Scene::addMesh(Mesh obj, float posX, float posY, float posZ, float alph
 	return index;
 }
 
-vector<Texture> Scene::retrieveMeshTextures(const char* path, const aiScene* pScene, aiMesh* aiMesh) {
+vector<Texture> Scene::retrieveMeshTextures(const aiScene* pScene, aiMesh* aiMesh, const char* path) {
 	vector<Texture> textures;
 
 	const aiMaterial* material = pScene->mMaterials[aiMesh->mMaterialIndex];
@@ -250,10 +290,8 @@ vector<Texture> Scene::retrieveMeshTextures(const char* path, const aiScene* pSc
 	string fileDirectory = fileStr.substr(0, fileStr.find_last_of('/') + 1);
 
 	if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
-		if (material->GetTexture(aiTextureType_DIFFUSE, 0, &aiPath, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
-			cout << aiPath.data << endl;
+		if (material->GetTexture(aiTextureType_DIFFUSE, 0, &aiPath, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS)
 			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex0", 0));
-		}
 	}
 
 	if (material->GetTextureCount(aiTextureType_SPECULAR) > 0) {
@@ -277,9 +315,16 @@ Mesh Scene::retrieveMesh(const aiScene* pScene, aiMesh* aiMesh, const char* path
 		vertices.push_back(aiMesh->mVertices[i].x);
 
 		// Colors
-		vertices.push_back(0.0f);
-		vertices.push_back(0.0f);
-		vertices.push_back(0.0f);
+		if (aiMesh->HasVertexColors(0)) {
+			vertices.push_back(aiMesh->mColors[0][i].r);
+			vertices.push_back(aiMesh->mColors[0][i].g);
+			vertices.push_back(aiMesh->mColors[0][i].b);
+		}
+		else {
+			vertices.push_back(0.0f);
+			vertices.push_back(0.0f);
+			vertices.push_back(0.0f);
+		}
 
 		// Textures Coords
 		if (aiMesh->HasTextureCoords(0)) {
@@ -306,7 +351,7 @@ Mesh Scene::retrieveMesh(const aiScene* pScene, aiMesh* aiMesh, const char* path
 		indices.push_back(face.mIndices[2]);
 	}
 
-	for(Texture tx : retrieveMeshTextures(path, pScene, aiMesh))
+	for(Texture tx : retrieveMeshTextures(pScene, aiMesh, path))
 		textures.push_back(tx);
 
 	return Mesh(vertices, indices, textures);
@@ -338,6 +383,18 @@ unsigned Scene::addLight(Light light) {
 	setLightColor(index, light.getR(), light.getG(), light.getB(), light.getAlpha());
 
 	return index;
+}
+
+void Scene::bindVertexPosition(unsigned index, float* posX, float* posY, float* posZ) {
+	VAO* vertex = &vertices.at(index);
+
+	vertex->bindPositionTo(posX, posY, posZ);
+}
+
+void Scene::bindVertexOrientation(unsigned index, float* rotX, float* rotY, float* rotZ) {
+	VAO* vertex = &vertices.at(index);
+
+	vertex->bindRotationTo(rotX, rotY, rotZ);
 }
 
 void Scene::translateVertex(unsigned vertexIndex, float xd, float yd, float zd) {
