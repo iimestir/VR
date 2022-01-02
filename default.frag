@@ -22,7 +22,7 @@ float linearizeDepth(float depth, float near = 0.1f, float far = 100.0f) {
 	return (2.0f * near * far) / (far + near - (depth * 2.0f - 1.0f) * (far - near));
 }
 
-float logisticDepth(float depth, float steepness = 1.0f, float offset = 1.0f) {
+float logisticDepth(float depth, float steepness = 0.5f, float offset = 1.0f) {
 	return (1 / (1 + exp(-steepness * (linearizeDepth(depth) - offset))));
 }
 
@@ -48,15 +48,7 @@ vec4 pointLight(vec3 light, vec4 light_color) {
 	float specAmount = pow(max(dot(viewDirection, refDirection), 0.0f), 16);
 	float specular = specAmount * specLight;
 
-	float depthTexture = logisticDepth(gl_FragCoord.z);
-	float depthLight = logisticDepth(gl_FragCoord.z, 0.2f, 0.5f);
-	vec4 dTextureC = (1.0f - depthTexture) + vec4(depthTexture * vec3(depthColor.r, depthColor.g, depthColor.b), 1.0f);
-	vec4 dLightC = (1.0f - depthLight) + vec4(depthLight * vec3(depthColor.r, depthColor.g, depthColor.b), 1.0f);
-
-	if(texture(tex0, texCoord).a < 0.1f)
-		discard;
-
-	return (texture(tex0, texCoord) * (diffusion * intensity + ambient) * dTextureC + texture(tex1, texCoord).r * specular * intensity * dLightC) * light_color;
+	return (texture(tex0, texCoord) * (diffusion * intensity + ambient) + texture(tex1, texCoord).r * specular * intensity) * light_color;
 }
 
 vec4 spotLight(vec3 light, vec4 light_color) {
@@ -79,12 +71,7 @@ vec4 spotLight(vec3 light, vec4 light_color) {
 	float angle = dot(vec3(0.0f, -1.0f, 0.0f), -lightDirection);
 	float intensity = clamp((angle - outCone) / (inCone - outCone), 0.0f, 1.0f);
 
-	float depthTexture = logisticDepth(gl_FragCoord.z);
-	float depthLight = logisticDepth(gl_FragCoord.z, 0.2f, 0.5f);
-	vec4 dTextureC = (1.0f - depthTexture) + vec4(depthTexture * vec3(depthColor.r, depthColor.g, depthColor.b), 1.0f);
-	vec4 dLightC = (1.0f - depthLight) + vec4(depthLight * vec3(depthColor.r, depthColor.g, depthColor.b), 1.0f);
-
-	return (texture(tex0, texCoord) * (diffusion * intensity + ambient) * dLightC + texture(tex1, texCoord).r * specular * intensity * dLightC) * light_color;
+	return (texture(tex0, texCoord) * (diffusion * intensity + ambient) + texture(tex1, texCoord).r * specular * intensity) * light_color;
 }
 
 vec4 directLight(vec4 light_color) {
@@ -123,5 +110,7 @@ void main() {
 		ty++;
 	}
 
-	FragColor = output;
+	float depthTexture = logisticDepth(gl_FragCoord.z);
+
+	FragColor = output * (1.0f - depthTexture) + vec4(depthTexture * vec3(depthColor.r, depthColor.g, depthColor.b), 1.0f);
 }

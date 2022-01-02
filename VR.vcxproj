@@ -96,7 +96,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -125,7 +125,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,7 +152,6 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="mesh.cpp" />
-    <ClCompile Include="model.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="stb.cpp" />
@@ -174,7 +173,6 @@
     <ClInclude Include="light.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="EBO.h" />
-    <ClInclude Include="model.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="texture.h" />
@@ -182,10 +180,10 @@
     <ClInclude Include="VBO.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bidoof.jpg" />
-    <Image Include="grass.jpg" />
-    <Image Include="o.jpg" />
-    <Image Include="spec_grass.jpg" />
+    <Image Include="textures\diffuse\bidoof.jpg" />
+    <Image Include="textures\diffuse\grass.jpg" />
+    <Image Include="textures\diffuse\o.jpg" />
+    <Image Include="textures\specular\spec_grass.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

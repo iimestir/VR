@@ -116,8 +116,8 @@ Scene::Scene(const char* vFile, const char* fFile, unsigned width, unsigned heig
 
 	// Depth
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// glDepthFunc(GL_LESS);
+	// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Culling
 	glCullFace(GL_FRONT);
@@ -135,7 +135,7 @@ void Scene::render(GLFWwindow* window, Camera* camera) {
 	setGLColor(depthColor.r, depthColor.g, depthColor.b, depthColor.a);
 
 	camera->defineInputs(window);
-	camera->updateMatrix(45.0f, 0.1f, 100.0f);
+	camera->updateMatrix(80.0f, 0.1f, 100.0f);
 
 	setCameraMatrix(camera);
 
@@ -165,6 +165,9 @@ void Scene::destroy() {
 
 void Scene::draw() {
 	activateShader();
+
+	updateLightsUni();
+	setDepthUniform(program);
 
 	glEnable(GL_BLEND);
 	for (int i = 0; i < vertices.size(); i++) {
@@ -201,10 +204,6 @@ void Scene::draw() {
 		lights.at(i).getVAO().draw();
 	}
 	glDisable(GL_BLEND);
-
-	updateLightsUni();
-
-	setDepthUniform(program);
 }
 
 void Scene::setGLColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
@@ -240,14 +239,93 @@ unsigned Scene::addMesh(Mesh obj, float posX, float posY, float posZ, float alph
 	return index;
 }
 
-vector<unsigned> Scene::loadMesh(const char* dir) {
-	string path = "models/" + string(dir) + "/scene.gltf";
+vector<Texture> Scene::retrieveMeshTextures(const char* path, const aiScene* pScene, aiMesh* aiMesh, unsigned i) {
+	vector<Texture> textures;
 
-	Model model(path.c_str());
+	const aiMaterial* material = pScene->mMaterials[pScene->mNumMaterials - i - 1];
 
+	aiString aiPath;
+
+	string fileStr = string(path);
+	string fileDirectory = fileStr.substr(0, fileStr.find_last_of('/') + 1);
+
+	if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
+		if (material->GetTexture(aiTextureType_DIFFUSE, 0, &aiPath, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
+			cout << aiPath.data << endl;
+			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex0", 0));
+		}
+	}
+
+	if (material->GetTextureCount(aiTextureType_SPECULAR) > 0) {
+		if (material->GetTexture(aiTextureType_SPECULAR, 0, &aiPath, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS)
+			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex1", 1));
+	}
+
+	return textures;
+}
+
+Mesh Scene::retrieveMesh(const aiScene* pScene, aiMesh* aiMesh, const char* path, unsigned i) {
+	vector<GLfloat> vertices;
+	vector<GLuint> indices;
+	vector<Texture> textures;
+
+	// Vertices
+	for (unsigned i = 0; i < aiMesh->mNumVertices; i++) {
+		// Coordinates
+		vertices.push_back(aiMesh->mVertices[i].z);
+		vertices.push_back(aiMesh->mVertices[i].y);
+		vertices.push_back(aiMesh->mVertices[i].x);
+
+		// Colors
+		vertices.push_back(0.0f);
+		vertices.push_back(0.0f);
+		vertices.push_back(0.0f);
+
+		// Textures Coords
+		if (aiMesh->HasTextureCoords(0)) {
+			vertices.push_back(aiMesh->mTextureCoords[0][i].y);
+			vertices.push_back(aiMesh->mTextureCoords[0][i].x);
+		}
+		else {
+			vertices.push_back(0.0f);
+			vertices.push_back(0.0f);
+		}
+
+		// Normals
+		vertices.push_back(aiMesh->mNormals[i].x);
+		vertices.push_back(aiMesh->mNormals[i].y);
+		vertices.push_back(aiMesh->mNormals[i].z);
+	}
+
+	// Indices
+	for (unsigned i = 0; i < aiMesh->mNumFaces; i++) {
+		const aiFace& face = aiMesh->mFaces[i];
+
+		indices.push_back(face.mIndices[0]);
+		indices.push_back(face.mIndices[1]);
+		indices.push_back(face.mIndices[2]);
+	}
+
+	for(Texture tx : retrieveMeshTextures(path, pScene, aiMesh, i))
+		textures.push_back(tx);
+
+	return Mesh(vertices, indices, textures);
+}
+
+vector<unsigned> Scene::loadMesh(const char* path) {
 	vector<unsigned> ids;
-	for (Mesh mesh : model.getMeshes())
-		ids.push_back(addMesh(mesh));
+
+	Assimp::Importer importer;
+
+	const aiScene* pScene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
+
+	if (!pScene) {
+		cout << "Error while parsing" << endl;
+		return ids;
+	}
+
+	for (int i = 0; i < pScene->mNumMeshes; i++)
+		ids.push_back(addMesh(retrieveMesh(pScene, pScene->mMeshes[i], path, i)));
 
 	return ids;
 }

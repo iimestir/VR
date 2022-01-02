@@ -34,6 +34,12 @@
     <Filter Include="Header Files\Model">
       <UniqueIdentifier>{7b01a61b-8ff3-4471-88c5-470703f61e89}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Textures\Diffuse">
+      <UniqueIdentifier>{b060ff07-e954-4600-882c-f903177f1ce9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures\Specular">
+      <UniqueIdentifier>{580bd045-120e-42e9-8916-4dfa2cb89482}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -64,9 +70,6 @@
       <Filter>Source Files\Model</Filter>
     </ClCompile>
     <ClCompile Include="mesh.cpp">
-      <Filter>Source Files\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="model.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
     <ClCompile Include="scene.cpp">
@@ -112,9 +115,6 @@
     <ClInclude Include="VBO.h">
       <Filter>Header Files\ShaderObjects</Filter>
     </ClInclude>
-    <ClInclude Include="model.h">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
     <ClInclude Include="mesh.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
@@ -135,17 +135,17 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bidoof.jpg">
-      <Filter>Resource Files\Textures</Filter>
+    <Image Include="textures\diffuse\bidoof.jpg">
+      <Filter>Resource Files\Textures\Diffuse</Filter>
     </Image>
-    <Image Include="o.jpg">
-      <Filter>Resource Files\Textures</Filter>
+    <Image Include="textures\diffuse\grass.jpg">
+      <Filter>Resource Files\Textures\Diffuse</Filter>
     </Image>
-    <Image Include="grass.jpg">
-      <Filter>Resource Files\Textures</Filter>
+    <Image Include="textures\diffuse\o.jpg">
+      <Filter>Resource Files\Textures\Diffuse</Filter>
     </Image>
-    <Image Include="spec_grass.jpg">
-      <Filter>Resource Files\Textures</Filter>
+    <Image Include="textures\specular\spec_grass.jpg">
+      <Filter>Resource Files\Textures\Specular</Filter>
     </Image>
   </ItemGroup>
 </Project>

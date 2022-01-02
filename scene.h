@@ -12,6 +12,11 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+
 #include "VAO.h"
 #include "shader.h"
 #include "texture.h"
@@ -44,6 +49,9 @@ private:
 	void alphaOnShader(Shader&, float);
 
 	void setDepthUniform(Shader&);
+
+	vector<Texture> retrieveMeshTextures(const char*, const aiScene*, aiMesh*, unsigned);
+	Mesh retrieveMesh(const aiScene*, aiMesh*, const char*, unsigned);
 
 	void notifyCameraPosition(Camera*);
 public:

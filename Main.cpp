@@ -47,33 +47,33 @@ int main() {
 
 	// Generates shader object using vShader and fShader files
 	Scene scene("default.vert", "default.frag", width, height);
-	Camera camera(width, height, vec3(0.0f, 0.0f, 2.0f), 0.01f, 100.0f);
-	scene.setBackgroundColor(window, width, height, 0.0f, 0.0f, 0.0f, 1.0f);
-	scene.setPPType(PPType::BORDER);
+	Camera camera(width, height, vec3(0.0f, 0.0f, 2.0f), 0.05f, 100.0f);
+	scene.setBackgroundColor(window, width, height, 1.0f, 1.0f, 1.0f, 1.0f);
+	scene.setPPType(PPType::DEFAULT);
 
-	unsigned creeper = scene.loadMesh("creeper").at(0);
+	scene.loadMesh("models/test2/Creeper_Model.obj");
 
-	scene.scaleVertex(creeper, 0.035f, 0.05f, 0.05f);
-	scene.translateVertex(creeper, -0.5f, -0.25f, 0.5f);
-	scene.rotateVertex(creeper, 0.0f, 90.0f, 0.0f);
+	//scene.scaleVertex(creeper, 0.035f, 0.05f, 0.05f);
+	//scene.translateVertex(creeper, -0.5f, -0.25f, 0.5f);
+	//scene.rotateVertex(creeper, 0.0f, 90.0f, 0.0f);
 
 	scene.addMesh(
-		ObjectCube("o.jpg", NULL),
+		ObjectCube("textures/diffuse/o.jpg", NULL),
 		0.0f, 0.0f, 0.0f
 	);
 	scene.addMesh(
-		ObjectPyramid("bidoof.jpg", NULL),
+		ObjectPyramid("textures/diffuse/bidoof.jpg", NULL),
 		0.0f, 0.301f, 0.0f
 	);
 	scene.addMesh(
-		ObjectFlat("grass.jpg", "spec_grass.jpg"),
+		ObjectFlat("textures/diffuse/grass.jpg", "textures/specular/spec_grass.jpg"),
 		0.0f, -0.301f, 0.0f
 	);
 
 	scene.addLight(Light(ObjectBlank(), "light.vert", "light.frag", 
-		LightType::POINT, 0.5f, 0.0f, 0.5f, 1.0f, 0.25f, 0.25f, 0.3f));
+		LightType::POINT, 0.5f, 0.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f));
 	scene.addLight(Light(ObjectBlank(), "light.vert", "light.frag", 
-		LightType::SPOT, -0.5f, 0.0f, -0.5f, 0.25f, 0.25f, 1.0f, 0.3f));
+		LightType::SPOT, -0.5f, 0.0f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f));
 
 	/*
 	END DRAWING SETUP
