@@ -1,4 +1,4 @@
-#include "light.h"
+#include "headers/light.h"
 
 Light::Light(Mesh obj, const char* vFile, const char* fFile, LightType type, float posX, float posY, float posZ, float red, float green, float blue, float alpha) : shader(vFile, fFile) {
 	vao = VAO(true);

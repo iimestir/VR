@@ -1,4 +1,4 @@
-#include "mesh.h"
+#include "headers/mesh.h"
 
 
 Mesh::Mesh(vector<GLfloat> vertices, vector<GLuint> indices, vector<Texture> textures) {

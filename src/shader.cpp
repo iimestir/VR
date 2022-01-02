@@ -1,4 +1,4 @@
-#include "shader.h"
+#include "headers/shader.h"
 
 std::string getFileContents(const char* filename) {
 	std::ifstream in(filename, std::ios::binary);

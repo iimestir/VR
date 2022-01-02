@@ -6,10 +6,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "scene.h"
-#include "camera.h"
-#include "light.h"
-#include "postProcess.h"
+#include "headers/scene.h"
+#include "headers/camera.h"
+#include "headers/light.h"
+#include "headers/postProcess.h"
 
 using namespace std;
 using namespace glm;
@@ -46,7 +46,7 @@ int main() {
 	*/
 
 	// Generates shader object using vShader and fShader files
-	Scene scene("default.vert", "default.frag", width, height);
+	Scene scene("shaders/default.vs", "shaders/default.fs", width, height);
 	Camera camera(width, height, vec3(0.0f, 0.0f, 2.0f), 0.05f, 100.0f);
 	scene.setBackgroundColor(window, width, height, 1.0f, 1.0f, 1.0f, 1.0f);
 	scene.setPPType(PPType::DEFAULT);
@@ -70,9 +70,9 @@ int main() {
 		0.0f, -0.301f, 0.0f
 	);
 
-	scene.addLight(Light(ObjectBlank(), "light.vert", "light.frag", 
+	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", 
 		LightType::POINT, 0.5f, 0.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f));
-	scene.addLight(Light(ObjectBlank(), "light.vert", "light.frag", 
+	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", 
 		LightType::SPOT, -0.5f, 0.0f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f));
 
 	/*

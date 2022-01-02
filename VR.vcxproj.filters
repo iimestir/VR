@@ -28,9 +28,6 @@
     <Filter Include="Source Files\Model">
       <UniqueIdentifier>{577f3344-2aca-471a-9bdc-7b00f48836c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Libraries">
-      <UniqueIdentifier>{15623850-1a9e-40ba-9dd8-a71727211535}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Model">
       <UniqueIdentifier>{7b01a61b-8ff3-4471-88c5-470703f61e89}</UniqueIdentifier>
     </Filter>
@@ -40,99 +37,56 @@
     <Filter Include="Resource Files\Textures\Specular">
       <UniqueIdentifier>{580bd045-120e-42e9-8916-4dfa2cb89482}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{15623850-1a9e-40ba-9dd8-a71727211535}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Fragment">
+      <UniqueIdentifier>{e3ccb497-54e7-470a-a422-da463e435b1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Vertex">
+      <UniqueIdentifier>{5664652c-ca23-45b1-bf12-54ba602c901e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="src\mesh.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shader.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\texture.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\camera.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\light.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VBO.cpp">
+      <Filter>Source Files\ShaderObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VAO.cpp">
+      <Filter>Source Files\ShaderObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EBO.cpp">
+      <Filter>Source Files\ShaderObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\postProcess.cpp">
+      <Filter>Source Files\ShaderObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EBO.cpp">
-      <Filter>Source Files\ShaderObjects</Filter>
+    <ClCompile Include="src\glad.c">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="postProcess.cpp">
-      <Filter>Source Files\ShaderObjects</Filter>
+    <ClCompile Include="src\stb.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="VAO.cpp">
-      <Filter>Source Files\ShaderObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="VBO.cpp">
-      <Filter>Source Files\ShaderObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="glad.c">
-      <Filter>Source Files\Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="stb.cpp">
-      <Filter>Source Files\Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="light.cpp">
-      <Filter>Source Files\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="mesh.cpp">
-      <Filter>Source Files\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="scene.cpp">
-      <Filter>Source Files\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="shader.cpp">
-      <Filter>Source Files\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>Source Files\Model</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="default.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="default.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="light.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="light.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="framebuffer.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="framebuffer.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="EBO.h">
-      <Filter>Header Files\ShaderObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="postProcess.h">
-      <Filter>Header Files\ShaderObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="VAO.h">
-      <Filter>Header Files\ShaderObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="VBO.h">
-      <Filter>Header Files\ShaderObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh.h">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="light.h">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="scene.h">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="shader.h">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="texture.h">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\diffuse\bidoof.jpg">
@@ -147,5 +101,57 @@
     <Image Include="textures\specular\spec_grass.jpg">
       <Filter>Resource Files\Textures\Specular</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\headers\scene.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\shader.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\texture.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\camera.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\light.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\mesh.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\EBO.h">
+      <Filter>Header Files\ShaderObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\VAO.h">
+      <Filter>Header Files\ShaderObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\VBO.h">
+      <Filter>Header Files\ShaderObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\postProcess.h">
+      <Filter>Header Files\ShaderObjects</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\framebuffer.vs">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="shaders\light.vs">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="shaders\default.vs">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="shaders\framebuffer.fs">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="shaders\light.fs">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="shaders\default.fs">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
   </ItemGroup>
 </Project>

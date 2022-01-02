@@ -1,4 +1,4 @@
-#include "postProcess.h"
+#include "headers/postProcess.h"
 
 PostProcess::PostProcess(const char* vFile, const char* fFile, unsigned width, unsigned height)
 	: ppShader(Shader(vFile, fFile)), type(PPType::DEFAULT) {

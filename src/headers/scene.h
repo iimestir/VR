@@ -16,12 +16,10 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-
 #include "VAO.h"
 #include "shader.h"
 #include "texture.h"
 #include "camera.h"
-#include "model.h"
 #include "light.h"
 #include "postProcess.h"
 

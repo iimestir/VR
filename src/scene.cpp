@@ -1,4 +1,4 @@
-#include "scene.h"
+#include "headers/scene.h"
 
 void Scene::registerVertexOnShader(unsigned vertexIndex) {
 	mat4 model = vertices.at(vertexIndex).getMatrix();
@@ -106,7 +106,7 @@ void Scene::notifyCameraPosition(Camera* camera) {
 }
 
 Scene::Scene(const char* vFile, const char* fFile, unsigned width, unsigned height)
-	: program(Shader(vFile, fFile)), pp(PostProcess("framebuffer.vert", "framebuffer.frag", width, height)) {
+	: program(Shader(vFile, fFile)), pp(PostProcess("shaders/framebuffer.vs", "shaders/framebuffer.fs", width, height)) {
 
 	pp.activateShader();
 	pp.setFrameTextureUni(0);

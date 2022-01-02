@@ -145,45 +145,45 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="EBO.cpp" />
-    <ClCompile Include="postProcess.cpp" />
-    <ClCompile Include="glad.c" />
-    <ClCompile Include="light.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="mesh.cpp" />
-    <ClCompile Include="scene.cpp" />
-    <ClCompile Include="shader.cpp" />
-    <ClCompile Include="stb.cpp" />
-    <ClCompile Include="texture.cpp" />
-    <ClCompile Include="VAO.cpp" />
-    <ClCompile Include="VBO.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="default.frag" />
-    <None Include="default.vert" />
-    <None Include="framebuffer.frag" />
-    <None Include="framebuffer.vert" />
-    <None Include="light.frag" />
-    <None Include="light.vert" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="camera.h" />
-    <ClInclude Include="postProcess.h" />
-    <ClInclude Include="light.h" />
-    <ClInclude Include="mesh.h" />
-    <ClInclude Include="EBO.h" />
-    <ClInclude Include="scene.h" />
-    <ClInclude Include="shader.h" />
-    <ClInclude Include="texture.h" />
-    <ClInclude Include="VAO.h" />
-    <ClInclude Include="VBO.h" />
+    <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\EBO.cpp" />
+    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\light.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\mesh.cpp" />
+    <ClCompile Include="src\postProcess.cpp" />
+    <ClCompile Include="src\scene.cpp" />
+    <ClCompile Include="src\shader.cpp" />
+    <ClCompile Include="src\stb.cpp" />
+    <ClCompile Include="src\texture.cpp" />
+    <ClCompile Include="src\VAO.cpp" />
+    <ClCompile Include="src\VBO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\diffuse\bidoof.jpg" />
     <Image Include="textures\diffuse\grass.jpg" />
     <Image Include="textures\diffuse\o.jpg" />
     <Image Include="textures\specular\spec_grass.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\headers\camera.h" />
+    <ClInclude Include="src\headers\EBO.h" />
+    <ClInclude Include="src\headers\light.h" />
+    <ClInclude Include="src\headers\mesh.h" />
+    <ClInclude Include="src\headers\postProcess.h" />
+    <ClInclude Include="src\headers\scene.h" />
+    <ClInclude Include="src\headers\shader.h" />
+    <ClInclude Include="src\headers\texture.h" />
+    <ClInclude Include="src\headers\VAO.h" />
+    <ClInclude Include="src\headers\VBO.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\default.fs" />
+    <None Include="shaders\default.vs" />
+    <None Include="shaders\framebuffer.fs" />
+    <None Include="shaders\framebuffer.vs" />
+    <None Include="shaders\light.fs" />
+    <None Include="shaders\light.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
