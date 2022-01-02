@@ -47,11 +47,11 @@ int main() {
 
 	// Generates shader object using vShader and fShader files
 	Scene scene("shaders/default.vs", "shaders/default.fs", width, height);
-	Camera camera(width, height, vec3(0.0f, 0.0f, 2.0f), 0.05f, 100.0f);
+	Camera camera(width, height, vec3(0.0f, 0.0f, 2.0f), 0.005f, 100.0f);
 	scene.setBackgroundColor(window, width, height, 1.0f, 1.0f, 1.0f, 1.0f);
 	scene.setPPType(PPType::DEFAULT);
 
-	scene.loadMesh("models/test2/Creeper_Model.obj");
+	scene.loadMesh("models/colt/colt.obj");
 
 	//scene.scaleVertex(creeper, 0.035f, 0.05f, 0.05f);
 	//scene.translateVertex(creeper, -0.5f, -0.25f, 0.5f);

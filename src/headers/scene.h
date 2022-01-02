@@ -48,8 +48,8 @@ private:
 
 	void setDepthUniform(Shader&);
 
-	vector<Texture> retrieveMeshTextures(const char*, const aiScene*, aiMesh*, unsigned);
-	Mesh retrieveMesh(const aiScene*, aiMesh*, const char*, unsigned);
+	vector<Texture> retrieveMeshTextures(const char*, const aiScene*, aiMesh*);
+	Mesh retrieveMesh(const aiScene*, aiMesh*, const char*);
 
 	void notifyCameraPosition(Camera*);
 public:

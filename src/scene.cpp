@@ -239,10 +239,10 @@ unsigned Scene::addMesh(Mesh obj, float posX, float posY, float posZ, float alph
 	return index;
 }
 
-vector<Texture> Scene::retrieveMeshTextures(const char* path, const aiScene* pScene, aiMesh* aiMesh, unsigned i) {
+vector<Texture> Scene::retrieveMeshTextures(const char* path, const aiScene* pScene, aiMesh* aiMesh) {
 	vector<Texture> textures;
 
-	const aiMaterial* material = pScene->mMaterials[pScene->mNumMaterials - i - 1];
+	const aiMaterial* material = pScene->mMaterials[aiMesh->mMaterialIndex];
 
 	aiString aiPath;
 
@@ -264,7 +264,7 @@ vector<Texture> Scene::retrieveMeshTextures(const char* path, const aiScene* pSc
 	return textures;
 }
 
-Mesh Scene::retrieveMesh(const aiScene* pScene, aiMesh* aiMesh, const char* path, unsigned i) {
+Mesh Scene::retrieveMesh(const aiScene* pScene, aiMesh* aiMesh, const char* path) {
 	vector<GLfloat> vertices;
 	vector<GLuint> indices;
 	vector<Texture> textures;
@@ -306,7 +306,7 @@ Mesh Scene::retrieveMesh(const aiScene* pScene, aiMesh* aiMesh, const char* path
 		indices.push_back(face.mIndices[2]);
 	}
 
-	for(Texture tx : retrieveMeshTextures(path, pScene, aiMesh, i))
+	for(Texture tx : retrieveMeshTextures(path, pScene, aiMesh))
 		textures.push_back(tx);
 
 	return Mesh(vertices, indices, textures);
@@ -325,7 +325,7 @@ vector<unsigned> Scene::loadMesh(const char* path) {
 	}
 
 	for (int i = 0; i < pScene->mNumMeshes; i++)
-		ids.push_back(addMesh(retrieveMesh(pScene, pScene->mMeshes[i], path, i)));
+		ids.push_back(addMesh(retrieveMesh(pScene, pScene->mMeshes[i], path)));
 
 	return ids;
 }
