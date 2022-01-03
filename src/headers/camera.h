@@ -26,19 +26,26 @@ private:
 
 	float speed;
 	float sensitivity;	
+	float fov;
 	float initialSpeed;
 	float initialSensitivity;
 
 	float camera_time = 0.0f;
 public:
-	Camera(int, int, glm::vec3, float = 0.1f, float = 100.0f);
+	Camera(int, int, glm::vec3, float = 45.0f, float = 0.1f, float = 100.0f);
 
-	void setupMatrix(Shader&);
-	void updateMatrix(float, float, float);
+	void sendMatrixToShader(Shader&);
+	void updateMatrix(float, float);
 	void defineInputs(GLFWwindow*);
+
+	void setFOV(float);
 
 	inline glm::vec3 getOrientation() {
 		return orientation;
+	}
+
+	inline float getFOV() {
+		return fov;
 	}
 
 	inline float* getPOriX() {
@@ -51,6 +58,10 @@ public:
 
 	inline float* getPOriZ() {
 		return &orientation.b;
+	}
+
+	inline glm::mat4 getMatrix() {
+		return matrix;
 	}
 
 	inline glm::vec3 getPosition() {
@@ -84,5 +95,10 @@ public:
 	inline float getSensitivity() {
 		return sensitivity;
 	}
+
+	inline glm::vec3 getUP() {
+		return up;
+	}
 };
+
 #endif

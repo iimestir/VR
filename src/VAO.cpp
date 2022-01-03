@@ -106,14 +106,14 @@ void VAO::scale(float x, float y, float z) {
 	scaling.b = z;
 }
 
-void VAO::bindPositionTo(float* x, float* y, float* z) {
+void VAO::bindPositionTo(DFloat x, DFloat y, DFloat z) {
 	posiBinds.clear();
 	posiBinds.push_back(x);
 	posiBinds.push_back(y);
 	posiBinds.push_back(z);
 }
 
-void VAO::bindRotationTo(float* x, float* y, float* z) {
+void VAO::bindRotationTo(DFloat x, DFloat y, DFloat z) {
 	oriBinds.clear();
 	oriBinds.push_back(x);
 	oriBinds.push_back(y);

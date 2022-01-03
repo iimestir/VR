@@ -20,8 +20,8 @@ Light::Light(Mesh obj, const char* vFile, const char* fFile, LightType type,
 }
 
 Light::Light(Mesh obj, const char* vFile, const char* fFile, LightType type,
-	float* dynPosX, float* dynPosY, float* dynPosZ,
-	float* dynOriX, float* dynOriY, float* dynOriZ,
+	DFloat dynPosX, DFloat dynPosY, DFloat dynPosZ,
+	DFloat dynOriX, DFloat dynOriY, DFloat dynOriZ,
 	float red, float green, float blue, float alpha)
 	: shader(vFile, fFile) {
 	vao = VAO(true);

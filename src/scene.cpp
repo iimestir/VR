@@ -44,6 +44,29 @@ void Scene::updateLightsUni() {
 	glUniform1fv(program.getUniformLocation("lightType"), types.size(), types.data());
 }
 
+void Scene::resetLightsUni() {
+	activateShader();
+
+	vector<GLfloat> pos;
+	vector<GLfloat> colors;
+	vector<GLfloat> types;
+
+	pos.push_back(1.0f);
+	pos.push_back(1.0f);
+	pos.push_back(1.0f);
+
+	colors.push_back(1.0f);
+	colors.push_back(1.0f);
+	colors.push_back(1.0f);
+
+	types.push_back(float(LightType::DIRECT));
+
+	glUniform1i(program.getUniformLocation("lightSize"), lights.size());
+	glUniform1fv(program.getUniformLocation("lightPos"), pos.size(), pos.data());
+	glUniform1fv(program.getUniformLocation("lightColor"), colors.size(), colors.data());
+	glUniform1fv(program.getUniformLocation("lightType"), types.size(), types.data());
+}
+
 void Scene::translateOnShader(Shader& shader, unsigned vertexIndex, float xd, float yd, float zd, bool light) {
 	VAO* vertice;
 	string uniform;
@@ -107,8 +130,11 @@ void Scene::notifyCameraPosition(Camera* camera) {
 		camera->getPosition().x, camera->getPosition().y, camera->getPosition().z);
 }
 
-Scene::Scene(const char* vFile, const char* fFile, unsigned width, unsigned height)
-	: program(Shader(vFile, fFile)), pp(PostProcess("shaders/framebuffer.vs", "shaders/framebuffer.fs", width, height)) {
+
+// CONSTRUCTOR
+Scene::Scene(const char* vFile, const char* fFile, unsigned width, unsigned height, vector<string> skyFaces)
+	: program(Shader(vFile, fFile)), pp(PostProcess("shaders/framebuffer.vs", "shaders/framebuffer.fs", width, height)),
+	  sb(SkyBox("shaders/sky.vs", "shaders/sky.fs", skyFaces)) {
 
 	pp.activateShader();
 	pp.setFrameTextureUni(0);
@@ -127,7 +153,7 @@ Scene::Scene(const char* vFile, const char* fFile, unsigned width, unsigned heig
 	glEnable(GL_CULL_FACE);
 }
 
-void Scene::render(GLFWwindow* window, Camera* camera) {
+void Scene::render(GLFWwindow* window, Camera* camera, unsigned width, unsigned height) {
 	pp.activateShader();
 
 	glUniform1i(pp.getUniformLocation("ppType"), pp.getPPType());
@@ -137,11 +163,11 @@ void Scene::render(GLFWwindow* window, Camera* camera) {
 	setGLColor(depthColor.r, depthColor.g, depthColor.b, depthColor.a);
 
 	camera->defineInputs(window);
-	camera->updateMatrix(80.0f, 0.1f, 100.0f);
+	camera->updateMatrix(0.1f, 100.0f);
 
 	setCameraMatrix(camera);
 
-	draw();
+	draw(camera, width, height);
 
 	pp.unbindFBO();
 	pp.draw();
@@ -165,7 +191,7 @@ void Scene::destroy() {
 	program.deleteShader();
 }
 
-void Scene::draw() {
+void Scene::draw(Camera* camera, unsigned width, unsigned height) {
 	activateShader();
 
 	updateLightsUni();
@@ -179,28 +205,39 @@ void Scene::draw() {
 		quat rotation = vertices.at(i).getRotation();
 		vec3 scaling = vertices.at(i).getScale();
 
-		if (vertices.at(i).hasOrientationBounds()) {
-			vector<float*> oriBinds = vertices.at(i).getOrientationBounds();
-			float x = *oriBinds.at(0);
-			float y = *oriBinds.at(1);
-			float z = *oriBinds.at(2);
-			rotateVertex(i, x, y, z);
+		bool oriBound = vertices.at(i).hasOrientationBounds();
+		bool posiBound = vertices.at(i).hasPositionBounds();
+
+		// Vertex Position
+		if (posiBound) {
+			vector<DFloat> binds = vertices.at(i).getPositionBounds();
+			translateVertex(i, binds.at(0).value(), binds.at(1).value(), binds.at(2).value());
+		}
+		else {
+			vec3 translation = vertices.at(i).getTranslation();
+			translateVertex(i, translation.r, translation.g, translation.b);
+		}
+
+		// Vertex Rotation-Orientation
+		if (oriBound) {
+			vector<DFloat> oriBinds = vertices.at(i).getOrientationBounds();
+
+			float x = oriBinds.at(0).value();
+			float y = oriBinds.at(1).value();
+			float z = oriBinds.at(2).value();
+
+			program.activateShader();
+
+			// TODO : rotation bound 
+			mat4 look = glm::lookAt(vec3(0.0f, 0.0f, 0.0f), (vec3(-0.0f, 0.0f, -0.0f) + vec3(x, y, z)), vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(program.getUniformLocation("rotation"), 1, GL_FALSE, value_ptr(look));
 		}
 		else {
 			quat rotation = vertices.at(i).getRotation();
 			rotateOnShader(program, i, rotation.w, rotation.x, rotation.y, rotation.z);
 		}
 
-		if (vertices.at(i).hasPositionBounds()) {
-			vector<float*> binds = vertices.at(i).getPositionBounds();
-			translateVertex(i, *binds.at(0), *binds.at(1), *binds.at(2));
-		} else {
-			vec3 translation = vertices.at(i).getTranslation();
-			translateVertex(i, translation.r, translation.g, translation.b);
-		}
-			
 		scaleVertex(i, scaling.r, scaling.g, scaling.b);
-		//rotateOnShader(program, i, rotation.w, rotation.x, rotation.y, rotation.z);
 		//alphaOnShader(program, 1.0f);
 
 		registerVertexOnShader(i);
@@ -218,9 +255,9 @@ void Scene::draw() {
 
 		// Light orientation
 		if (lights.at(i).hasOrientationBounds()) {
-			vector<float*> oriBinds = lights.at(i).getOrientationBounds();
+			vector<DFloat> oriBinds = lights.at(i).getOrientationBounds();
 
-			vec3 orientation = vec3(*oriBinds.at(0), *oriBinds.at(1), *oriBinds.at(2));
+			vec3 orientation = vec3(oriBinds.at(0).value(), oriBinds.at(1).value(), oriBinds.at(2).value());
 			glUniform3fv(program.getUniformLocation("lightOrientation"),
 				1, value_ptr(orientation));
 		}
@@ -231,8 +268,8 @@ void Scene::draw() {
 
 		// Light position
 		if (lights.at(i).getVAO().hasPositionBounds()) {
-			vector<float*> binds = lights.at(i).getVAO().getPositionBounds();
-			translateOnShader(lights.at(i).getShader(), i, *binds.at(0), *binds.at(1), *binds.at(2), true);
+			vector<DFloat> binds = lights.at(i).getVAO().getPositionBounds();
+			translateOnShader(lights.at(i).getShader(), i, binds.at(0).value(), binds.at(1).value(), binds.at(2).value(), true);
 		}
 		else
 			translateOnShader(lights.at(i).getShader(), i, translation.r, translation.g, translation.b, true);
@@ -244,6 +281,10 @@ void Scene::draw() {
 		lights.at(i).getVAO().draw();
 	}
 	glDisable(GL_BLEND);
+
+	// SkyBox
+	resetLightsUni();
+	sb.draw(camera, width, height);
 }
 
 void Scene::setGLColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
@@ -257,6 +298,10 @@ void Scene::setBackgroundColor(GLFWwindow* window, unsigned int width, unsigned 
 	depthColor = vec4(red, green, blue, alpha);
 	setGLColor(red, green, blue, alpha);
 	glfwSwapBuffers(window);
+}
+
+void Scene::setPPType(PPType type) {
+	pp.setPPType(type);
 }
 
 unsigned Scene::addMesh(Mesh obj, float posX, float posY, float posZ, float alpha) {
@@ -385,14 +430,14 @@ unsigned Scene::addLight(Light light) {
 	return index;
 }
 
-void Scene::bindVertexPosition(unsigned index, float* posX, float* posY, float* posZ) {
-	VAO* vertex = &vertices.at(index);
+void Scene::bindVertexPosition(unsigned vertexIndex, DFloat posX, DFloat posY, DFloat posZ) {
+	VAO* vertex = &vertices.at(vertexIndex);
 
 	vertex->bindPositionTo(posX, posY, posZ);
 }
 
-void Scene::bindVertexOrientation(unsigned index, float* rotX, float* rotY, float* rotZ) {
-	VAO* vertex = &vertices.at(index);
+void Scene::bindVertexOrientation(unsigned vertexIndex, DFloat rotX, DFloat rotY, DFloat rotZ) {
+	VAO* vertex = &vertices.at(vertexIndex);
 
 	vertex->bindRotationTo(rotX, rotY, rotZ);
 }
@@ -422,10 +467,20 @@ void Scene::setCameraMatrix(Camera* camera) {
 	notifyCameraPosition(camera);
 
 	activateShader();
-	camera->setupMatrix(program);
+	camera->sendMatrixToShader(program);
 
 	for (Light light : lights) {
 		light.getShader().activateShader();
-		camera->setupMatrix(light.getShader());
+		camera->sendMatrixToShader(light.getShader());
 	}
+}
+
+void Scene::enableCulling() {
+	glCullFace(GL_FRONT);
+	glFrontFace(GL_CCW);
+	glEnable(GL_CULL_FACE);
+}
+
+void Scene::disableCulling() {
+	glDisable(GL_CULL_FACE);
 }

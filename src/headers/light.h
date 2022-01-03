@@ -4,7 +4,7 @@
 #include "VAO.h"
 
 enum LightType {
-	SPOT = 0, POINT = 1
+	SPOT = 0, POINT = 1, DIRECT = 2
 };
 
 class Light {
@@ -25,8 +25,8 @@ public:
 		float red = 1.0f, float green = 1.0f, float blue = 1.0f, float alpha = 1.0f
 	);
 	Light(Mesh obj, const char* vFile, const char* fFile, LightType type, 
-		float* dynPosX, float* dynPosY, float* dynPosZ,  
-		float* dynOriX, float* dynOriY, float* dynOriZ,
+		DFloat = DFloat(NULL, 0.0f), DFloat = DFloat(NULL, 0.0f), DFloat = DFloat(NULL, 0.0f),
+		DFloat = DFloat(NULL, 0.0f), DFloat = DFloat(NULL, -1.0f), DFloat = DFloat(NULL, 0.0f),
 		float red = 1.0f, float green = 1.0f, float blue = 1.0f, float alpha = 1.0f
 	);
 
@@ -34,7 +34,7 @@ public:
 		return vao.getRotation();
 	}
 
-	inline vector<float*> getOrientationBounds() {
+	inline vector<DFloat> getOrientationBounds() {
 		return vao.getOrientationBounds();
 	}
 

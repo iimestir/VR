@@ -1,6 +1,6 @@
 #include "headers/camera.h"
 
-Camera::Camera(int width, int height, glm::vec3 position, float speed, float sensitivity) {
+Camera::Camera(int width, int height, glm::vec3 position, float fov, float speed, float sensitivity) {
 	this->width = width;
 	this->height = height;
 	this->position = position;
@@ -8,10 +8,10 @@ Camera::Camera(int width, int height, glm::vec3 position, float speed, float sen
 	this->sensitivity = sensitivity;
 	this->initialSpeed = speed;
 	this->initialSensitivity = sensitivity;
+	this->fov = fov;
 }
 
-void Camera::setupMatrix(Shader& shader) {
-	// Exports the camera matrix to the Vertex Shader
+void Camera::sendMatrixToShader(Shader& shader) {
 	glUniformMatrix4fv(shader.getUniformLocation("camera"), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
@@ -39,6 +39,8 @@ void Camera::defineInputs(GLFWwindow* window) {
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 		speed = 0.5*initialSpeed;
+
+		cout << orientation.r << " " << orientation.g << " " << orientation.b << " " << endl;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
 		speed = initialSpeed;
@@ -53,21 +55,22 @@ void Camera::defineInputs(GLFWwindow* window) {
 			firstClick = false;
 		}
 
+		// Fetches the coordinates of the cursor
 		double mouseX;
 		double mouseY;
-		glfwGetCursorPos(window, &mouseX, &mouseY);		// Fetches the coordinates of the cursor
+		glfwGetCursorPos(window, &mouseX, &mouseY);
  
 		float rotX = sensitivity * (float)(mouseY - (height / 2)) / height;
 		float rotY = sensitivity * (float)(mouseX - (width / 2)) / width;
 
-		// Calculates upcoming vertical change in the orientation
+		// Vertical rotation
 		glm::vec3 neworientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
 
-		if (abs(glm::angle(neworientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f)) {
+		if (abs(glm::angle(neworientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
 			orientation = neworientation;
-		}
 
-		orientation = glm::rotate(orientation, glm::radians(-rotY), up);	// rotate left & right
+		// Horizontal rotation
+		orientation = glm::rotate(orientation, glm::radians(-rotY), up);
 
 		glfwSetCursorPos(window, (width / 2), (height / 2));	// put the cursor back in the middle
 	} else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
@@ -76,12 +79,16 @@ void Camera::defineInputs(GLFWwindow* window) {
 	}
 }
 
-void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane) {
+void Camera::setFOV(float fov) {
+	this->fov = fov;
+}
+
+void Camera::updateMatrix(float nearPlane, float farPlane) {
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
 
 	view = glm::lookAt(position, (position + orientation), up);
-	projection = glm::perspective(glm::radians(FOVdeg), (float)width / height, nearPlane, farPlane);
+	projection = glm::perspective(glm::radians(fov), (float)width / height, nearPlane, farPlane);
 
 	matrix = projection * view;
 }

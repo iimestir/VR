@@ -154,6 +154,7 @@
     <ClCompile Include="src\postProcess.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\shader.cpp" />
+    <ClCompile Include="src\skyBox.cpp" />
     <ClCompile Include="src\stb.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\VAO.cpp" />
@@ -163,23 +164,39 @@
     <Image Include="textures\diffuse\bidoof.jpg" />
     <Image Include="textures\diffuse\grass.jpg" />
     <Image Include="textures\diffuse\o.jpg" />
+    <Image Include="textures\skybox\lake\back.jpg" />
+    <Image Include="textures\skybox\lake\bottom.jpg" />
+    <Image Include="textures\skybox\lake\front.jpg" />
+    <Image Include="textures\skybox\lake\left.jpg" />
+    <Image Include="textures\skybox\lake\right.jpg" />
+    <Image Include="textures\skybox\lake\top.jpg" />
+    <Image Include="textures\skybox\night\back.jpg" />
+    <Image Include="textures\skybox\night\bottom.jpg" />
+    <Image Include="textures\skybox\night\front.jpg" />
+    <Image Include="textures\skybox\night\left.jpg" />
+    <Image Include="textures\skybox\night\right.jpg" />
+    <Image Include="textures\skybox\night\top.jpg" />
     <Image Include="textures\specular\spec_grass.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\camera.h" />
+    <ClInclude Include="src\headers\dFloat.h" />
     <ClInclude Include="src\headers\EBO.h" />
     <ClInclude Include="src\headers\light.h" />
     <ClInclude Include="src\headers\mesh.h" />
     <ClInclude Include="src\headers\postProcess.h" />
     <ClInclude Include="src\headers\scene.h" />
     <ClInclude Include="src\headers\shader.h" />
+    <ClInclude Include="src\headers\skyBox.h" />
     <ClInclude Include="src\headers\texture.h" />
     <ClInclude Include="src\headers\VAO.h" />
     <ClInclude Include="src\headers\VBO.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\default.fs" />
-    <None Include="shaders\default.vs" />
+    <None Include="shaders\sky.fs" />
+    <None Include="shaders\sky.vs" />
+    <None Include="shaders\world.fs" />
+    <None Include="shaders\world.vs" />
     <None Include="shaders\framebuffer.fs" />
     <None Include="shaders\framebuffer.vs" />
     <None Include="shaders\light.fs" />

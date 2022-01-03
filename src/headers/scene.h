@@ -1,6 +1,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+# define PI           3.14159265358979323846
+
 #include <glad/glad.h>
 #include <stdlib.h>
 #include <vector>
@@ -22,6 +24,8 @@
 #include "camera.h"
 #include "light.h"
 #include "postProcess.h"
+#include "dFloat.h"
+#include "skyBox.h"
 
 using namespace std;
 using namespace glm;
@@ -33,6 +37,7 @@ private:
 	vector<Light> lights;
 
 	PostProcess pp;
+	SkyBox sb;
 
 	vec4 depthColor;
 
@@ -40,6 +45,7 @@ private:
 	void registerLightOnShader(unsigned);
 
 	void updateLightsUni();
+	void resetLightsUni();
 
 	void translateOnShader(Shader&, unsigned, float, float, float, bool = false);
 	void rotateOnShader(Shader&, unsigned, float, float, float, float);
@@ -53,29 +59,27 @@ private:
 
 	void notifyCameraPosition(Camera*);
 public:
-	Scene(const char*, const char*, unsigned, unsigned);
+	Scene(const char*, const char*, unsigned, unsigned, vector<string>);
 
-	void render(GLFWwindow*, Camera*);
+	void render(GLFWwindow*, Camera*, unsigned, unsigned);
 
 	void activateShader();
 	void activateLightShader(unsigned);
 
 	void destroy();
 
-	void draw();
+	void draw(Camera*, unsigned, unsigned);
 
 	void setGLColor(GLfloat, GLfloat, GLfloat, GLfloat = 1.0f);
 	void setBackgroundColor(GLFWwindow*, unsigned int, unsigned int, GLfloat, GLfloat, GLfloat, GLfloat = 1.0f);
-	void setPPType(PPType type) {
-		pp.setPPType(type);
-	}
+	void setPPType(PPType);
 
 	unsigned addMesh(Mesh, float = 0.0f, float = 0.0f, float = 0.0f, float = 1.0f);
 	vector<unsigned> loadMesh(const char*);
 	unsigned addLight(Light);
 
-	void bindVertexPosition(unsigned, float*, float*, float*);
-	void bindVertexOrientation(unsigned, float*, float*, float*);
+	void bindVertexPosition(unsigned, DFloat, DFloat, DFloat);
+	void bindVertexOrientation(unsigned, DFloat, DFloat, DFloat);
 
 	void translateVertex(unsigned, float, float, float);
 	void rotateVertex(unsigned, float, float, float);
@@ -84,6 +88,9 @@ public:
 	void setLightColor(unsigned, float, float, float, float);
 
 	void setCameraMatrix(Camera*);
+
+	void enableCulling();
+	void disableCulling();
 
 	inline Shader* getShader() {
 		return &program;

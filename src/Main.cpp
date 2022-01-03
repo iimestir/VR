@@ -45,28 +45,27 @@ int main() {
 
 	*/
 
+	// SkyBox
+	// https://jaxry.github.io/panorama-to-cubemap/
+	vector<std::string> sky
+	{
+		"textures/skybox/night/right.jpg",
+		"textures/skybox/night/left.jpg",
+		"textures/skybox/night/top.jpg",
+		"textures/skybox/night/bottom.jpg",
+		"textures/skybox/night/front.jpg",
+		"textures/skybox/night/back.jpg"
+	};
+
 	// Generates shader object using vShader and fShader files
-	Scene scene("shaders/default.vs", "shaders/default.fs", width, height);
-	Camera camera(width, height, vec3(0.0f, 0.0f, 2.0f), 0.005f, 100.0f);
+	Scene scene("shaders/world.vs", "shaders/world.fs", width, height, sky);
+	Camera camera(width, height, vec3(0.0f, 0.0f, 2.0f), 80.0f, 0.005f, 100.0f);
 	scene.setBackgroundColor(window, width, height, 0.0f, 0.0f, 0.0f, 0.0f);
-	scene.setPPType(PPType::OUTLINE);
+	scene.setPPType(PPType::DEFAULT);
 
-	scene.loadMesh("models/colt/colt.obj");
-	vector<unsigned> flashlight = scene.loadMesh("models/flashlight/Flashilght.obj");
+	//vector<unsigned> colt = scene.loadMesh("models/colt/colt.obj");
+	vector<unsigned> flashlight = scene.loadMesh("models/flashlight/Flashlight.obj");
 
-	//scene.scaleVertex(creeper, 0.035f, 0.05f, 0.05f);
-	//scene.translateVertex(creeper, -0.5f, -0.25f, 0.5f);
-	//scene.rotateVertex(creeper, 0.0f, 90.0f, 0.0f);
-
-	/*
-	scene.addMesh(
-		ObjectCube("textures/diffuse/o.jpg", NULL),
-		0.0f, 0.0f, 0.0f
-	);
-	scene.addMesh(
-		ObjectPyramid("textures/diffuse/bidoof.jpg", NULL),
-		0.0f, 0.301f, 0.0f
-	);*/
 	scene.addMesh(
 		ObjectFlat("textures/diffuse/grass.jpg", "textures/specular/spec_grass.jpg"),
 		0.0f, -0.301f, 0.0f
@@ -74,23 +73,23 @@ int main() {
 
 	for (unsigned i : flashlight) {
 		scene.scaleVertex(i, 0.05f, 0.05f, 0.05f);
-		scene.bindVertexPosition(i, camera.getPPosX(), camera.getPPosY(), camera.getPPosZ());
-		scene.bindVertexOrientation(i, camera.getPOriX(), camera.getPOriY(), camera.getPOriZ());
+		scene.bindVertexPosition(i, DFloat(camera.getPPosX()), DFloat(camera.getPPosY()), DFloat(camera.getPPosZ()));
+		scene.bindVertexOrientation(i, DFloat(camera.getPOriX()), DFloat(camera.getPOriY()), DFloat(camera.getPOriZ()));
 	}
 
 	/*
 	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", 
 		LightType::POINT, 0.5f, 0.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f));*/
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
-		camera.getPPosX(), camera.getPPosY(), camera.getPPosZ(),
-		camera.getPOriX(), camera.getPOriY(), camera.getPOriZ(), 
+		DFloat(camera.getPPosX()), DFloat(camera.getPPosY()), DFloat(camera.getPPosZ()),
+		DFloat(camera.getPOriX()), DFloat(camera.getPOriY()), DFloat(camera.getPOriZ()),
 		1.0f, 1.0f, 1.0f, 1.0f));
 
 	/*
 	END DRAWING SETUP
 	*/
 	while (!glfwWindowShouldClose(window)) {
-		scene.render(window, &camera);
+		scene.render(window, &camera, width, height);
 	}
 
 	// End

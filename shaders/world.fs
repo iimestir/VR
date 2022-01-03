@@ -109,6 +109,8 @@ void main() {
 			output += spotLight(lightOrientation, pos, vec4(vec4(lightColor[i], lightColor[i+1], lightColor[i+2], 1.0f)));
 		else if(lightType[ty] == 1.0f)
 			output += pointLight(pos, vec4(vec4(lightColor[i], lightColor[i+1], lightColor[i+2], 1.0f)));
+		else if(lightType[ty] == 2.0f)
+			output += directLight(vec4(vec4(lightColor[i], lightColor[i+1], lightColor[i+2], 1.0f)));
 
 		ty++;
 	}

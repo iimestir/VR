@@ -6,6 +6,7 @@
 
 #include "VBO.h"
 #include "mesh.h"
+#include "dFloat.h"
 
 using namespace std;
 using namespace glm;
@@ -21,8 +22,8 @@ private:
 	quat rotation = quat(0.0f, 0.0f, 0.0f, 0.0f);
 	vec3 scaling = vec3(1.0f, 1.0f, 1.0f);
 
-	vector<float*> posiBinds;
-	vector<float*> oriBinds;
+	vector<DFloat> posiBinds;
+	vector<DFloat> oriBinds;
 	float alpha = 1.0f;
 
 	void linkAttributes(VBO&, GLuint, GLuint, GLenum, GLsizeiptr, void*);
@@ -69,11 +70,11 @@ public:
 	void rotateEuler(float, float, float);
 	void scale(float, float, float);
 
-	void bindPositionTo(float*, float*, float*);
-	void bindRotationTo(float*, float*, float*);
+	void bindPositionTo(DFloat, DFloat, DFloat);
+	void bindRotationTo(DFloat, DFloat, DFloat);
 	void clearBounds();
 
-	inline vector<float*> getPositionBounds() {
+	inline vector<DFloat> getPositionBounds() {
 		return posiBinds;
 	}
 
@@ -81,7 +82,7 @@ public:
 		return !posiBinds.empty();
 	}
 
-	inline vector<float*> getOrientationBounds() {
+	inline vector<DFloat> getOrientationBounds() {
 		return oriBinds;
 	}
 

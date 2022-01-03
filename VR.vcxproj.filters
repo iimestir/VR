@@ -46,6 +46,15 @@
     <Filter Include="Resource Files\Shaders\Vertex">
       <UniqueIdentifier>{5664652c-ca23-45b1-bf12-54ba602c901e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Textures\SkyBox">
+      <UniqueIdentifier>{b81cfcf6-9522-42ce-b25e-67fce25916c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures\SkyBox\lake">
+      <UniqueIdentifier>{14632ef9-e5cb-462f-aab5-14cec6e0ba67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures\SkyBox\night">
+      <UniqueIdentifier>{905ecc88-a0e6-4a15-b4b0-97b7e464d184}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\mesh.cpp">
@@ -87,6 +96,9 @@
     <ClCompile Include="src\stb.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\skyBox.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\diffuse\bidoof.jpg">
@@ -100,6 +112,42 @@
     </Image>
     <Image Include="textures\specular\spec_grass.jpg">
       <Filter>Resource Files\Textures\Specular</Filter>
+    </Image>
+    <Image Include="textures\skybox\lake\back.jpg">
+      <Filter>Resource Files\Textures\SkyBox\lake</Filter>
+    </Image>
+    <Image Include="textures\skybox\lake\bottom.jpg">
+      <Filter>Resource Files\Textures\SkyBox\lake</Filter>
+    </Image>
+    <Image Include="textures\skybox\lake\front.jpg">
+      <Filter>Resource Files\Textures\SkyBox\lake</Filter>
+    </Image>
+    <Image Include="textures\skybox\lake\left.jpg">
+      <Filter>Resource Files\Textures\SkyBox\lake</Filter>
+    </Image>
+    <Image Include="textures\skybox\lake\right.jpg">
+      <Filter>Resource Files\Textures\SkyBox\lake</Filter>
+    </Image>
+    <Image Include="textures\skybox\lake\top.jpg">
+      <Filter>Resource Files\Textures\SkyBox\lake</Filter>
+    </Image>
+    <Image Include="textures\skybox\night\back.jpg">
+      <Filter>Resource Files\Textures\SkyBox\night</Filter>
+    </Image>
+    <Image Include="textures\skybox\night\bottom.jpg">
+      <Filter>Resource Files\Textures\SkyBox\night</Filter>
+    </Image>
+    <Image Include="textures\skybox\night\front.jpg">
+      <Filter>Resource Files\Textures\SkyBox\night</Filter>
+    </Image>
+    <Image Include="textures\skybox\night\left.jpg">
+      <Filter>Resource Files\Textures\SkyBox\night</Filter>
+    </Image>
+    <Image Include="textures\skybox\night\right.jpg">
+      <Filter>Resource Files\Textures\SkyBox\night</Filter>
+    </Image>
+    <Image Include="textures\skybox\night\top.jpg">
+      <Filter>Resource Files\Textures\SkyBox\night</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +181,12 @@
     <ClInclude Include="src\headers\postProcess.h">
       <Filter>Header Files\ShaderObjects</Filter>
     </ClInclude>
+    <ClInclude Include="src\headers\dFloat.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\skyBox.h">
+      <Filter>Header Files\ShaderObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\framebuffer.vs">
@@ -141,7 +195,7 @@
     <None Include="shaders\light.vs">
       <Filter>Resource Files\Shaders\Vertex</Filter>
     </None>
-    <None Include="shaders\default.vs">
+    <None Include="shaders\world.vs">
       <Filter>Resource Files\Shaders\Vertex</Filter>
     </None>
     <None Include="shaders\framebuffer.fs">
@@ -150,8 +204,14 @@
     <None Include="shaders\light.fs">
       <Filter>Resource Files\Shaders\Fragment</Filter>
     </None>
-    <None Include="shaders\default.fs">
+    <None Include="shaders\world.fs">
       <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="shaders\sky.fs">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
+    </None>
+    <None Include="shaders\sky.vs">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
     </None>
   </ItemGroup>
 </Project>
