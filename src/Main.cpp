@@ -73,13 +73,14 @@ int main() {
 
 	for (unsigned i : flashlight) {
 		scene.scaleVertex(i, 0.05f, 0.05f, 0.05f);
-		scene.bindVertexPosition(i, DFloat(camera.getPPosX()), DFloat(camera.getPPosY()), DFloat(camera.getPPosZ()));
+		//scene.bindVertexPosition(i, DFloat(camera.getPPosX()), DFloat(camera.getPPosY()), DFloat(camera.getPPosZ()));
 		scene.bindVertexOrientation(i, DFloat(camera.getPOriX()), DFloat(camera.getPOriY()), DFloat(camera.getPOriZ()));
 	}
 
 	/*
 	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", 
 		LightType::POINT, 0.5f, 0.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f));*/
+
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		DFloat(camera.getPPosX()), DFloat(camera.getPPosY()), DFloat(camera.getPPosZ()),
 		DFloat(camera.getPOriX()), DFloat(camera.getPOriY()), DFloat(camera.getPOriZ()),

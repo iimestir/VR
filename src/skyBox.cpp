@@ -91,11 +91,11 @@ void SkyBox::draw(Camera* camera, unsigned width, unsigned height) {
 	// because skyboxes are right on the edge
 	glDepthFunc(GL_LEQUAL);
 
-	mat4 view = glm::mat4(1.0f);
-	glm::mat4 projection = glm::mat4(1.0f);
+	mat4 view = mat4(1.0f);
+	mat4 projection = mat4(1.0f);
 	// no effect on translations
-	view = glm::mat4(glm::mat3(
-		glm::lookAt(camera->getPosition(), camera->getPosition() + camera->getOrientation(), 
+	view = mat4(mat3(
+		lookAt(camera->getPosition(), camera->getPosition() + camera->getOrientation(), 
 			camera->getUP())
 	));
 

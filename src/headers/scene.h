@@ -41,7 +41,7 @@ private:
 
 	vec4 depthColor;
 
-	void registerVertexOnShader(unsigned);
+	void registerVertexOnShader(Shader&, unsigned);
 	void registerLightOnShader(unsigned);
 
 	void updateLightsUni();
@@ -58,6 +58,11 @@ private:
 	Mesh retrieveMesh(const aiScene*, aiMesh*, const char*);
 
 	void notifyCameraPosition(Camera*);
+
+	void draw(Shader&, Camera*, unsigned, unsigned);
+	void drawVertices(Shader&, Camera*, unsigned, unsigned);
+	void drawLights(Camera*, unsigned, unsigned);
+	void drawUnLightedObjects(Camera*, unsigned, unsigned);
 public:
 	Scene(const char*, const char*, unsigned, unsigned, vector<string>);
 
@@ -67,8 +72,6 @@ public:
 	void activateLightShader(unsigned);
 
 	void destroy();
-
-	void draw(Camera*, unsigned, unsigned);
 
 	void setGLColor(GLfloat, GLfloat, GLfloat, GLfloat = 1.0f);
 	void setBackgroundColor(GLFWwindow*, unsigned int, unsigned int, GLfloat, GLfloat, GLfloat, GLfloat = 1.0f);

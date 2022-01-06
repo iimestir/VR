@@ -40,7 +40,7 @@ void Camera::defineInputs(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 		speed = 0.5*initialSpeed;
 
-		cout << orientation.r << " " << orientation.g << " " << orientation.b << " " << endl;
+		cout << position.r << " " << position.g << " " << position.b << " " << endl;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
 		speed = initialSpeed;
