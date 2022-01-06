@@ -55,6 +55,9 @@
     <Filter Include="Resource Files\Textures\SkyBox\night">
       <UniqueIdentifier>{905ecc88-a0e6-4a15-b4b0-97b7e464d184}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Sounds">
+      <UniqueIdentifier>{12832a9a-e1da-4625-89fc-5ab8dc3dd1e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\mesh.cpp">
@@ -216,5 +219,13 @@
     <None Include="shaders\sky.vs">
       <Filter>Resource Files\Shaders\Vertex</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="sounds\step2.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="sounds\step1.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
   </ItemGroup>
 </Project>

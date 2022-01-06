@@ -14,6 +14,9 @@ struct Colliders {
 		bool testY = minY <= y && y <= maxY;
 		bool testZ = minZ <= z && z <= maxZ;
 
+		if(testX || testY || testZ)
+			cout << "X:" << testX << " Y:" << testY << " Z:" << testZ << endl;
+
 		return testX && testY && testZ;
 	}
 };

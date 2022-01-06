@@ -59,20 +59,19 @@ int main() {
 
 	// Generates shader object using vShader and fShader files
 	Scene scene("shaders/world.vs", "shaders/world.fs", width, height, sky);
-	Camera camera(width, height, vec3(0.0f, 0.0f, 2.0f), 80.0f, 0.005f, 100.0f);
+	Camera camera(width, height, vec3(4.0f, 0.0f, 2.0f), 80.0f, 0.005f, 100.0f);
 	scene.setBackgroundColor(window, width, height, 0.0f, 0.0f, 0.0f, 0.0f);
 	scene.setPPType(PPType::DEFAULT);
 
-	vector<unsigned> colt = scene.loadMesh("models/colt/colt.obj", true);
+	//vector<unsigned> colt = scene.loadMesh("models/colt/colt.obj", true);
 	//vector<unsigned> flashlight = scene.loadMesh("models/flashlight/Flashlight.obj");
+	scene.loadMesh("models/testCollisions/col.obj", true);
 
 	scene.addMesh(
 		ObjectFlat("textures/diffuse/grass.jpg", "textures/specular/spec_grass.jpg"),
 		0.0f, -0.301f, 0.0f
 	);
-	unsigned object = scene.addMesh(ObjectRectangular("textures/diffuse/o.jpg", NULL),
-		0.0f, -0.3f, 0.0f
-	);
+	//unsigned object = scene.addMesh(ObjectRectangular("textures/diffuse/o.jpg", NULL),0.0f, -0.3f, 0.0f);
 
 	//scene.translateVertex(object, 2.0f, -0.3f, 0.0f);
 

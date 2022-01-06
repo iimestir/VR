@@ -23,6 +23,8 @@ void Camera::sendMatrixToShader(Shader& shader) {
 	glUniformMatrix4fv(shader.getUniformLocation("camera"), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
+// Inspired by : https://www.youtube.com/playlist?list=PLPaoO-vpZnumdcb4tZc4x5Q-v7CkrQ6M-
+// Victor Godran's "OpenGL Tutorials"
 void Camera::defineInputs(GLFWwindow* window) {
 	// Keyboard inputs
 	// MOVEMENTS
@@ -61,7 +63,6 @@ void Camera::defineInputs(GLFWwindow* window) {
 	} else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
 		speed = initialSpeed;
 	}
-	
 
 	// Mouse inputs
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
