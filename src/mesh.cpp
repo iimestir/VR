@@ -1,7 +1,8 @@
 #include "headers/mesh.h"
 
 
-Mesh::Mesh(vector<GLfloat> vertices, vector<GLuint> indices, vector<Texture> textures) {
+Mesh::Mesh(vector<GLfloat> vertices, vector<GLuint> indices, vector<Texture> textures, bool collisions) {
+	// Textures
 	for (Texture t : textures) {
 		if (t.getType() == "tex0")
 			tx.push_back(t);
@@ -9,6 +10,40 @@ Mesh::Mesh(vector<GLfloat> vertices, vector<GLuint> indices, vector<Texture> tex
 			spec.push_back(t);
 	}
 
+	float minX = 0.0f;
+	float minY = 0.0f;
+	float minZ = 0.0f;
+
+	float maxX = 0.0f;
+	float maxY = 0.0f;
+	float maxZ = 0.0f;
+
+	bool initiated = false;
+
+	// Colliders
+	for (unsigned i = 0; i < vertices.size(); i+=11) {
+		if (!initiated) {
+			minX = vertices.at(i);
+			minY = vertices.at(i + 1);
+			minZ = vertices.at(i + 2);
+			maxX = vertices.at(i);
+			maxY = vertices.at(i + 1);
+			maxZ = vertices.at(i + 2);
+
+			initiated = true;
+		}
+		else {
+			minX = fmin(minX, vertices.at(i));
+			minY = fmin(minY, vertices.at(i + 1));
+			minZ = fmin(minZ, vertices.at(i + 2));
+			maxX = fmax(maxX, vertices.at(i));
+			maxY = fmax(maxY, vertices.at(i + 1));
+			maxZ = fmax(maxZ, vertices.at(i + 2));
+		}
+	}
+
+	if(collisions)
+		this->colliders = { minX - 0.14f, minY - 0.14f, minZ - 0.14f, maxX + 0.14f, maxY + 0.14f, maxZ + 0.14f };
 	this->vbo = new VBO(vertices.data(), vertices.size() * sizeof(GLfloat));
 	this->ebo = new EBO(indices.data(), indices.size() * sizeof(GLuint));
 	this->iSize = indices.size() * sizeof(int);
@@ -73,6 +108,14 @@ void Mesh::destroy() {
 	spec.clear();
 }
 
+bool Mesh::collidesWith(float x, float y, float z) {
+	return colliders.collidesWith(x, y, z);
+}
+
+bool Mesh::collidesWith(vec3 pos) {
+	return collidesWith(pos.r, pos.g, pos.b);
+}
+
 
 
 
@@ -132,6 +175,39 @@ ObjectRectangular::ObjectRectangular() {
 		20,22,23
 	};
 
+	float minX = 0.0f;
+	float minY = 0.0f;
+	float minZ = 0.0f;
+
+	float maxX = 0.0f;
+	float maxY = 0.0f;
+	float maxZ = 0.0f;
+
+	bool initiated = false;
+
+	// Colliders
+	for (unsigned i = 0; i < (sizeof(vertices) / sizeof(*vertices)); i += 11) {
+		if (!initiated) {
+			minX = vertices[i];
+			minY = vertices[i + 1];
+			minZ = vertices[i + 2];
+			maxX = vertices[i];
+			maxY = vertices[i + 1];
+			maxZ = vertices[i + 2];
+
+			initiated = true;
+		}
+		else {
+			minX = fmin(minX, vertices[i]);
+			minY = fmin(minY, vertices[i + 1]);
+			minZ = fmin(minZ, vertices[i + 2]);
+			maxX = fmax(maxX, vertices[i]);
+			maxY = fmax(maxY, vertices[i + 1]);
+			maxZ = fmax(maxZ, vertices[i + 2]);
+		}
+	}
+
+	this->colliders = { minX - 0.14f, minY - 0.14f, minZ - 0.14f, maxX + 0.14f, maxY + 0.14f, maxZ + 0.14f };
 	this->vbo = new VBO(vertices, sizeof(vertices));
 	this->ebo = new EBO(indices, sizeof(indices));
 	this->iSize = sizeof(indices);

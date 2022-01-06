@@ -180,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\camera.h" />
+    <ClInclude Include="src\headers\collider.h" />
     <ClInclude Include="src\headers\dFloat.h" />
     <ClInclude Include="src\headers\EBO.h" />
     <ClInclude Include="src\headers\light.h" />

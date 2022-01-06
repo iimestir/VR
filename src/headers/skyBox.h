@@ -13,7 +13,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "headers/camera.h"
+#include "camera.h"
 #include "shader.h"
 
 using namespace std;

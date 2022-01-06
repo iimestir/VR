@@ -1,5 +1,13 @@
 #include "headers/camera.h"
 
+bool Camera::checkCollisions(glm::vec3 pos) {
+	for (Colliders c : colliders) {
+		if (c.collidesWith(pos.r, pos.g, pos.b)) return true;
+	}
+
+	return false;
+}
+
 Camera::Camera(int width, int height, glm::vec3 position, float fov, float speed, float sensitivity) {
 	this->width = width;
 	this->height = height;
@@ -17,34 +25,43 @@ void Camera::sendMatrixToShader(Shader& shader) {
 
 void Camera::defineInputs(GLFWwindow* window) {
 	// Keyboard inputs
+	// MOVEMENTS
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		position += speed * orientation;
-		camera_time += 0.04f;
+		if (!checkCollisions(position + (speed * orientation)))
+			position += (speed * orientation);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		position += speed * -glm::normalize(glm::cross(orientation, up));
-		camera_time -= 0.1f;
+		if (!checkCollisions(position + (speed * -glm::normalize(glm::cross(orientation, up)))))
+			position += (speed * -glm::normalize(glm::cross(orientation, up)));
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		position += speed * -orientation;
+		if (!checkCollisions(position + (speed * -orientation)))
+			position += (speed * -orientation);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		position += speed * glm::normalize(glm::cross(orientation, up));
+		if (!checkCollisions(position + (speed * glm::normalize(glm::cross(orientation, up)))))
+			position += (speed * glm::normalize(glm::cross(orientation, up)));
 	}
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		position += speed * up;
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-		position += speed * -up;
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-		speed = 0.5*initialSpeed;
 
-		cout << position.r << " " << position.g << " " << position.b << " " << endl;
+	// PRONE & SPRINT
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+		speed = 0.3 * initialSpeed;
+		position.g = -0.1f;
 	}
-	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
+	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+		speed = 2.0f * initialSpeed;
+		position.g = 0.0f;
+
+		// POS DEBUG
+		cout << position.r << " " << position.g << " " << position.b << " " << endl;
+		cout << colliders.size() << endl;
+	} else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+		speed = initialSpeed;
+		position.g = 0.0f;
+	} else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
 		speed = initialSpeed;
 	}
+	
 
 	// Mouse inputs
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
@@ -83,10 +100,12 @@ void Camera::setFOV(float fov) {
 	this->fov = fov;
 }
 
-void Camera::updateMatrix(float nearPlane, float farPlane) {
-	glm::mat4 view = glm::mat4(1.0f);
-	glm::mat4 projection = glm::mat4(1.0f);
+void Camera::setColliders(vector<Colliders> colliders) {
+	this->colliders.clear();
+	this->colliders = colliders;
+}
 
+void Camera::updateMatrix(float nearPlane, float farPlane) {
 	view = glm::lookAt(position, (position + orientation), up);
 	projection = glm::perspective(glm::radians(fov), (float)width / height, nearPlane, farPlane);
 

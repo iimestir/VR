@@ -187,6 +187,9 @@
     <ClInclude Include="src\headers\skyBox.h">
       <Filter>Header Files\ShaderObjects</Filter>
     </ClInclude>
+    <ClInclude Include="src\headers\collider.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\framebuffer.vs">

@@ -74,6 +74,17 @@ public:
 	void bindRotationTo(DFloat, DFloat, DFloat);
 	void clearBounds();
 
+	bool collidesWith(float, float, float);
+	bool collidesWith(vec3 pos);
+
+	inline vector<Colliders> getColliders() {
+		vector<Colliders> result;
+
+		for (Mesh m : objects) result.push_back(m.getColliders());
+
+		return result;
+	}
+
 	inline vector<DFloat> getPositionBounds() {
 		return posiBinds;
 	}

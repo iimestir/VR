@@ -55,7 +55,7 @@ private:
 	void setDepthUniform(Shader&);
 
 	vector<Texture> retrieveMeshTextures(const aiScene*, aiMesh*, const char*);
-	Mesh retrieveMesh(const aiScene*, aiMesh*, const char*);
+	Mesh retrieveMesh(const aiScene*, aiMesh*, const char*, bool = false);
 
 	void notifyCameraPosition(Camera*);
 
@@ -78,7 +78,7 @@ public:
 	void setPPType(PPType);
 
 	unsigned addMesh(Mesh, float = 0.0f, float = 0.0f, float = 0.0f, float = 1.0f);
-	vector<unsigned> loadMesh(const char*);
+	vector<unsigned> loadMesh(const char*, bool = false);
 	unsigned addLight(Light);
 
 	void bindVertexPosition(unsigned, DFloat, DFloat, DFloat);
@@ -91,6 +91,9 @@ public:
 	void setLightColor(unsigned, float, float, float, float);
 
 	void setCameraMatrix(Camera*);
+
+	bool collidesWith(float, float, float);
+	bool collidesWith(vec3);
 
 	void enableCulling();
 	void disableCulling();

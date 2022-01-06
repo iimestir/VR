@@ -8,8 +8,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
+#include <stdio.h>
+#include <vector>
 
 #include "shader.h"
+#include "collider.h"
 
 class Camera
 {
@@ -17,7 +20,12 @@ private:
 	glm::vec3 position;
 	glm::vec3 orientation = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+
 	glm::mat4 matrix = glm::mat4(1.0f);
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 projection = glm::mat4(1.0f);
+
+	vector<Colliders> colliders;
 
 	bool firstClick = true;
 
@@ -30,7 +38,7 @@ private:
 	float initialSpeed;
 	float initialSensitivity;
 
-	float camera_time = 0.0f;
+	bool checkCollisions(glm::vec3);
 public:
 	Camera(int, int, glm::vec3, float = 45.0f, float = 0.1f, float = 100.0f);
 
@@ -39,6 +47,15 @@ public:
 	void defineInputs(GLFWwindow*);
 
 	void setFOV(float);
+	void setColliders(vector<Colliders>);
+
+	inline glm::mat4 getView() {
+		return view;
+	}
+
+	inline glm::mat4 getProjection() {
+		return projection;
+	}
 
 	inline glm::vec3 getOrientation() {
 		return orientation;

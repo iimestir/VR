@@ -162,7 +162,14 @@ void Scene::render(GLFWwindow* window, Camera* camera, unsigned width, unsigned 
 
 	setGLColor(depthColor.r, depthColor.g, depthColor.b, depthColor.a);
 
-	// Camera matrices
+	// Camera setup
+	vector<Colliders> colliders;
+	for (VAO vao : vertices) {
+		vector<Colliders> vaoC = vao.getColliders();
+		colliders.insert(colliders.end(), vaoC.begin(), vaoC.end());
+	}
+
+	camera->setColliders(colliders);
 	camera->defineInputs(window);
 	camera->updateMatrix(0.1f, 100.0f);
 
@@ -201,7 +208,7 @@ void Scene::draw(Shader& shader, Camera* camera, unsigned width, unsigned height
 	updateLightsUni();
 	setDepthUniform(shader);
 
-	// enables transparency
+	// enables transparency for alpha < 1.0f
 	glEnable(GL_BLEND);
 
 	drawVertices(shader, camera, width, height);
@@ -250,11 +257,7 @@ void Scene::drawVertices(Shader& shader, Camera* camera, unsigned width, unsigne
 			//mat4 look = lookAt(vec3(0.0f, 0.0f, 0.0f), (vec3(0.0f, 0.0f, 0.0f) + vec3(radians(z), -radians(y), radians(x))), vec3(0.0f, 1.0f, 0.0f));
 			//glUniformMatrix4fv(program.getUniformLocation("rotation"), 1, GL_FALSE, value_ptr(look));
 
-			translateOnShader(shader, i, 0.0f, 0.0f, 0.0f);
-
-			mat4 projection = perspective(radians(camera->getFOV()), (float)width / height, 0.1f, 100.0f);
-			
-			glUniformMatrix4fv(shader.getUniformLocation("camera"), 1, GL_FALSE, value_ptr(projection));
+			rotateOnShader(shader, i, 0.0f, x, y, z);
 		}
 		else {
 			quat rotation = vertices.at(i).getRotation();
@@ -377,7 +380,7 @@ vector<Texture> Scene::retrieveMeshTextures(const aiScene* pScene, aiMesh* aiMes
 	return textures;
 }
 
-Mesh Scene::retrieveMesh(const aiScene* pScene, aiMesh* aiMesh, const char* path) {
+Mesh Scene::retrieveMesh(const aiScene* pScene, aiMesh* aiMesh, const char* path, bool col) {
 	vector<GLfloat> vertices;
 	vector<GLuint> indices;
 	vector<Texture> textures;
@@ -429,10 +432,12 @@ Mesh Scene::retrieveMesh(const aiScene* pScene, aiMesh* aiMesh, const char* path
 	for(Texture tx : retrieveMeshTextures(pScene, aiMesh, path))
 		textures.push_back(tx);
 
-	return Mesh(vertices, indices, textures);
+	cout << col << endl;
+
+	return Mesh(vertices, indices, textures, col);
 }
 
-vector<unsigned> Scene::loadMesh(const char* path) {
+vector<unsigned> Scene::loadMesh(const char* path, bool col) {
 	vector<unsigned> ids;
 
 	Assimp::Importer importer;
@@ -445,7 +450,7 @@ vector<unsigned> Scene::loadMesh(const char* path) {
 	}
 
 	for (int i = 0; i < pScene->mNumMeshes; i++)
-		ids.push_back(addMesh(retrieveMesh(pScene, pScene->mMeshes[i], path)));
+		ids.push_back(addMesh(retrieveMesh(pScene, pScene->mMeshes[i], path, col)));
 
 	return ids;
 }
@@ -503,6 +508,17 @@ void Scene::setCameraMatrix(Camera* camera) {
 		light.getShader().activateShader();
 		camera->sendMatrixToShader(light.getShader());
 	}
+}
+
+bool Scene::collidesWith(float x, float y, float z) {
+	for (VAO vao : vertices)
+		if (vao.collidesWith(x, y, z)) return true;
+
+	return false;
+}
+
+bool Scene::collidesWith(vec3 pos) {
+	return collidesWith(pos.r, pos.g, pos.b);
 }
 
 void Scene::enableCulling() {

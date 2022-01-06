@@ -4,12 +4,14 @@
 #include <glad/glad.h>
 #include <stdlib.h>
 #include <vector>
+#include <algorithm>
 
 #include "shader.h"
 #include "VBO.h"
 #include "EBO.h"
 #include "texture.h"
 #include "camera.h"
+#include "collider.h"
 
 using namespace std;
 using namespace glm;
@@ -21,11 +23,13 @@ protected:
 	vector<Texture> tx;
 	vector<Texture> spec;
 
+	Colliders colliders;
+
 	size_t iSize;
 public:
 	Mesh() {}
 
-	Mesh(vector<GLfloat>, vector<GLuint>, vector<Texture>);
+	Mesh(vector<GLfloat>, vector<GLuint>, vector<Texture>, bool = false);
 
 	void setTexture(const char*);
 	void setSpecular(const char*);
@@ -39,6 +43,13 @@ public:
 	void unbindTextures();
 
 	void destroy();
+
+	bool collidesWith(float, float, float);
+	bool collidesWith(vec3);
+
+	inline Colliders getColliders() {
+		return colliders;
+	}
 
 	inline VBO* getVBO() {
 		return vbo;

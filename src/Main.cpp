@@ -63,24 +63,24 @@ int main() {
 	scene.setBackgroundColor(window, width, height, 0.0f, 0.0f, 0.0f, 0.0f);
 	scene.setPPType(PPType::DEFAULT);
 
-	//vector<unsigned> colt = scene.loadMesh("models/colt/colt.obj");
-	vector<unsigned> flashlight = scene.loadMesh("models/flashlight/Flashlight.obj");
+	vector<unsigned> colt = scene.loadMesh("models/colt/colt.obj", true);
+	//vector<unsigned> flashlight = scene.loadMesh("models/flashlight/Flashlight.obj");
 
 	scene.addMesh(
 		ObjectFlat("textures/diffuse/grass.jpg", "textures/specular/spec_grass.jpg"),
 		0.0f, -0.301f, 0.0f
 	);
+	unsigned object = scene.addMesh(ObjectRectangular("textures/diffuse/o.jpg", NULL),
+		0.0f, -0.3f, 0.0f
+	);
 
-	for (unsigned i : flashlight) {
-		scene.scaleVertex(i, 0.05f, 0.05f, 0.05f);
-		//scene.bindVertexPosition(i, DFloat(camera.getPPosX()), DFloat(camera.getPPosY()), DFloat(camera.getPPosZ()));
-		scene.bindVertexOrientation(i, DFloat(camera.getPOriX()), DFloat(camera.getPOriY()), DFloat(camera.getPOriZ()));
-	}
+	//scene.translateVertex(object, 2.0f, -0.3f, 0.0f);
 
 	/*
 	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", 
 		LightType::POINT, 0.5f, 0.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f));*/
 
+	// flash light
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		DFloat(camera.getPPosX()), DFloat(camera.getPPosY()), DFloat(camera.getPPosZ()),
 		DFloat(camera.getPOriX()), DFloat(camera.getPOriY()), DFloat(camera.getPOriZ()),

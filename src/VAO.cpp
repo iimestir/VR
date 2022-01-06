@@ -65,6 +65,17 @@ void VAO::clearBounds() {
 	posiBinds.clear();
 }
 
+bool VAO::collidesWith(float x, float y, float z) {
+	for (Mesh m : objects)
+		if (m.collidesWith(x, y, z)) return true;
+
+	return false;
+}
+
+bool VAO::collidesWith(vec3 pos) {
+	return collidesWith(pos.r, pos.g, pos.b);
+}
+
 void VAO::bindMeshTextures() {
 	for (Mesh obj : objects)
 		obj.bindTextures();
