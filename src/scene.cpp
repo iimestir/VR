@@ -163,13 +163,7 @@ void Scene::render(GLFWwindow* window, Camera* camera, unsigned width, unsigned 
 	setGLColor(depthColor.r, depthColor.g, depthColor.b, depthColor.a);
 
 	// Camera setup
-	vector<Colliders> colliders;
-	for (VAO vao : vertices) {
-		vector<Colliders> vaoC = vao.getColliders();
-		colliders.insert(colliders.end(), vaoC.begin(), vaoC.end());
-	}
-
-	camera->setColliders(colliders);
+	//camera->setColliders(getColliders());
 	camera->defineInputs(window);
 	camera->updateMatrix(0.1f, 100.0f);
 
@@ -356,6 +350,11 @@ unsigned Scene::addMesh(Mesh obj, float posX, float posY, float posZ, float alph
 vector<Texture> Scene::retrieveMeshTextures(const aiScene* pScene, aiMesh* aiMesh, const char* path) {
 	vector<Texture> textures;
 
+	// Checks if the material is already loaded
+	auto it = loadedMaterials.find(aiMesh->mMaterialIndex);
+	if (it != loadedMaterials.end())
+		return it->second;
+
 	const aiMaterial* material = pScene->mMaterials[aiMesh->mMaterialIndex];
 
 	aiString aiPath;
@@ -376,6 +375,8 @@ vector<Texture> Scene::retrieveMeshTextures(const aiScene* pScene, aiMesh* aiMes
 			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex1", 1));
 		}
 	}
+
+	loadedMaterials[aiMesh->mMaterialIndex] = textures;
 
 	return textures;
 }
@@ -431,8 +432,6 @@ Mesh Scene::retrieveMesh(const aiScene* pScene, aiMesh* aiMesh, const char* path
 
 	for(Texture tx : retrieveMeshTextures(pScene, aiMesh, path))
 		textures.push_back(tx);
-
-	cout << col << endl;
 
 	return Mesh(vertices, indices, textures, col);
 }
@@ -508,6 +507,16 @@ void Scene::setCameraMatrix(Camera* camera) {
 		light.getShader().activateShader();
 		camera->sendMatrixToShader(light.getShader());
 	}
+}
+
+vector<Colliders> Scene::getColliders() {
+	vector<Colliders> colliders;
+	for (VAO vao : vertices) {
+		vector<Colliders> vaoC = vao.getColliders();
+		colliders.insert(colliders.end(), vaoC.begin(), vaoC.end());
+	}
+
+	return colliders;
 }
 
 bool Scene::collidesWith(float x, float y, float z) {

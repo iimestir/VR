@@ -49,14 +49,15 @@ void Camera::defineInputs(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
 		speed = 0.3 * initialSpeed;
 		position.g = -0.1f;
+
+		// POS DEBUG
+		cout << position.r << " " << position.g << " " << position.b << " " << endl;
+		cout << colliders.size() << endl;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 		speed = 2.0f * initialSpeed;
 		position.g = 0.0f;
 
-		// POS DEBUG
-		cout << position.r << " " << position.g << " " << position.b << " " << endl;
-		cout << colliders.size() << endl;
 	} else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
 		speed = initialSpeed;
 		position.g = 0.0f;

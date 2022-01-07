@@ -13,6 +13,7 @@
 #include <glm/ext.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <map>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -40,6 +41,8 @@ private:
 	SkyBox sb;
 
 	vec4 depthColor;
+
+	map<unsigned, vector<Texture>> loadedMaterials;
 
 	void registerVertexOnShader(Shader&, unsigned);
 	void registerLightOnShader(unsigned);
@@ -91,6 +94,8 @@ public:
 	void setLightColor(unsigned, float, float, float, float);
 
 	void setCameraMatrix(Camera*);
+
+	vector<Colliders> getColliders();
 
 	bool collidesWith(float, float, float);
 	bool collidesWith(vec3);
