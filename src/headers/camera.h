@@ -10,9 +10,11 @@
 #include <glm/gtx/vector_angle.hpp>
 #include <stdio.h>
 #include <vector>
+#include <math.h>
 
 #include "shader.h"
 #include "collider.h"
+#include "audio.h"
 
 class Camera
 {
@@ -27,7 +29,10 @@ private:
 
 	vector<Colliders> colliders;
 
+	float d = 0.0f;
+
 	bool firstClick = true;
+	bool firstStep = true;
 
 	int width;
 	int height;
@@ -39,6 +44,7 @@ private:
 	float initialSensitivity;
 
 	bool checkCollisions(glm::vec3);
+	void move(glm::vec3);
 public:
 	Camera(int, int, glm::vec3, float = 45.0f, float = 0.1f, float = 100.0f);
 

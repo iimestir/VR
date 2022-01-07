@@ -10,11 +10,17 @@
 #include "headers/camera.h"
 #include "headers/light.h"
 #include "headers/postProcess.h"
+#include "headers/audio.h"
 
 using namespace std;
 using namespace glm;
 
 int main() {
+	// Sounds setup
+	Audio::getInstance().playMusic("sounds/music.wav", 20.0f);
+	Audio::getInstance().pushSound("sounds/step1.wav");
+	Audio::getInstance().pushSound("sounds/step2.wav");
+
 	/*
 	SETUP
 	*/

@@ -23,36 +23,43 @@ void Camera::sendMatrixToShader(Shader& shader) {
 	glUniformMatrix4fv(shader.getUniformLocation("camera"), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
+void Camera::move(glm::vec3 dpos) {
+	if (checkCollisions(position + dpos))
+		return;
+
+	position += dpos;
+
+	this->d += 0.012f * (speed / initialSpeed);
+	if (this->d > 1.0f) {
+		Audio::getInstance().playSound(firstStep);
+		firstStep = !firstStep;
+		this->d = 0.0f;
+	}
+}
+
 // Inspired by : https://www.youtube.com/playlist?list=PLPaoO-vpZnumdcb4tZc4x5Q-v7CkrQ6M-
 // Victor Godran's "OpenGL Tutorials"
 void Camera::defineInputs(GLFWwindow* window) {
 	// Keyboard inputs
 	// MOVEMENTS
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		if (!checkCollisions(position + (speed * orientation)))
-			position += (speed * orientation);
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		if (!checkCollisions(position + (speed * -glm::normalize(glm::cross(orientation, up)))))
-			position += (speed * -glm::normalize(glm::cross(orientation, up)));
-	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		if (!checkCollisions(position + (speed * -orientation)))
-			position += (speed * -orientation);
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		if (!checkCollisions(position + (speed * glm::normalize(glm::cross(orientation, up)))))
-			position += (speed * glm::normalize(glm::cross(orientation, up)));
-	}
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		move((speed * orientation));
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		move((speed * -glm::normalize(glm::cross(orientation, up))));
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		move((speed * -orientation));
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		move((speed * glm::normalize(glm::cross(orientation, up))));
 
 	// PRONE & SPRINT
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
 		speed = 0.3 * initialSpeed;
-		position.g = -0.1f;
+		position.g = -0.5f;
 
 		// POS DEBUG
-		cout << position.r << " " << position.g << " " << position.b << " " << endl;
-		cout << colliders.size() << endl;
+		cout << "World Pos: " << position.r << " " << position.g << " " << position.b << " " << endl;
+		cout << "Colliders: " << colliders.size() << endl;
+		cout << "d: " << this->d << endl;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 		speed = 2.0f * initialSpeed;
