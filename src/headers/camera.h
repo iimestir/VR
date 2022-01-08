@@ -33,6 +33,7 @@ private:
 
 	bool firstClick = true;
 	bool firstStep = true;
+	bool freeCam = false;
 
 	int width;
 	int height;

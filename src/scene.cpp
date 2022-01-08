@@ -519,6 +519,11 @@ vector<Colliders> Scene::getColliders() {
 	return colliders;
 }
 
+void Scene::destroyVertex(unsigned index) {
+	vertices.at(index).destroy();
+	vertices.erase(vertices.begin() + index);
+}
+
 bool Scene::collidesWith(float x, float y, float z) {
 	for (VAO vao : vertices)
 		if (vao.collidesWith(x, y, z)) return true;

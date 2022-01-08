@@ -97,6 +97,8 @@ public:
 
 	vector<Colliders> getColliders();
 
+	void destroyVertex(unsigned);
+
 	bool collidesWith(float, float, float);
 	bool collidesWith(vec3);
 
@@ -113,10 +115,6 @@ public:
 
 	inline GLuint getShaderID() {
 		return program.getID();
-	}
-
-	inline VAO getVertex(unsigned index) {
-		return vertices.at(index);
 	}
 };
 

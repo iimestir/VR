@@ -17,15 +17,15 @@ using namespace glm;
 
 int main() {
 	// Sounds setup
-	Audio::getInstance().playMusic("sounds/music.wav", 20.0f);
+	Audio::getInstance().playMusic("sounds/music.wav", 12.0f);
 	Audio::getInstance().pushSound("sounds/step1.wav");
 	Audio::getInstance().pushSound("sounds/step2.wav");
 
 	/*
 	SETUP
 	*/
-	const unsigned width = 1280;
-	const unsigned height = 720;
+	const unsigned width = 1920;
+	const unsigned height = 1080;
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -66,7 +66,7 @@ int main() {
 	Scene scene("shaders/world.vs", "shaders/world.fs", width, height, sky);
 	Camera camera(width, height, vec3(0.0f, 0.0f, 3.0f), 80.0f, 0.015f, 100.0f);
 	scene.setBackgroundColor(window, width, height, 0.0f, 0.0f, 0.0f, 0.0f);
-	scene.setPPType(PPType::DEFAULT);
+	scene.setPPType(PPType::OUTLINE);
 
 	/*
 	vector<unsigned> colt = scene.loadMesh("models/colt/colt.obj", true);
@@ -81,11 +81,6 @@ int main() {
 	scene.loadMesh("models/maze/maze.obj", true);
 
 	// flash light
-	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::POINT,
-		0.0f, 0.0f, 3.0f,
-		0.0f, -1.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 1.0f));
-
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		DFloat(camera.getPPosX()), DFloat(camera.getPPosY()), DFloat(camera.getPPosZ()),
 		DFloat(camera.getPOriX()), DFloat(camera.getPOriY()), DFloat(camera.getPOriZ()),

@@ -97,11 +97,6 @@ void Mesh::destroy() {
 	vbo->deleteBO();
 	ebo->deleteBO();
 
-	for (Texture diffusion : tx)
-		diffusion.deleteTexture();
-	for (Texture specular : spec)
-		specular.deleteTexture();
-
 	free(vbo);
 	free(ebo);
 	tx.clear();

@@ -29,7 +29,6 @@ void Camera::move(glm::vec3 dpos) {
 
 	position += dpos;
 
-	this->d += 0.012f * (speed / initialSpeed);
 	if (this->d > 1.0f) {
 		Audio::getInstance().playSound(firstStep);
 		firstStep = !firstStep;
@@ -40,26 +39,47 @@ void Camera::move(glm::vec3 dpos) {
 // Inspired by : https://www.youtube.com/playlist?list=PLPaoO-vpZnumdcb4tZc4x5Q-v7CkrQ6M-
 // Victor Godran's "OpenGL Tutorials"
 void Camera::defineInputs(GLFWwindow* window) {
+	bool stopS = false;
+
 	// Keyboard inputs
 	// MOVEMENTS
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		move((speed * orientation));
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+
+		if (!stopS) {
+			this->d += 0.009f * (speed / initialSpeed);
+			stopS = true;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 		move((speed * -glm::normalize(glm::cross(orientation, up))));
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+
+		if (!stopS) {
+			this->d += 0.009f * (speed / initialSpeed);
+			stopS = true;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
 		move((speed * -orientation));
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+
+		if (!stopS) {
+			this->d += 0.009f * (speed / initialSpeed);
+			stopS = true;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		move((speed * glm::normalize(glm::cross(orientation, up))));
+
+		if (!stopS) {
+			this->d += 0.009f * (speed / initialSpeed);
+			stopS = true;
+		}
+	}
 
 	// PRONE & SPRINT
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
 		speed = 0.3 * initialSpeed;
 		position.g = -0.5f;
-
-		// POS DEBUG
-		cout << "World Pos: " << position.r << " " << position.g << " " << position.b << " " << endl;
-		cout << "Colliders: " << colliders.size() << endl;
-		cout << "d: " << this->d << endl;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 		speed = 2.0f * initialSpeed;
@@ -72,8 +92,18 @@ void Camera::defineInputs(GLFWwindow* window) {
 		speed = initialSpeed;
 	}
 
+	// DEBUG
+	if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
+		freeCam = true;
+		cout << "World Pos: " << position.r << " " << position.g << " " << position.b << " " << endl;
+		cout << "Colliders: " << colliders.size() << endl;
+		cout << "d: " << this->d << endl;
+	} else if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_RELEASE) {
+		freeCam = false;
+	}
+
 	// Mouse inputs
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+	if (!freeCam) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);	// hides cursor
 
 		if (firstClick) {
