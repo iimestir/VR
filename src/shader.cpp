@@ -30,6 +30,9 @@ Shader::Shader(const char* vFile, const char* fFile) {
 	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
 	glCompileShader(fragmentShader);
 
+	compileErrors(vertexShader, "VERTEX", vFile);
+	compileErrors(fragmentShader, "FRAGMENT", fFile);
+
 	ID = glCreateProgram();
 
 	glAttachShader(ID, vertexShader);
@@ -49,26 +52,24 @@ void Shader::deleteShader() {
 	glDeleteProgram(ID);
 }
 
-void Shader::compileErrors(unsigned int shader, const char* type) {
-	// Stores status of compilation
+void Shader::compileErrors(unsigned int shader, const char* type, const char* path) {
 	GLint hasCompiled;
-	// Character array to store error message in
 	char infoLog[1024];
-	if (type != "PROGRAM")
-	{
+
+	if (type != "PROGRAM") {
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &hasCompiled);
-		if (hasCompiled == GL_FALSE)
-		{
+
+		if (hasCompiled == GL_FALSE) {
 			glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-			std::cout << "SHADER_COMPILATION_ERROR for:" << type << "\n" << infoLog << std::endl;
+			std::cout << "ERROR (" << path << ")" << endl;
+			std::cout << "SHADER_COMPILATION_ERROR for: " << type << "\n" << infoLog << std::endl;
 		}
-	}
-	else
-	{
+	} else {
 		glGetProgramiv(shader, GL_LINK_STATUS, &hasCompiled);
-		if (hasCompiled == GL_FALSE)
-		{
+
+		if (hasCompiled == GL_FALSE) {
 			glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+			std::cout << "ERROR (" << path << ")" << endl;
 			std::cout << "SHADER_LINKING_ERROR for:" << type << "\n" << infoLog << std::endl;
 		}
 	}

@@ -23,7 +23,7 @@ public:
 	void activateShader();
 	void deleteShader();
 
-	void compileErrors(unsigned int, const char*);
+	void compileErrors(unsigned int, const char*, const char*);
 
 	inline GLuint getID() {
 		return Shader::ID;

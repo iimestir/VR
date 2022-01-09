@@ -108,6 +108,7 @@ void VAO::rotateEuler(float x, float y, float z) {
 	vec3 euler(x, y, z);
 	quat quaterion = quat(euler);
 
+	orientation = euler;
 	rotate(quaterion.w, quaterion.x, quaterion.y, quaterion.z);
 }
 

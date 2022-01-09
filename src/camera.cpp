@@ -17,6 +17,8 @@ Camera::Camera(int width, int height, glm::vec3 position, float fov, float speed
 	this->initialSpeed = speed;
 	this->initialSensitivity = sensitivity;
 	this->fov = fov;
+
+	this->initialFov = fov;
 }
 
 void Camera::sendMatrixToShader(Shader& shader) {
@@ -80,26 +82,31 @@ void Camera::defineInputs(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
 		speed = 0.3 * initialSpeed;
 		position.g = -0.5f;
-	}
-	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+		fov = initialFov;
+	} else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 		speed = 2.0f * initialSpeed;
-		position.g = 0.0f;
+		fov = 1.2f * initialFov;
 
+		position.g = 0.0f;
 	} else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
 		speed = initialSpeed;
+		fov = initialFov;
+
 		position.g = 0.0f;
 	} else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
 		speed = initialSpeed;
+		fov = initialFov;
 	}
 
 	// DEBUG
 	if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
-		freeCam = true;
 		cout << "World Pos: " << position.r << " " << position.g << " " << position.b << " " << endl;
 		cout << "Colliders: " << colliders.size() << endl;
 		cout << "d: " << this->d << endl;
-	} else if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_RELEASE) {
-		freeCam = false;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+		freeCam = !freeCam;
 	}
 
 	// Mouse inputs

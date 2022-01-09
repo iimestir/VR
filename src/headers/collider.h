@@ -1,6 +1,8 @@
 #ifndef COLLIDER_H
 #define COLLIDER_H
 
+using namespace std;
+
 struct Colliders {
 	float minX;
 	float minY;

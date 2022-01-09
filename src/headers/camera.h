@@ -41,6 +41,7 @@ private:
 	float speed;
 	float sensitivity;	
 	float fov;
+	float initialFov;
 	float initialSpeed;
 	float initialSensitivity;
 

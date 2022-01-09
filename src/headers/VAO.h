@@ -20,10 +20,12 @@ private:
 	mat4 matrix = mat4(1.0f);
 	vec3 translation = vec3(0.0f, 0.0f, 0.0f);
 	quat rotation = quat(0.0f, 0.0f, 0.0f, 0.0f);
+	vec3 orientation = vec3(0.0f, 0.0f, 0.0f);
 	vec3 scaling = vec3(1.0f, 1.0f, 1.0f);
 
 	vector<DFloat> posiBinds;
 	vector<DFloat> oriBinds;
+
 	float alpha = 1.0f;
 
 	void linkAttributes(VBO&, GLuint, GLuint, GLenum, GLsizeiptr, void*);
@@ -59,6 +61,10 @@ public:
 
 	inline quat getRotation() {
 		return rotation;
+	}
+
+	inline vec3 getRotationEuler() {
+		return orientation;
 	}
 
 	inline vec3 getScale() {

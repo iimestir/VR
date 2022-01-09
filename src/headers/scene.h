@@ -62,8 +62,8 @@ private:
 
 	void notifyCameraPosition(Camera*);
 
-	void draw(Shader&, Camera*, unsigned, unsigned);
-	void drawVertices(Shader&, Camera*, unsigned, unsigned);
+	void draw(Camera*, unsigned, unsigned);
+	void drawVertices(Camera*, unsigned, unsigned);
 	void drawLights(Camera*, unsigned, unsigned);
 	void drawUnLightedObjects(Camera*, unsigned, unsigned);
 public:

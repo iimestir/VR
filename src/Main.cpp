@@ -84,7 +84,37 @@ int main() {
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		DFloat(camera.getPPosX()), DFloat(camera.getPPosY()), DFloat(camera.getPPosZ()),
 		DFloat(camera.getPOriX()), DFloat(camera.getPOriY()), DFloat(camera.getPOriZ()),
-		1.0f, 1.0f, 1.0f, 1.0f));
+		1.0f, 1.0f, 1.0f, 1.0f)
+	);
+
+	// Red lights
+	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", LightType::POINT,
+		0.0f, 1.0f, 3.0f,
+		0.0f, -1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f, 1.0f)
+	);
+	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", LightType::POINT,
+		4.7f, 1.0f, 34.0f,
+		0.0f, -1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f, 1.0f)
+	);
+	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", LightType::POINT,
+		-9.0f, 1.0f, 53.0f,
+		0.0f, -1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f, 1.0f)
+	);
+	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", LightType::POINT,
+		8.0f, 1.0f, 53.0f,
+		0.0f, -1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f, 1.0f)
+	);
+
+	// Blue lights
+	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", LightType::POINT,
+		-16.0f, 1.0f, 19.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 1.0f)
+	);
 
 	// Collisions
 	camera.setColliders(scene.getColliders());

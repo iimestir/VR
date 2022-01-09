@@ -9,12 +9,13 @@ in vec3 currentPos;
 uniform sampler2D tex0;
 uniform sampler2D tex1;
 uniform vec3 camPos;
-uniform vec3 lightOrientation;
+//uniform vec3 lightOrientation;
 
 uniform int lightSize;
-uniform float lightPos[256];
-uniform float lightColor[256];
-uniform float lightType[256];
+uniform float lightPos[64];
+uniform float lightColor[64];
+uniform float lightType[64];
+uniform float lightOrientation[64];
 uniform float vAlpha;
 
 uniform vec4 depthColor;
@@ -30,7 +31,7 @@ float logisticDepth(float depth, float steepness = 0.5f, float offset = 1.0f) {
 vec4 pointLight(vec3 light, vec4 light_color) {
 	float a = 0.05;
 	float b = 0.02;
-	float ambient = 0.15f;
+	float ambient = 0.0f;
 	float specLight = 0.50f;
 
 	vec3 lightV = light - currentPos;
@@ -53,9 +54,9 @@ vec4 pointLight(vec3 light, vec4 light_color) {
 }
 
 vec4 spotLight(vec3 ori, vec3 light, vec4 light_color) {
-	float outCone = 0.90f;
+	float outCone = 0.85f;
 	float inCone = 0.95f;
-	float ambient = 0.15f;
+	float ambient = 0.0f;
 
 	vec3 nrm = normalize(normal);
 	vec3 lightDirection = normalize(light - currentPos);
@@ -100,17 +101,17 @@ void main() {
 
 	int ty = 0;
 
-	vec3 ori = vec3(0.85f, -1.0f, 0.0f);
-
 	for(int i = 0; i < lightSize*3; i+=3) {
 		vec3 pos = vec3(lightPos[i], lightPos[i+1], lightPos[i+2]);
+		vec3 ori = vec3(lightOrientation[i], lightOrientation[i+1], lightOrientation[i+2]);
+		vec4 col = vec4(vec4(lightColor[i], lightColor[i+1], lightColor[i+2], 1.0f));
 
 		if(lightType[ty] == 0.0f)
-			output += spotLight(lightOrientation, pos, vec4(vec4(lightColor[i], lightColor[i+1], lightColor[i+2], 1.0f)));
+			output += spotLight(ori, pos, col);
 		else if(lightType[ty] == 1.0f)
-			output += pointLight(pos, vec4(vec4(lightColor[i], lightColor[i+1], lightColor[i+2], 1.0f)));
+			output += pointLight(pos, col);
 		else if(lightType[ty] == 2.0f)
-			output += directLight(vec4(vec4(lightColor[i], lightColor[i+1], lightColor[i+2], 1.0f)));
+			output += directLight(col);
 
 		ty++;
 	}

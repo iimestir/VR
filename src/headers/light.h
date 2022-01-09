@@ -30,8 +30,8 @@ public:
 		float red = 1.0f, float green = 1.0f, float blue = 1.0f, float alpha = 1.0f
 	);
 
-	inline quat getOrientation() {
-		return vao.getRotation();
+	inline vec3 getOrientation() {
+		return vao.getRotationEuler();
 	}
 
 	inline vector<DFloat> getOrientationBounds() {
