@@ -8,6 +8,8 @@ Mesh::Mesh(vector<GLfloat> vertices, vector<GLuint> indices, vector<Texture> tex
 			tx.push_back(t);
 		else if (t.getType() == "tex1")
 			spec.push_back(t);
+		else if (t.getType() == "tex2")
+			nrm.push_back(t);
 	}
 
 	float minX = 0.0f;
@@ -57,12 +59,19 @@ void Mesh::setSpecular(const char* specular) {
 	spec.push_back(Texture(specular, "tex1", 1));
 }
 
+void Mesh::setNormal(const char* normal) {
+	nrm.push_back(Texture(normal, "tex2", 1));
+}
+
 void Mesh::registerTextures(Shader& shader) {
 	for (Texture diffusion : tx)
-		diffusion.texUnit(shader, "tex0", 0);
+		diffusion.registerTexture(shader, "tex0", 0);
 
 	for (Texture specular : spec)
-		specular.texUnit(shader, "tex1", 1);
+		specular.registerTexture(shader, "tex1", 1);
+
+	for (Texture normal : nrm)
+		normal.registerTexture(shader, "tex2", 1);
 }
 
 void Mesh::bind() {
@@ -75,22 +84,6 @@ void Mesh::unbind() {
 	ebo->unbind();
 }
 
-void Mesh::bindTextures() {
-	for (Texture diffusion : tx)
-		diffusion.bind();
-
-	for (Texture specular : spec)
-		specular.bind();
-}
-
-void Mesh::unbindTextures() {
-	for (Texture diffusion : tx)
-		diffusion.unbind();
-
-	for (Texture specular : spec)
-		specular.unbind();
-}
-
 void Mesh::destroy() {
 	unbind();
 
@@ -101,6 +94,7 @@ void Mesh::destroy() {
 	free(ebo);
 	tx.clear();
 	spec.clear();
+	nrm.clear();
 }
 
 bool Mesh::collidesWith(float x, float y, float z) {
@@ -111,6 +105,10 @@ bool Mesh::collidesWith(vec3 pos) {
 	return collidesWith(pos.r, pos.g, pos.b);
 }
 
+void Mesh::setCollidersAction(function<void(unsigned)> f, unsigned id) {
+	colliders.handle = f;
+	colliders.vaoID = id;
+}
 
 
 

@@ -3,6 +3,8 @@
 
 #include <glad/glad.h>
 #include <vector>
+#include <functional>
+#include <iostream>
 
 #include "VBO.h"
 #include "mesh.h"
@@ -39,13 +41,25 @@ public:
 	void unbind();
 
 	void draw();
-	void bindMeshTextures();
-	void unbindMeshTextures();
 	void registerMeshTextures(Shader& shader);
 
 	void destroy();
 
 	void setAlpha(float);
+
+	void translate(float, float, float);
+	void rotate(float, float, float, float);
+	void rotateEuler(float, float, float);
+	void scale(float, float, float);
+
+	void bindPositionTo(DFloat, DFloat, DFloat);
+	void bindRotationTo(DFloat, DFloat, DFloat);
+	void clearBounds();
+
+	bool collidesWith(float, float, float);
+	bool collidesWith(vec3 pos);
+
+	void setCollidersAction(function<void(unsigned)>, unsigned);
 
 	inline float getAlpha() {
 		return alpha;
@@ -70,18 +84,6 @@ public:
 	inline vec3 getScale() {
 		return scaling;
 	}
-
-	void translate(float, float, float);
-	void rotate(float, float, float, float);
-	void rotateEuler(float, float, float);
-	void scale(float, float, float);
-
-	void bindPositionTo(DFloat, DFloat, DFloat);
-	void bindRotationTo(DFloat, DFloat, DFloat);
-	void clearBounds();
-
-	bool collidesWith(float, float, float);
-	bool collidesWith(vec3 pos);
 
 	inline vector<Colliders> getColliders() {
 		vector<Colliders> result;

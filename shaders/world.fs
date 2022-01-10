@@ -8,8 +8,8 @@ in vec3 currentPos;
 
 uniform sampler2D tex0;
 uniform sampler2D tex1;
+uniform sampler2D tex2;
 uniform vec3 camPos;
-//uniform vec3 lightOrientation;
 
 uniform int lightSize;
 uniform float lightPos[64];
@@ -24,56 +24,69 @@ float linearizeDepth(float depth, float near = 0.1f, float far = 100.0f) {
 	return (2.0f * near * far) / (far + near - (depth * 2.0f - 1.0f) * (far - near));
 }
 
-float logisticDepth(float depth, float steepness = 0.5f, float offset = 1.0f) {
+float logisticDepth(float depth, float steepness = 0.2f, float offset = 0.5f) {
 	return (1 / (1 + exp(-steepness * (linearizeDepth(depth) - offset))));
 }
 
 vec4 pointLight(vec3 light, vec4 light_color) {
-	float a = 0.05;
-	float b = 0.02;
+	float a = 0.3f;
+	float b = 0.02f;
 	float ambient = 0.0f;
-	float specLight = 0.50f;
+	float specLight = 0.5f;
 
 	vec3 lightV = light - currentPos;
 	float dist = length(lightV);
 
-	float intensity = 1.0f / (a * dist * dist+b * dist+1.0f);
-
+	// TODO : Bump MAP
 	vec3 nrm = normalize(normal);
+	//vec3 nrm = normalize(texture(tex2, texCoord).xyz * 2.0f - 1.0f);
 	vec3 lightDirection = normalize(lightV);
 
-	float diffusion = max(dot(nrm, lightDirection), 0.0f);
-	
-	vec3 viewDirection = normalize(camPos - currentPos);
-	vec3 refDirection = reflect(-lightDirection, nrm);
+	float diffuse = 1.0f;
+	//float diffuse = max(dot(nrm, lightDirection), 0.0f);
+	float specular = 0.0f;
+	if (diffuse != 0.0f)
+	{
+		float specLight = 0.50f;
+		vec3 viewDirection = normalize(camPos - currentPos);
+		vec3 refDirection = reflect(-lightDirection, nrm);
 
-	float specAmount = pow(max(dot(viewDirection, refDirection), 0.0f), 16);
-	float specular = specAmount * specLight;
+		float specAmount = pow(max(dot(viewDirection, refDirection), 0.5f), 16);
+		specular = specAmount * specLight;
+	};
 
-	return (texture(tex0, texCoord) * (diffusion * intensity + ambient) + texture(tex1, texCoord).r * specular * intensity) * light_color;
+	float intensity = 1.0f / (a * dist * dist+b * dist+1.0f);
+
+	return (texture(tex0, texCoord) * (diffuse * intensity + ambient) + texture(tex1, texCoord).r * specular * intensity) * light_color;
 }
 
 vec4 spotLight(vec3 ori, vec3 light, vec4 light_color) {
-	float outCone = 0.85f;
+	float outCone = 0.82f;
 	float inCone = 0.95f;
 	float ambient = 0.0f;
 
+	// TODO : Bump MAP
 	vec3 nrm = normalize(normal);
+	//vec3 nrm = normalize(texture(tex2, texCoord).xyz * 2.0f - 1.0f);
 	vec3 lightDirection = normalize(light - currentPos);
 
-	float diffusion = max(dot(nrm, lightDirection), 0.0f);
+	float diffuse = 1.0f;
+	//float diffuse = max(dot(nrm, lightDirection), 0.0f);
+	float specular = 0.0f;
+	if (diffuse != 0.0f)
+	{
+		float specLight = 0.50f;
+		vec3 viewDirection = normalize(camPos - currentPos);
+		vec3 refDirection = reflect(-lightDirection, nrm);
 
-	float specLight = 0.50f;
-	vec3 viewDirection = normalize(camPos - currentPos);
-	vec3 refDirection = reflect(-lightDirection, nrm);
-
-	float specAmount = pow(max(dot(viewDirection, refDirection), 0.0f), 16);
-	float specular = specAmount * specLight;
+		float specAmount = pow(max(dot(viewDirection, refDirection), 0.5f), 16);
+		specular = specAmount * specLight;
+	};
 
 	float angle = dot(ori, -lightDirection);
 	float intensity = clamp((angle - outCone) / (inCone - outCone), 0.0f, 1.0f);
 
-	return (texture(tex0, texCoord) * (diffusion * intensity + ambient) + texture(tex1, texCoord).r * specular * intensity) * light_color;
+	return (texture(tex0, texCoord) * (diffuse * intensity + ambient) + texture(tex1, texCoord).r * specular * intensity) * light_color;
 }
 
 vec4 directLight(vec4 light_color) {
@@ -81,7 +94,8 @@ vec4 directLight(vec4 light_color) {
 
 	float ambient = 0.15f;
 
-	vec3 nrm = normalize(normal);
+	//vec3 nrm = normalize(normal);
+	vec3 nrm = normalize(texture(tex2, texCoord).xyz * 2.0f - 1.0f);
 	vec3 lightDirection = normalize(source);
 
 	float diffusion = max(dot(nrm, lightDirection), 0.0f);

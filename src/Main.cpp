@@ -54,19 +54,19 @@ int main() {
 	// SkyBox
 	// https://jaxry.github.io/panorama-to-cubemap/
 	vector<std::string> sky {
-		"textures/skybox/night/right.jpg",
-		"textures/skybox/night/left.jpg",
-		"textures/skybox/night/top.jpg",
-		"textures/skybox/night/bottom.jpg",
-		"textures/skybox/night/front.jpg",
-		"textures/skybox/night/back.jpg"
+		"textures/skybox/starnight/right.jpg",
+		"textures/skybox/starnight/left.jpg",
+		"textures/skybox/starnight/top.jpg",
+		"textures/skybox/starnight/bottom.jpg",
+		"textures/skybox/starnight/front.jpg",
+		"textures/skybox/starnight/back.jpg"
 	};
 
 	// Generates shader object using vShader and fShader files
 	Scene scene("shaders/world.vs", "shaders/world.fs", width, height, sky);
 	Camera camera(width, height, vec3(0.0f, 0.0f, 3.0f), 80.0f, 0.015f, 100.0f);
 	scene.setBackgroundColor(window, width, height, 0.0f, 0.0f, 0.0f, 0.0f);
-	scene.setPPType(PPType::OUTLINE);
+	scene.setPPType(PPType::DEFAULT);
 
 	/*
 	vector<unsigned> colt = scene.loadMesh("models/colt/colt.obj", true);
@@ -78,46 +78,79 @@ int main() {
 	*/
 
 	// Load our hand-made maze by blender
-	scene.loadMesh("models/maze/maze.obj", true);
+	vector<unsigned> maze = scene.loadMesh("models/maze/maze.obj", true);
 
 	// flash light
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		DFloat(camera.getPPosX()), DFloat(camera.getPPosY()), DFloat(camera.getPPosZ()),
 		DFloat(camera.getPOriX()), DFloat(camera.getPOriY()), DFloat(camera.getPOriZ()),
-		1.0f, 1.0f, 1.0f, 1.0f)
+		0.8f, 0.8f, 0.8f, 1.0f)
 	);
 
 	// Red lights
+
 	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", LightType::POINT,
 		0.0f, 1.0f, 3.0f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f, 1.0f)
-	);
-	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", LightType::POINT,
-		4.7f, 1.0f, 34.0f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f, 1.0f)
-	);
-	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", LightType::POINT,
-		-9.0f, 1.0f, 53.0f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f, 1.0f)
-	);
-	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", LightType::POINT,
-		8.0f, 1.0f, 53.0f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f, 1.0f)
+		0.0f, 0.0f, 0.0f,
+		0.8f, 0.0f, 0.0f, 1.0f)
 	);
 
-	// Blue lights
-	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", LightType::POINT,
-		-16.0f, 1.0f, 19.0f,
+	// White Lights
+	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+		8.78f, 1.0f, 10.64f,
 		0.0f, -1.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 1.0f)
+		0.8f, 0.8f, 0.8f, 1.0f)
 	);
-
-	// Collisions
-	camera.setColliders(scene.getColliders());
+	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+		8.87f, 1.0f, 37.89f,
+		0.0f, -1.0f, 0.0f,
+		0.8f, 0.8f, 0.8f, 1.0f)
+	);
+	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+		8.87f, 1.0f, 53.76f,
+		0.0f, -1.0f, 0.0f,
+		0.8f, 0.8f, 0.8f, 1.0f)
+	);
+	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+		-0.15f, 1.0f, 70.38f,
+		0.0f, -1.0f, 0.0f,
+		0.8f, 0.8f, 0.8f, 1.0f)
+	);
+	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+		-16.35f, 1.0f, 57.02f,
+		0.0f, -1.0f, 0.0f,
+		0.8f, 0.8f, 0.8f, 1.0f)
+	);
+	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+		14.72f, 1.0f, 41.59f,
+		0.0f, -1.0f, 0.0f,
+		0.8f, 0.8f, 0.8f, 1.0f)
+	);
+	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+		-51.64f, 1.0f, 53.43f,
+		0.0f, -1.0f, 0.0f,
+		0.8f, 0.8f, 0.8f, 1.0f)
+	);
+	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+		-68.62f, 1.0f, 54.54f,
+		0.0f, -1.0f, 0.0f,
+		0.8f, 0.8f, 0.8f, 1.0f)
+	);
+	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+		-79.40f, 1.0f, 71.0f,
+		0.0f, -1.0f, 0.0f,
+		0.8f, 0.8f, 0.8f, 1.0f)
+	);
+	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+		-66.43f, 1.0f, 113.51f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, 0.8f, 0.0f, 1.0f)
+	);
+	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+		-63.40f, 1.0f, 113.51f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, 0.8f, 0.0f, 1.0f)
+	);
 
 	/*
 	END DRAWING SETUP

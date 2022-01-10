@@ -22,6 +22,10 @@ Texture::Texture(const char* image, const char* texType, GLuint slot) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+	//if (type == "tex2")
+	//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
+	//else
+
 	if (numColCh == 4)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
 	else if (numColCh == 3)
@@ -37,7 +41,8 @@ Texture::Texture(const char* image, const char* texType, GLuint slot) {
 	unbind();
 }
 
-void Texture::texUnit(Shader& shader, const char* uniform, GLuint unit) {
+void Texture::registerTexture(Shader& shader, const char* uniform, GLuint unit) {
+	bind();
 	shader.activateShader();
 	glUniform1i(shader.getUniformLocation(uniform), unit);
 }

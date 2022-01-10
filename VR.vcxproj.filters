@@ -236,5 +236,8 @@
     <Media Include="sounds\music.wav">
       <Filter>Resource Files\Sounds</Filter>
     </Media>
+    <Media Include="sounds\gasgasgas.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
   </ItemGroup>
 </Project>

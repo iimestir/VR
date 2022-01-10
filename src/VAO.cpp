@@ -76,14 +76,9 @@ bool VAO::collidesWith(vec3 pos) {
 	return collidesWith(pos.r, pos.g, pos.b);
 }
 
-void VAO::bindMeshTextures() {
-	for (Mesh obj : objects)
-		obj.bindTextures();
-}
-
-void VAO::unbindMeshTextures() {
-	for (Mesh obj : objects)
-		obj.unbindTextures();
+void VAO::setCollidersAction(function<void(unsigned)> f, unsigned id) {
+	for (unsigned i = 0; i < objects.size(); i++)
+		objects.at(i).setCollidersAction(f, id);
 }
 
 void VAO::registerMeshTextures(Shader& shader) {

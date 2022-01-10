@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <functional>
+#include <iostream>
 
 #include "shader.h"
 #include "VBO.h"
@@ -24,6 +26,7 @@ protected:
 	EBO* ebo = NULL;
 	vector<Texture> tx;
 	vector<Texture> spec;
+	vector<Texture> nrm;
 
 	Colliders colliders;
 
@@ -35,19 +38,19 @@ public:
 
 	void setTexture(const char*);
 	void setSpecular(const char*);
+	void setNormal(const char*);
 
 	void registerTextures(Shader&);
 
 	void bind();
 	void unbind();
 
-	void bindTextures();
-	void unbindTextures();
-
 	void destroy();
 
 	bool collidesWith(float, float, float);
 	bool collidesWith(vec3);
+
+	void setCollidersAction(function<void(unsigned)>, unsigned);
 
 	inline Colliders getColliders() {
 		return colliders;

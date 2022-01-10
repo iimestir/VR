@@ -15,7 +15,7 @@ private:
 public:
 	Texture(const char* image, const char* texType, GLuint slot);
 
-	void texUnit(Shader& shader, const char* uniform, GLuint unit);
+	void registerTexture(Shader& shader, const char* uniform, GLuint unit);
 	void bind();
 	void unbind();
 	void deleteTexture();

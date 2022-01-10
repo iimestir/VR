@@ -179,7 +179,7 @@ void Scene::render(GLFWwindow* window, Camera* camera, unsigned width, unsigned 
 	setGLColor(depthColor.r, depthColor.g, depthColor.b, depthColor.a);
 
 	// Camera setup
-	//camera->setColliders(getColliders());
+	camera->setColliders(getColliders());
 	camera->defineInputs(window);
 	camera->updateMatrix(0.1f, 100.0f);
 
@@ -278,7 +278,6 @@ void Scene::drawVertices(Camera* camera, unsigned width, unsigned height) {
 		registerVertexOnShader(program, i);
 
 		vertices.at(i).registerMeshTextures(program);
-		vertices.at(i).bindMeshTextures();
 		vertices.at(i).draw();
 	}
 }
@@ -341,9 +340,15 @@ unsigned Scene::addMesh(Mesh obj, float posX, float posY, float posZ, float alph
 	obj.unbind();
 
 	vao.setAlpha(alpha);
+
 	vertices.push_back(vao);
 
 	unsigned index = vertices.size() - 1;
+
+	function<void(unsigned)> f = [&](unsigned i) {
+		destroyVertexbyID(i);
+	};
+	//vertices.at(index).setCollidersAction(f, vao.getID());
 
 	return index;
 }
@@ -375,6 +380,14 @@ vector<Texture> Scene::retrieveMeshTextures(const aiScene* pScene, aiMesh* aiMes
 		if (material->GetTexture(aiTextureType_SPECULAR, 0, &aiPath, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
 			cout << "Loading specular : " << aiPath.data;
 			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex1", 1));
+			cout << " OK" << endl;
+		}
+	}
+
+	if (material->GetTextureCount(aiTextureType_HEIGHT) > 0) {
+		if (material->GetTexture(aiTextureType_HEIGHT, 0, &aiPath, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
+			cout << "Loading normal : " << aiPath.data;
+			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex2", 1));
 			cout << " OK" << endl;
 		}
 	}
@@ -454,6 +467,8 @@ vector<unsigned> Scene::loadMesh(const char* path, bool col) {
 	for (int i = 0; i < pScene->mNumMeshes; i++)
 		ids.push_back(addMesh(retrieveMesh(pScene, pScene->mMeshes[i], path, col)));
 
+	cout << "Successfully loading " << ids.size() << " models" << endl;
+
 	return ids;
 }
 
@@ -525,6 +540,14 @@ vector<Colliders> Scene::getColliders() {
 void Scene::destroyVertex(unsigned index) {
 	vertices.at(index).destroy();
 	vertices.erase(vertices.begin() + index);
+}
+
+void Scene::destroyVertexbyID(unsigned id) {
+	for(unsigned i = 0; i < vertices.size(); i++)
+		if (vertices.at(i).getID() == id) {
+			destroyVertex(i);
+			break;
+		}
 }
 
 bool Scene::collidesWith(float x, float y, float z) {

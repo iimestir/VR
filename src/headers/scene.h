@@ -98,6 +98,7 @@ public:
 	vector<Colliders> getColliders();
 
 	void destroyVertex(unsigned);
+	void destroyVertexbyID(unsigned);
 
 	bool collidesWith(float, float, float);
 	bool collidesWith(vec3);

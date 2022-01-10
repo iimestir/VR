@@ -85,7 +85,7 @@ void Camera::defineInputs(GLFWwindow* window) {
 		fov = initialFov;
 	} else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 		speed = 2.0f * initialSpeed;
-		fov = 1.2f * initialFov;
+		fov = 1.07f * initialFov;
 
 		position.g = 0.0f;
 	} else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
