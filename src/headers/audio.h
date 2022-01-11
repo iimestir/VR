@@ -2,7 +2,9 @@
 #define AUDIO_H
 
 #include <SFML/Audio.hpp>
+#include <deque>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -17,12 +19,13 @@ private:
 	Audio();
 
 	sf::Music* music;
-	sf::Sound sound;
+	sf::Sound channel1;
+	sf::Sound channel2;
 	vector<sf::SoundBuffer> buffers;
 
 public:
 	void pushSound(const char*);
-	void playSound(unsigned, float = 100.0f);
+	void playSound(unsigned, unsigned, float = 100.0f);
 	void playMusic(const char*, float = 100.0f);
 };
 

@@ -19,6 +19,8 @@ Camera::Camera(int width, int height, glm::vec3 position, float fov, float speed
 	this->fov = fov;
 
 	this->initialFov = fov;
+
+	srand(time(NULL));
 }
 
 void Camera::sendMatrixToShader(Shader& shader) {
@@ -31,10 +33,23 @@ void Camera::move(glm::vec3 dpos) {
 
 	position += dpos;
 
+	// Step sound
 	if (this->d > 1.0f) {
-		Audio::getInstance().playSound(firstStep);
-		firstStep = (firstStep + 1) % 8;
+		Audio::getInstance().playSound(footStep, 1);
+		footStep = (footStep + 1) % 8;
 		this->d = 0.0f;
+	}
+
+	// Paranormal sound
+	milliseconds instant = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+
+	if ((instant - lastPSound) >= seconds{30}) {
+		if (rand() % 10000 <= 3) {
+			int audio = rand() % 4 + 8;
+			Audio::getInstance().playSound(audio, 2);
+
+			lastPSound = instant;
+		}
 	}
 }
 

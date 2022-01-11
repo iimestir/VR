@@ -5,17 +5,18 @@ in vec3 color;
 in vec2 texCoord;
 in vec3 normalVec;
 in vec3 currentPos;
+in vec3 camPos;
+in mat3 TBN;
+
+uniform float lightColor[64];
+uniform float lightType[64];
+uniform float lightPos[64];
+uniform float lightOrientation[64];
 
 uniform sampler2D tex0;
 uniform sampler2D tex1;
 uniform sampler2D tex2;
-uniform vec3 camPos;
 
-uniform int lightSize;
-uniform float lightPos[64];
-uniform float lightColor[64];
-uniform float lightType[64];
-uniform float lightOrientation[64];
 uniform float vAlpha;
 
 uniform vec4 depthColor;
@@ -36,13 +37,10 @@ vec4 sourceLight(vec3 light, vec4 light_color) {
 	vec3 lightV = light - currentPos;
 	float dist = length(lightV);
 
-	// TODO : Bump MAP
-	vec3 nrm = normalize(normalVec); 
-	//vec3 nrm = normalize(texture(tex2, texCoord).xyz * 2.0f - 1.0f);
+	vec3 nrm = normalize(texture(tex2, texCoord).xyz * 2.0f - 1.0f);
 	vec3 lightDirection = normalize(lightV);
 
-	float diffuse = 1.0f;
-	//float diffuse = max(dot(nrm, lightDirection), 0.0f);
+	float diffuse = max(dot(nrm, lightDirection), 0.0f);
 	float specular = 0.0f;
 	if (diffuse != 0.0f)
 	{
@@ -63,14 +61,11 @@ vec4 spotLight(vec3 ori, vec3 light, vec4 light_color) {
 	float outCone = 0.82f;
 	float inCone = 0.95f;
 
-	// TODO : Bump MAP
-	vec3 nrm = normalize(normalVec); 
-	//vec3 nrm = normalize(texture(tex2, texCoord).xyz * 2.0f - 1.0f);
+	vec3 nrm = normalize(texture(tex2, texCoord).xyz * 2.0f - 1.0f);
 
 	vec3 lightDirection = normalize(light - currentPos);
 
-	float diffuse = 1.0f;
-	//float diffuse = max(dot(nrm, lightDirection), 0.0f);
+	float diffuse = max(dot(nrm, lightDirection), 0.0f);
 	float specular = 0.0f;
 	if (diffuse != 0.0f)
 	{
@@ -94,7 +89,6 @@ vec4 completeLight(vec4 light_color) {
 
 	float ambient = 0.15f;
 
-	//vec3 nrm = normalize(normalVec); 
 	vec3 nrm = normalize(texture(tex2, texCoord).xyz * 2.0f - 1.0f);
 	vec3 lightDirection = normalize(source);
 
@@ -115,9 +109,9 @@ void main() {
 
 	int ty = 0;
 
-	for(int i = 0; i < lightSize*3; i+=3) {
-		vec3 pos = vec3(lightPos[i], lightPos[i+1], lightPos[i+2]);
-		vec3 ori = vec3(lightOrientation[i], lightOrientation[i+1], lightOrientation[i+2]);
+	for(int i = 0; i < lightPos.length(); i+=3) {
+		vec3 pos = TBN * vec3(lightPos[i], lightPos[i+1], lightPos[i+2]);
+		vec3 ori = TBN * vec3(lightOrientation[i], lightOrientation[i+1], lightOrientation[i+2]);
 		vec4 col = vec4(lightColor[i], lightColor[i+1], lightColor[i+2], 1.0f);
 
 		if(lightType[ty] == 0.0f)

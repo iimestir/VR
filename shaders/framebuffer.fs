@@ -9,7 +9,7 @@ uniform int ppType;
 
 vec4 effectBW() {
 	vec4 tex = texture(screenTexture, texCoords);
-	float avg = (tex.x, tex.y, tex.z) / 3.0f;
+	float avg = (tex.x, tex.y, tex.z);
 
 	return vec4(avg, avg, avg, 1.0f);
 }

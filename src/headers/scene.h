@@ -1,7 +1,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-# define PI           3.14159265358979323846
+# define PI				3.14159265358979323846
+# define LOADER_FLAGS	aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices
 
 #include <glad/glad.h>
 #include <stdlib.h>
@@ -67,7 +68,7 @@ private:
 	void drawLights(Camera*, unsigned, unsigned);
 	void drawUnLightedObjects(Camera*, unsigned, unsigned);
 public:
-	Scene(const char*, const char*, unsigned, unsigned, vector<string>);
+	Scene(const char*, const char*, const char*, unsigned, unsigned, vector<string>);
 
 	void render(GLFWwindow*, Camera*, unsigned, unsigned);
 

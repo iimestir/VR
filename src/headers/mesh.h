@@ -90,11 +90,14 @@ class ObjectCube: public Mesh {
 public:
 	ObjectCube();
 
-	ObjectCube(const char* image, const char* specular) : ObjectCube() {
+	ObjectCube(const char* image, const char* specular, const char* normals) : ObjectCube() {
 		setTexture(image);
 
 		if (specular != NULL)
 			setSpecular(specular);
+
+		if (normals != NULL)
+			setNormal(normals);
 	}
 };
 

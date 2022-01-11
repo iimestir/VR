@@ -11,9 +11,17 @@ void Audio::pushSound(const char* path) {
 	this->buffers.push_back(buffer);
 }
 
-void Audio::playSound(unsigned index, float volume) {
-	sound.setBuffer(buffers.at(index));
-	sound.play();
+void Audio::playSound(unsigned index, unsigned channel, float volume) {
+	if (channel == 1) {
+		channel1.setBuffer(buffers.at(index));
+		channel1.setVolume(volume);
+		channel1.play();
+	}
+	else if (channel == 2 && channel2.getStatus() == sf::SoundSource::Stopped) {
+		channel2.setBuffer(buffers.at(index));
+		channel2.setVolume(volume);
+		channel2.play();
+	}
 }
 
 void Audio::playMusic(const char* path, float volume) {

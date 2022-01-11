@@ -49,7 +49,6 @@ void Scene::updateLightsUni() {
 		}
 	}
 
-	glUniform1i(program.getUniformLocation("lightSize"), lights.size());
 	glUniform1fv(program.getUniformLocation("lightPos"), pos.size(), pos.data());
 	glUniform1fv(program.getUniformLocation("lightColor"), colors.size(), colors.data());
 	glUniform1fv(program.getUniformLocation("lightType"), types.size(), types.data());
@@ -78,7 +77,6 @@ void Scene::resetLightsUni() {
 
 	types.push_back(float(LightType::COMPLETE));
 
-	glUniform1i(program.getUniformLocation("lightSize"), lights.size());
 	glUniform1fv(program.getUniformLocation("lightPos"), pos.size(), pos.data());
 	glUniform1fv(program.getUniformLocation("lightColor"), colors.size(), colors.data());
 	glUniform1fv(program.getUniformLocation("lightType"), types.size(), types.data());
@@ -149,8 +147,8 @@ void Scene::notifyCameraPosition(Camera* camera) {
 
 
 // CONSTRUCTOR
-Scene::Scene(const char* vFile, const char* fFile, unsigned width, unsigned height, vector<string> skyFaces)
-	: program(Shader(vFile, fFile)),
+Scene::Scene(const char* vFile, const char* fFile, const char* gFile, unsigned width, unsigned height, vector<string> skyFaces)
+	: program(Shader(vFile, fFile, gFile)),
 	  pp(PostProcess("shaders/framebuffer.vs", "shaders/framebuffer.fs", width, height)),
 	  sb(SkyBox("shaders/sky.vs", "shaders/sky.fs", skyFaces)) {
 
@@ -457,7 +455,7 @@ vector<unsigned> Scene::loadMesh(const char* path, bool col) {
 
 	Assimp::Importer importer;
 
-	const aiScene* pScene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
+	const aiScene* pScene = importer.ReadFile(path, LOADER_FLAGS);
 
 	if (!pScene) {
 		cout << "Error while parsing" << endl;

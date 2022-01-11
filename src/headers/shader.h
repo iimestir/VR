@@ -18,7 +18,7 @@ private:
 	GLuint ID;
 
 public:
-	Shader(const char*, const char*);
+	Shader(const char*, const char*, const char* = NULL);
 
 	void activateShader();
 	void deleteShader();

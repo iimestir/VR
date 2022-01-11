@@ -26,6 +26,11 @@ int main() {
 	Audio::getInstance().pushSound("sounds/step6.wav");
 	Audio::getInstance().pushSound("sounds/step7.wav");
 	Audio::getInstance().pushSound("sounds/step8.wav");
+	Audio::getInstance().pushSound("sounds/paranormal1.wav");
+	Audio::getInstance().pushSound("sounds/paranormal2.wav");
+	Audio::getInstance().pushSound("sounds/paranormal3.wav");
+	Audio::getInstance().pushSound("sounds/paranormal4.wav");
+	Audio::getInstance().pushSound("sounds/paranormal5.wav");
 
 	/*
 	SETUP
@@ -69,7 +74,7 @@ int main() {
 	};
 
 	// Generates shader object using vShader and fShader files
-	Scene scene("shaders/world.vs", "shaders/world.fs", width, height, sky);
+	Scene scene("shaders/world.vs", "shaders/world.fs", "shaders/world.gs", width, height, sky);
 	Camera camera(width, height, vec3(0.0f, 0.0f, 3.0f), 80.0f, 0.015f, 100.0f);
 	scene.setBackgroundColor(window, width, height, 0.0f, 0.0f, 0.0f, 0.0f);
 	scene.setPPType(PPType::DEFAULT);
@@ -127,7 +132,7 @@ int main() {
 		0.8f, 0.8f, 0.8f, 1.0f)
 	);
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
-		14.72f, 1.0f, 41.59f,
+		-14.72f, 1.0f, 41.59f,
 		0.0f, -1.0f, 0.0f,
 		0.8f, 0.8f, 0.8f, 1.0f)
 	);
@@ -156,11 +161,10 @@ int main() {
 		0.0f, -1.0f, 0.0f,
 		0.0f, 0.8f, 0.0f, 1.0f)
 	);
-	
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
-		4.30f, 1.0f, 13.30f,
+		-8.4f, 1.0f, 94.34f,
 		0.0f, -1.0f, 0.0f,
-		0.0f, 0.8f, 0.0f, 1.0f)
+		0.8f, 0.8f, 0.8f, 1.0f)
 	);
 
 	/*

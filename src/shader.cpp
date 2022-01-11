@@ -15,12 +15,17 @@ std::string getFileContents(const char* filename) {
 	throw(errno);
 }
 
-Shader::Shader(const char* vFile, const char* fFile) {
+Shader::Shader(const char* vFile, const char* fFile, const char* gFile) {
 	std::string vertexCode = getFileContents(vFile);
 	std::string fragmentCode = getFileContents(fFile);
+	std::string geometryCode;
+	if (gFile != NULL)
+		geometryCode = getFileContents(gFile);
 
 	const char* vertexSource = vertexCode.c_str();
 	const char* fragmentSource = fragmentCode.c_str();
+	const char* geometrySource;
+	if (gFile != NULL) geometrySource = geometryCode.c_str();
 
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexSource, NULL);
@@ -30,18 +35,32 @@ Shader::Shader(const char* vFile, const char* fFile) {
 	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
 	glCompileShader(fragmentShader);
 
+	GLuint geometryShader;
+
+	if (gFile != NULL) {
+		geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+		glShaderSource(geometryShader, 1, &geometrySource, NULL);
+		glCompileShader(geometryShader);
+	}
+
 	compileErrors(vertexShader, "VERTEX", vFile);
 	compileErrors(fragmentShader, "FRAGMENT", fFile);
+
+	if (gFile != NULL)
+		compileErrors(geometryShader, "GEOMETRY", fFile);
+	
 
 	ID = glCreateProgram();
 
 	glAttachShader(ID, vertexShader);
 	glAttachShader(ID, fragmentShader);
+	if (gFile != NULL) glAttachShader(ID, geometryShader);
 
 	glLinkProgram(ID);
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+	if (gFile != NULL) glDeleteShader(geometryShader);
 }
 
 void Shader::activateShader() {

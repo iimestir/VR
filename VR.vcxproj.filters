@@ -58,6 +58,9 @@
     <Filter Include="Resource Files\Sounds">
       <UniqueIdentifier>{12832a9a-e1da-4625-89fc-5ab8dc3dd1e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders\Geometry">
+      <UniqueIdentifier>{e35bc20c-d045-4d6b-8e54-ac80c35425c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\mesh.cpp">
@@ -225,18 +228,54 @@
     <None Include="shaders\sky.vs">
       <Filter>Resource Files\Shaders\Vertex</Filter>
     </None>
+    <None Include="shaders\world.gs">
+      <Filter>Resource Files\Shaders\Geometry</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Media Include="sounds\step2.wav">
       <Filter>Resource Files\Sounds</Filter>
     </Media>
-    <Media Include="sounds\step1.wav">
+    <Media Include="sounds\step3.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="sounds\step4.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="sounds\step5.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="sounds\step6.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="sounds\step7.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="sounds\step8.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="sounds\gasgasgas.wav">
       <Filter>Resource Files\Sounds</Filter>
     </Media>
     <Media Include="sounds\music.wav">
       <Filter>Resource Files\Sounds</Filter>
     </Media>
-    <Media Include="sounds\gasgasgas.wav">
+    <Media Include="sounds\paranormal1.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="sounds\paranormal2.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="sounds\paranormal3.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="sounds\paranormal4.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="sounds\paranormal5.wav">
+      <Filter>Resource Files\Sounds</Filter>
+    </Media>
+    <Media Include="sounds\step1.wav">
       <Filter>Resource Files\Sounds</Filter>
     </Media>
   </ItemGroup>

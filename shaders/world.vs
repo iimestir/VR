@@ -5,10 +5,16 @@ layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec2 aTex;
 layout (location = 3) in vec3 aNormal;
 
-out vec3 color;
-out vec2 texCoord;
-out vec3 normalVec;
-out vec3 currentPos;
+out DATA {
+	vec3 color;
+	vec2 texCoord;
+	vec3 normalVec;
+
+	mat4 model;
+	vec3 camPos;
+
+	mat4 camera;
+} data_out;
 
 uniform mat4 model;
 uniform mat4 camera;
@@ -16,11 +22,14 @@ uniform mat4 translation;
 uniform mat4 rotation;
 uniform mat4 scale;
 
-void main() {
-	currentPos = vec3(model * translation * rotation * scale * vec4(aPos, 1.0f));
+uniform vec3 camPos;
 
-	gl_Position = camera * vec4(currentPos, 1.0);
-	color = aColor;
-	texCoord = mat2(0.0, -1.0, 1.0, 0.0) * aTex;
-	normalVec = aNormal;
+void main() {
+	gl_Position = model * translation * rotation * scale * vec4(aPos, 1.0f);
+	data_out.normalVec = aNormal;
+	data_out.color = aColor;
+	data_out.texCoord = mat2(0.0, -1.0, 1.0, 0.0) * aTex;
+	data_out.model = model * translation * rotation * scale;
+	data_out.camera = camera;
+	data_out.camPos = camPos;
 }
