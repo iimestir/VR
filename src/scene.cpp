@@ -76,7 +76,7 @@ void Scene::resetLightsUni() {
 	orientations.push_back(0.0f);
 	orientations.push_back(0.0f);
 
-	types.push_back(float(LightType::DIRECT));
+	types.push_back(float(LightType::COMPLETE));
 
 	glUniform1i(program.getUniformLocation("lightSize"), lights.size());
 	glUniform1fv(program.getUniformLocation("lightPos"), pos.size(), pos.data());
@@ -386,7 +386,7 @@ vector<Texture> Scene::retrieveMeshTextures(const aiScene* pScene, aiMesh* aiMes
 
 	if (material->GetTextureCount(aiTextureType_HEIGHT) > 0) {
 		if (material->GetTexture(aiTextureType_HEIGHT, 0, &aiPath, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
-			cout << "Loading normal : " << aiPath.data;
+			cout << "Loading bump : " << aiPath.data;
 			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex2", 1));
 			cout << " OK" << endl;
 		}

@@ -4,7 +4,7 @@
 #include "VAO.h"
 
 enum LightType {
-	SPOT = 0, POINT = 1, DIRECT = 2
+	SPOT = 0, SOURCE = 1, COMPLETE = 2
 };
 
 class Light {

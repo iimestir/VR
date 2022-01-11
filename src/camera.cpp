@@ -33,7 +33,7 @@ void Camera::move(glm::vec3 dpos) {
 
 	if (this->d > 1.0f) {
 		Audio::getInstance().playSound(firstStep);
-		firstStep = !firstStep;
+		firstStep = (firstStep + 1) % 8;
 		this->d = 0.0f;
 	}
 }

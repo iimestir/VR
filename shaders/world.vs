@@ -7,7 +7,7 @@ layout (location = 3) in vec3 aNormal;
 
 out vec3 color;
 out vec2 texCoord;
-out vec3 normal;
+out vec3 normalVec;
 out vec3 currentPos;
 
 uniform mat4 model;
@@ -22,5 +22,5 @@ void main() {
 	gl_Position = camera * vec4(currentPos, 1.0);
 	color = aColor;
 	texCoord = mat2(0.0, -1.0, 1.0, 0.0) * aTex;
-	normal = aNormal;
+	normalVec = aNormal;
 }

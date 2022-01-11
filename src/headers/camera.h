@@ -32,7 +32,7 @@ private:
 	float d = 0.0f;
 
 	bool firstClick = true;
-	bool firstStep = true;
+	unsigned firstStep = 0;
 	bool freeCam = false;
 
 	int width;

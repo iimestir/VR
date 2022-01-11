@@ -20,6 +20,12 @@ int main() {
 	Audio::getInstance().playMusic("sounds/music.wav", 12.0f);
 	Audio::getInstance().pushSound("sounds/step1.wav");
 	Audio::getInstance().pushSound("sounds/step2.wav");
+	Audio::getInstance().pushSound("sounds/step3.wav");
+	Audio::getInstance().pushSound("sounds/step4.wav");
+	Audio::getInstance().pushSound("sounds/step5.wav");
+	Audio::getInstance().pushSound("sounds/step6.wav");
+	Audio::getInstance().pushSound("sounds/step7.wav");
+	Audio::getInstance().pushSound("sounds/step8.wav");
 
 	/*
 	SETUP
@@ -84,12 +90,11 @@ int main() {
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		DFloat(camera.getPPosX()), DFloat(camera.getPPosY()), DFloat(camera.getPPosZ()),
 		DFloat(camera.getPOriX()), DFloat(camera.getPOriY()), DFloat(camera.getPOriZ()),
-		0.8f, 0.8f, 0.8f, 1.0f)
+		0.6f, 0.6f, 0.6f, 1.0f)
 	);
 
 	// Red lights
-
-	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", LightType::POINT,
+	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", LightType::SOURCE,
 		0.0f, 1.0f, 3.0f,
 		0.0f, 0.0f, 0.0f,
 		0.8f, 0.0f, 0.0f, 1.0f)
@@ -148,6 +153,12 @@ int main() {
 	);
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		-63.40f, 1.0f, 113.51f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, 0.8f, 0.0f, 1.0f)
+	);
+	
+	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+		4.30f, 1.0f, 13.30f,
 		0.0f, -1.0f, 0.0f,
 		0.0f, 0.8f, 0.0f, 1.0f)
 	);
