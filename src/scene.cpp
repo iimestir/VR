@@ -385,7 +385,7 @@ vector<Texture> Scene::retrieveMeshTextures(const aiScene* pScene, aiMesh* aiMes
 	if (material->GetTextureCount(aiTextureType_HEIGHT) > 0) {
 		if (material->GetTexture(aiTextureType_HEIGHT, 0, &aiPath, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
 			cout << "Loading normals : " << aiPath.data;
-			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex2", 1));
+			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex2", 2));
 			cout << " OK" << endl;
 		}
 	}
@@ -393,7 +393,7 @@ vector<Texture> Scene::retrieveMeshTextures(const aiScene* pScene, aiMesh* aiMes
 	if (material->GetTextureCount(aiTextureType_DISPLACEMENT) > 0) {
 		if (material->GetTexture(aiTextureType_DISPLACEMENT, 0, &aiPath, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
 			cout << "Loading parallax : " << aiPath.data;
-			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex3", 2));
+			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex3", 3));
 			cout << " OK" << endl;
 		}
 	}

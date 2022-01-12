@@ -62,11 +62,11 @@ void Mesh::setSpecular(const char* spec) {
 }
 
 void Mesh::setNormal(const char* nrm) {
-	normals.push_back(Texture(nrm, "tex2", 1));
+	normals.push_back(Texture(nrm, "tex2", 2));
 }
 
 void Mesh::setBump(const char* par) {
-	parallaxes.push_back(Texture(par, "tex3", 2));
+	parallaxes.push_back(Texture(par, "tex3", 3));
 }
 
 void Mesh::registerTextures(Shader& shader) {
@@ -77,10 +77,10 @@ void Mesh::registerTextures(Shader& shader) {
 		spec.registerTexture(shader, "tex1", 1);
 
 	for (Texture nrm : normals)
-		nrm.registerTexture(shader, "tex2", 1);
+		nrm.registerTexture(shader, "tex2", 2);
 
 	for (Texture par : parallaxes)
-		par.registerTexture(shader, "tex3", 2);
+		par.registerTexture(shader, "tex3", 3);
 }
 
 void Mesh::bind() {

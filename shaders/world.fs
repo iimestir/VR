@@ -38,7 +38,7 @@ vec2 applyParallaxOcclusion(vec3 viewD) {
 	float layerDepth = 1.0f / numLayers;
 	float currentLayerDepth = 0.0f;
 	
-	// Remove the z division if you want less aberated results
+	// Increase the "holes" aberration
 	vec2 S = viewD.xy / viewD.z * heightScale; 
     vec2 deltaUVs = S / numLayers;
 	
@@ -52,7 +52,7 @@ vec2 applyParallaxOcclusion(vec3 viewD) {
         currentLayerDepth += layerDepth;
     }
 
-	// Apply Occlusion (interpolation with prev value)
+	// Interpolates with previous value
 	vec2 prevTexCoords = UVs + deltaUVs;
 	float afterDepth  = currentDepthMapValue - currentLayerDepth;
 	float beforeDepth = 1.0f - texture(tex3, prevTexCoords).r - currentLayerDepth + layerDepth;
@@ -112,7 +112,7 @@ vec4 sourceLight(vec3 light, vec4 light_color) {
 }
 
 vec4 spotLight(vec3 ori, vec3 light, vec4 light_color) {
-	float outCone = 0.82f;
+	float outCone = 0.77f;
 	float inCone = 0.95f;
 
 	vec3 lightV = light - currentPos;

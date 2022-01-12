@@ -44,7 +44,7 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Creates the GL window
-	GLFWwindow* window = glfwCreateWindow(width, height, "VR sandbox", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, "Pitch Black Maze by IMESTIR Ibrahim and BELGADA Wassim", NULL, NULL);
 	if (window == NULL) {
 		cout << "An error has occured" << endl;
 
@@ -78,15 +78,6 @@ int main() {
 	Camera camera(width, height, vec3(0.0f, 0.0f, 3.0f), 80.0f, 0.015f, 100.0f);
 	scene.setBackgroundColor(window, width, height, 0.0f, 0.0f, 0.0f, 0.0f);
 	scene.setPPType(PPType::DEFAULT);
-
-	/*
-	vector<unsigned> colt = scene.loadMesh("models/colt/colt.obj", true);
-	vector<unsigned> flashlight = scene.loadMesh("models/flashlight/Flashlight.obj");
-	unsigned object = scene.addMesh(ObjectRectangular("textures/diffuse/o.jpg", NULL),0.0f, -0.3f, 0.0f);
-	scene.translateVertex(object, 2.0f, -0.3f, 0.0f);
-	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", 
-		LightType::POINT, 0.5f, 0.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f));
-	*/
 
 	// Load our hand-made maze by blender
 	vector<unsigned> maze = scene.loadMesh("models/maze/maze.obj", true);

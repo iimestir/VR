@@ -46,7 +46,7 @@ void Camera::move(glm::vec3 dpos) {
 			// =)
 			if (rand() % 100 <= 3) {
 				int audio = rand() % 4 + 8;
-				Audio::getInstance().playSound(audio, 2);
+				Audio::getInstance().playSound(audio, 2, 70.0f);
 
 				lastPSound = instant;
 			}
