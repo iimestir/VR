@@ -355,8 +355,8 @@ vector<Texture> Scene::retrieveMeshTextures(const aiScene* pScene, aiMesh* aiMes
 	vector<Texture> textures;
 
 	// Checks if the material is already loaded
-	auto it = loadedMaterials.find(aiMesh->mMaterialIndex);
-	if (it != loadedMaterials.end())
+	auto it = loadedMaterials[loadedFiles].find(aiMesh->mMaterialIndex);
+	if (it != loadedMaterials[loadedFiles].end())
 		return it->second;
 
 	const aiMaterial* material = pScene->mMaterials[aiMesh->mMaterialIndex];
@@ -384,13 +384,21 @@ vector<Texture> Scene::retrieveMeshTextures(const aiScene* pScene, aiMesh* aiMes
 
 	if (material->GetTextureCount(aiTextureType_HEIGHT) > 0) {
 		if (material->GetTexture(aiTextureType_HEIGHT, 0, &aiPath, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
-			cout << "Loading bump : " << aiPath.data;
+			cout << "Loading normals : " << aiPath.data;
 			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex2", 1));
 			cout << " OK" << endl;
 		}
 	}
 
-	loadedMaterials[aiMesh->mMaterialIndex] = textures;
+	if (material->GetTextureCount(aiTextureType_DISPLACEMENT) > 0) {
+		if (material->GetTexture(aiTextureType_DISPLACEMENT, 0, &aiPath, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
+			cout << "Loading parallax : " << aiPath.data;
+			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex3", 2));
+			cout << " OK" << endl;
+		}
+	}
+
+	loadedMaterials[loadedFiles][aiMesh->mMaterialIndex] = textures;
 
 	return textures;
 }
@@ -466,6 +474,7 @@ vector<unsigned> Scene::loadMesh(const char* path, bool col) {
 		ids.push_back(addMesh(retrieveMesh(pScene, pScene->mMeshes[i], path, col)));
 
 	cout << "Successfully loading " << ids.size() << " models" << endl;
+	loadedFiles++;
 
 	return ids;
 }

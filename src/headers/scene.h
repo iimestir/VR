@@ -43,7 +43,8 @@ private:
 
 	vec4 depthColor;
 
-	map<unsigned, vector<Texture>> loadedMaterials;
+	unsigned loadedFiles = 0;
+	map<unsigned, map<unsigned, vector<Texture>>> loadedMaterials;
 
 	void registerVertexOnShader(Shader&, unsigned);
 	void registerLightOnShader(unsigned);

@@ -24,9 +24,10 @@ class Mesh {
 protected:
 	VBO* vbo = NULL;
 	EBO* ebo = NULL;
-	vector<Texture> tx;
-	vector<Texture> spec;
-	vector<Texture> nrm;
+	vector<Texture> diffuses;
+	vector<Texture> speculars;
+	vector<Texture> normals;
+	vector<Texture> parallaxes;
 
 	Colliders colliders;
 
@@ -39,6 +40,7 @@ public:
 	void setTexture(const char*);
 	void setSpecular(const char*);
 	void setNormal(const char*);
+	void setBump(const char*);
 
 	void registerTextures(Shader&);
 

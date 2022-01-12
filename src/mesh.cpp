@@ -5,11 +5,13 @@ Mesh::Mesh(vector<GLfloat> vertices, vector<GLuint> indices, vector<Texture> tex
 	// Textures
 	for (Texture t : textures) {
 		if (t.getType() == "tex0")
-			tx.push_back(t);
+			diffuses.push_back(t);
 		else if (t.getType() == "tex1")
-			spec.push_back(t);
+			speculars.push_back(t);
 		else if (t.getType() == "tex2")
-			nrm.push_back(t);
+			normals.push_back(t);
+		else if (t.getType() == "tex3")
+			parallaxes.push_back(t);
 	}
 
 	float minX = 0.0f;
@@ -51,27 +53,34 @@ Mesh::Mesh(vector<GLfloat> vertices, vector<GLuint> indices, vector<Texture> tex
 	this->iSize = indices.size() * sizeof(int);
 }
 
-void Mesh::setTexture(const char* image) {
-	tx.push_back(Texture(image, "tex0", 0));
+void Mesh::setTexture(const char* diff) {
+	diffuses.push_back(Texture(diff, "tex0", 0));
 }
 
-void Mesh::setSpecular(const char* specular) {
-	spec.push_back(Texture(specular, "tex1", 1));
+void Mesh::setSpecular(const char* spec) {
+	speculars.push_back(Texture(spec, "tex1", 1));
 }
 
-void Mesh::setNormal(const char* normal) {
-	nrm.push_back(Texture(normal, "tex2", 1));
+void Mesh::setNormal(const char* nrm) {
+	normals.push_back(Texture(nrm, "tex2", 1));
+}
+
+void Mesh::setBump(const char* par) {
+	parallaxes.push_back(Texture(par, "tex3", 2));
 }
 
 void Mesh::registerTextures(Shader& shader) {
-	for (Texture diffusion : tx)
-		diffusion.registerTexture(shader, "tex0", 0);
+	for (Texture diff : diffuses)
+		diff.registerTexture(shader, "tex0", 0);
 
-	for (Texture specular : spec)
-		specular.registerTexture(shader, "tex1", 1);
+	for (Texture spec : speculars)
+		spec.registerTexture(shader, "tex1", 1);
 
-	for (Texture normal : nrm)
-		normal.registerTexture(shader, "tex2", 1);
+	for (Texture nrm : normals)
+		nrm.registerTexture(shader, "tex2", 1);
+
+	for (Texture par : parallaxes)
+		par.registerTexture(shader, "tex3", 2);
 }
 
 void Mesh::bind() {
@@ -92,9 +101,9 @@ void Mesh::destroy() {
 
 	free(vbo);
 	free(ebo);
-	tx.clear();
-	spec.clear();
-	nrm.clear();
+	diffuses.clear();
+	speculars.clear();
+	normals.clear();
 }
 
 bool Mesh::collidesWith(float x, float y, float z) {

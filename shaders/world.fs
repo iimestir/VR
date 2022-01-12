@@ -16,6 +16,7 @@ uniform float lightOrientation[64];
 uniform sampler2D tex0;
 uniform sampler2D tex1;
 uniform sampler2D tex2;
+uniform sampler2D tex3;
 
 uniform float vAlpha;
 
@@ -29,6 +30,64 @@ float logisticDepth(float depth, float steepness = 0.2f, float offset = 0.5f) {
 	return (1 / (1 + exp(-steepness * (linearizeDepth(depth) - offset))));
 }
 
+vec2 applyParallaxOcclusion(vec3 viewD) {
+	float heightScale = 0.05f;
+	const float minLayers = 8.0f;
+    const float maxLayers = 64.0f;
+    float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0f, 0.0f, 1.0f), viewD)));
+	float layerDepth = 1.0f / numLayers;
+	float currentLayerDepth = 0.0f;
+	
+	// Remove the z division if you want less aberated results
+	vec2 S = viewD.xy / viewD.z * heightScale; 
+    vec2 deltaUVs = S / numLayers;
+	
+	vec2 UVs = texCoord;
+	float currentDepthMapValue = 1.0f - texture(tex3, UVs).r;
+	
+	// Loop till the point on the heightmap is "hit"
+	while(currentLayerDepth < currentDepthMapValue) {
+        UVs -= deltaUVs;
+        currentDepthMapValue = 1.0f - texture(tex3, UVs).r;
+        currentLayerDepth += layerDepth;
+    }
+
+	// Apply Occlusion (interpolation with prev value)
+	vec2 prevTexCoords = UVs + deltaUVs;
+	float afterDepth  = currentDepthMapValue - currentLayerDepth;
+	float beforeDepth = 1.0f - texture(tex3, prevTexCoords).r - currentLayerDepth + layerDepth;
+	float weight = afterDepth / (afterDepth - beforeDepth);
+	UVs = prevTexCoords * weight + UVs * (1.0f - weight);
+
+	return UVs;
+}
+
+vec2 applyDiffuseSpecular(vec3 norm, vec3 lightD, vec3 viewD, bool spot = false) {
+	vec2 diffspec;
+
+	float diffuse = max(dot(norm, lightD), 0.0f);
+	float specular = 0.0f;
+	if (diffuse != 0.0f) {
+		float specLight = 0.70f;
+		vec3 phong = reflect(-lightD, norm);
+		vec3 blinnPhong = normalize(lightD + viewD);
+
+		float specAmount;
+		if(spot) 
+			specAmount = pow(max(dot(norm, blinnPhong), 0.0f), 32);
+		else 
+			specAmount = pow(max(dot(viewD, blinnPhong), 0.0f), 32);
+
+		specular = specAmount * specLight;
+	};
+
+	diffspec.r = diffuse;
+	diffspec.g = specular;
+
+	return diffspec;
+}
+
+
 vec4 sourceLight(vec3 light, vec4 light_color) {
 	float a = 0.3f;
 	float b = 0.02f;
@@ -36,72 +95,63 @@ vec4 sourceLight(vec3 light, vec4 light_color) {
 
 	vec3 lightV = light - currentPos;
 	float dist = length(lightV);
+	vec3 viewDirection = normalize(camPos - currentPos);
 
-	vec3 nrm = normalize(texture(tex2, texCoord).xyz * 2.0f - 1.0f);
+	vec2 UVs = applyParallaxOcclusion(viewDirection);
+
+	vec3 nrm = normalize(texture(tex2, UVs).xyz * 2.0f - 1.0f);
 	vec3 lightDirection = normalize(lightV);
 
-	float diffuse = max(dot(nrm, lightDirection), 0.0f);
-	float specular = 0.0f;
-	if (diffuse != 0.0f)
-	{
-		float specLight = 0.50f;
-		vec3 viewDirection = normalize(camPos - currentPos);
-		vec3 refDirection = reflect(-lightDirection, nrm);
-
-		float specAmount = pow(max(dot(viewDirection, refDirection), 0.0f), 32);
-		specular = specAmount * specLight;
-	};
+	vec2 diffspec = applyDiffuseSpecular(nrm, lightDirection, viewDirection);
+	float diffuse = diffspec.r;
+	float specular = diffspec.g;
 
 	float intensity = 1.0f / (a * dist * dist+b * dist+1.0f);
 
-	return (texture(tex0, texCoord) * (diffuse * intensity) + texture(tex1, texCoord).r * specular * intensity) * light_color;
+	return (texture(tex0, UVs) * (diffuse * intensity) + texture(tex1, UVs).r * specular * intensity) * light_color;
 }
 
 vec4 spotLight(vec3 ori, vec3 light, vec4 light_color) {
 	float outCone = 0.82f;
 	float inCone = 0.95f;
 
-	vec3 nrm = normalize(texture(tex2, texCoord).xyz * 2.0f - 1.0f);
+	vec3 lightV = light - currentPos;
+	vec3 viewDirection = normalize(camPos - currentPos);
 
-	vec3 lightDirection = normalize(light - currentPos);
+	vec2 UVs = applyParallaxOcclusion(viewDirection);
 
-	float diffuse = max(dot(nrm, lightDirection), 0.0f);
-	float specular = 0.0f;
-	if (diffuse != 0.0f)
-	{
-		float specLight = 0.70f;
-		vec3 viewDirection = normalize(camPos - currentPos);
-		vec3 reflectDirection = reflect(-lightDirection, nrm);
-		vec3 halfwayDirection = normalize(lightDirection + viewDirection);
+	vec3 nrm = normalize(texture(tex2, UVs).xyz * 2.0f - 1.0f);
+	vec3 lightDirection = normalize(lightV);
 
-		float specAmount = pow(max(dot(nrm, halfwayDirection), 0.0f), 32);
-		specular = specAmount * specLight;
-	};
+	vec2 diffspec = applyDiffuseSpecular(nrm, lightDirection, viewDirection, true);
+	float diffuse = diffspec.r;
+	float specular = diffspec.g;
 
 	float angle = dot(ori, -lightDirection);
 	float intensity = clamp((angle - outCone) / (inCone - outCone), 0.0f, 1.0f);
 
-	return (texture(tex0, texCoord) * (diffuse * intensity) + texture(tex1, texCoord).r * specular * intensity) * light_color;
+	return (texture(tex0, UVs) * (diffuse * intensity) + texture(tex1, UVs).r * specular * intensity) * light_color;
 }
 
 vec4 completeLight(vec4 light_color) {
 	vec3 source = vec3(1.0f, 1.0f, 0.0f);
-
 	float ambient = 0.15f;
+
+	vec3 viewDirection = normalize(camPos - currentPos);
+
+	vec2 UVs = applyParallaxOcclusion(viewDirection);
 
 	vec3 nrm = normalize(texture(tex2, texCoord).xyz * 2.0f - 1.0f);
 	vec3 lightDirection = normalize(source);
 
 	float diffusion = max(dot(nrm, lightDirection), 0.0f);
+	
+	vec3 blinnPhong = normalize(lightDirection + viewDirection);
 
-	float specLight = 0.50f;
-	vec3 viewDirection = normalize(camPos - currentPos);
-	vec3 refDirection = reflect(-lightDirection, nrm);
+	float specAmount = pow(max(dot(viewDirection, blinnPhong), 0.0f), 32);
+	float specular = specAmount * 0.70f;
 
-	float specAmount = pow(max(dot(viewDirection, refDirection), 0.0f), 16);
-	float specular = specAmount * specLight;
-
-	return (texture(tex0, texCoord) * (diffusion + ambient) + texture(tex1, texCoord).r * specular) * light_color;
+	return (texture(tex0, UVs) * (diffusion + ambient) + texture(tex1, UVs).r * specular) * light_color;
 }
 
 void main() {
