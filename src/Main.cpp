@@ -85,6 +85,8 @@ int main() {
 
 	// Load our hand-made maze by blender
 	vector<unsigned> maze = scene.loadMesh("models/maze/maze.obj", true);
+	vector<unsigned> notes = scene.loadMesh("models/notes/note.obj", true);
+	vector<unsigned> fence = scene.loadMesh("models/fence/fence.obj", true);
 
 	scene.addText("Obtained notes 0/8", width, height, width * 0.75f, height * 0.9f, 0.4f, 0.2f, 0.65f, 0.5f);
 
@@ -163,6 +165,8 @@ int main() {
 		0.0f, -1.0f, 0.0f,
 		0.8f, 0.8f, 0.8f, 1.0f)
 	);
+
+	camera.setColliders(scene.getColliders());
 
 	/*
 	END DRAWING SETUP

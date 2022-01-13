@@ -47,6 +47,7 @@ class TextGUI {
         void loadFont();
 
         void fillCharacters();
+        void setText(const char*);
 };
 
 #endif

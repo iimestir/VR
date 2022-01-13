@@ -177,7 +177,6 @@ void Scene::render(GLFWwindow* window, Camera* camera, unsigned width, unsigned 
 	setGLColor(depthColor.r, depthColor.g, depthColor.b, depthColor.a);
 
 	// Camera setup
-	camera->setColliders(getColliders());
 	camera->defineInputs(window);
 	camera->updateMatrix(0.1f, 100.0f);
 
@@ -393,7 +392,7 @@ vector<Texture> Scene::retrieveMeshTextures(const aiScene* pScene, aiMesh* aiMes
 	if (material->GetTextureCount(aiTextureType_HEIGHT) > 0) {
 		if (material->GetTexture(aiTextureType_HEIGHT, 0, &aiPath, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
 			cout << "Loading normals : " << aiPath.data;
-			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex2", 2));
+			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex2", 1));
 			cout << " OK" << endl;
 		}
 	}
@@ -401,7 +400,7 @@ vector<Texture> Scene::retrieveMeshTextures(const aiScene* pScene, aiMesh* aiMes
 	if (material->GetTextureCount(aiTextureType_DISPLACEMENT) > 0) {
 		if (material->GetTexture(aiTextureType_DISPLACEMENT, 0, &aiPath, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
 			cout << "Loading parallax : " << aiPath.data;
-			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex3", 3));
+			textures.push_back(Texture((fileDirectory + aiPath.data).c_str(), "tex3", 2));
 			cout << " OK" << endl;
 		}
 	}
@@ -506,6 +505,10 @@ unsigned Scene::addText(const char* text, unsigned width, unsigned height, float
 	return texts.size() - 1;
 }
 
+void Scene::editText(unsigned index, const char* text) {
+	texts.at(index).setText(text);
+}
+
 void Scene::bindVertexPosition(unsigned vertexIndex, DFloat posX, DFloat posY, DFloat posZ) {
 	VAO* vertex = &vertices.at(vertexIndex);
 
@@ -572,6 +575,10 @@ void Scene::destroyVertexbyID(unsigned id) {
 			destroyVertex(i);
 			break;
 		}
+}
+
+void Scene::removeText(unsigned index) {
+	texts.erase(texts.begin() + index);
 }
 
 bool Scene::collidesWith(float x, float y, float z) {

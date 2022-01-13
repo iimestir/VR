@@ -33,7 +33,7 @@ float logisticDepth(float depth, float steepness = 0.2f, float offset = 0.5f) {
 vec2 applyParallaxOcclusion(vec3 viewD) {
 	float heightScale = 0.05f;
 	const float minLayers = 8.0f;
-    const float maxLayers = 64.0f;
+    const float maxLayers = 16.0f;
     float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0f, 0.0f, 1.0f), viewD)));
 	float layerDepth = 1.0f / numLayers;
 	float currentLayerDepth = 0.0f;

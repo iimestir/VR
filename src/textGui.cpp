@@ -139,3 +139,7 @@ void TextGUI::fillCharacters() {
     glFrontFace(GL_CCW);
     glEnable(GL_CULL_FACE);
 }
+
+void TextGUI::setText(const char* text) {
+    this->text = text;
+}

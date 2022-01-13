@@ -12,13 +12,10 @@
 #include <vector>
 #include <math.h>
 #include <stdlib.h>
-#include <chrono>
 
 #include "shader.h"
 #include "collider.h"
 #include "audio.h"
-
-using namespace std::chrono;
 
 class Camera
 {
@@ -37,7 +34,6 @@ private:
 
 	bool firstClick = true;
 	unsigned footStep = 0;
-	milliseconds lastPSound = seconds{0};
 
 	bool freeCam = false;
 

@@ -89,7 +89,9 @@ public:
 	unsigned addMesh(Mesh, float = 0.0f, float = 0.0f, float = 0.0f, float = 1.0f);
 	vector<unsigned> loadMesh(const char*, bool = false);
 	unsigned addLight(Light);
+
 	unsigned addText(const char*, unsigned, unsigned, float, float, float = 1.0f, float = 1.0f, float = 1.0f, float = 1.0f);
+	void editText(unsigned, const char*);
 
 	void bindVertexPosition(unsigned, DFloat, DFloat, DFloat);
 	void bindVertexOrientation(unsigned, DFloat, DFloat, DFloat);
@@ -106,6 +108,7 @@ public:
 
 	void destroyVertex(unsigned);
 	void destroyVertexbyID(unsigned);
+	void removeText(unsigned);
 
 	bool collidesWith(float, float, float);
 	bool collidesWith(vec3);

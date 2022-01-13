@@ -39,17 +39,10 @@ void Camera::move(glm::vec3 dpos) {
 		footStep = (footStep + 1) % 8;
 		this->d = 0.0f;
 
-		// Paranormal sound
-		milliseconds instant = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-
-		if ((instant - lastPSound) >= seconds{ 30 }) {
-			// =)
-			if (rand() % 100 <= 3) {
-				int audio = rand() % 4 + 8;
-				Audio::getInstance().playSound(audio, 2, 70.0f);
-
-				lastPSound = instant;
-			}
+		// Paranormal sound =)
+		if (rand() % 100 <= 1) {
+			int audio = rand() % 4 + 8;
+			Audio::getInstance().playSound(audio, 2, 70.0f);
 		}
 	}
 }
