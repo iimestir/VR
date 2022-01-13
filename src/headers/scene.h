@@ -41,6 +41,8 @@ private:
 	vector<Light> lights;
 	vector<TextGUI> texts;
 
+	vector<Colliders> colliders;
+
 	PostProcess pp;
 	SkyBox sb;
 
@@ -72,6 +74,8 @@ private:
 	void drawLights(Camera*, unsigned, unsigned);
 	void drawUnLightedObjects(Camera*, unsigned, unsigned);
 	void drawTexts();
+
+	void updateColliders();
 public:
 	Scene(const char*, const char*, const char*, unsigned, unsigned, vector<string>);
 
@@ -86,12 +90,13 @@ public:
 	void setBackgroundColor(GLFWwindow*, unsigned int, unsigned int, GLfloat, GLfloat, GLfloat, GLfloat = 1.0f);
 	void setPPType(PPType);
 
-	unsigned addMesh(Mesh, float = 0.0f, float = 0.0f, float = 0.0f, float = 1.0f);
-	vector<unsigned> loadMesh(const char*, bool = false);
+	unsigned addMesh(Mesh, bool = false, float = 0.0f, float = 0.0f, float = 0.0f, float = 1.0f);
+	vector<unsigned> loadMesh(const char*, bool = false, bool = false);
 	unsigned addLight(Light);
 
 	unsigned addText(const char*, unsigned, unsigned, float, float, float = 1.0f, float = 1.0f, float = 1.0f, float = 1.0f);
-	void editText(unsigned, const char*);
+	void editText(unsigned, string);
+	void editTextColor(unsigned, float = 1.0f, float = 1.0f, float = 1.0f);
 
 	void bindVertexPosition(unsigned, DFloat, DFloat, DFloat);
 	void bindVertexOrientation(unsigned, DFloat, DFloat, DFloat);
@@ -104,8 +109,6 @@ public:
 
 	void setCameraMatrix(Camera*);
 
-	vector<Colliders> getColliders();
-
 	void destroyVertex(unsigned);
 	void destroyVertexbyID(unsigned);
 	void removeText(unsigned);
@@ -115,6 +118,8 @@ public:
 
 	void enableCulling();
 	void disableCulling();
+
+	unsigned getVertexID(unsigned);
 
 	inline Shader* getShader() {
 		return &program;
@@ -127,6 +132,10 @@ public:
 	inline GLuint getShaderID() {
 		return program.getID();
 	}
+
+	vector<Colliders>* getColliders() {
+		return &colliders;
+	};
 };
 
 #endif

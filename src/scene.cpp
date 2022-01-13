@@ -165,6 +165,8 @@ Scene::Scene(const char* vFile, const char* fFile, const char* gFile, unsigned w
 
 	// Culling
 	enableCulling();
+
+	updateColliders();
 }
 
 // RENDER FUNCTION
@@ -334,7 +336,7 @@ void Scene::setPPType(PPType type) {
 	pp.setPPType(type);
 }
 
-unsigned Scene::addMesh(Mesh obj, float posX, float posY, float posZ, float alpha) {
+unsigned Scene::addMesh(Mesh obj, bool dest, float posX, float posY, float posZ, float alpha) {
 	VAO vao(true);
 	obj.bind();
 
@@ -350,10 +352,15 @@ unsigned Scene::addMesh(Mesh obj, float posX, float posY, float posZ, float alph
 
 	unsigned index = vertices.size() - 1;
 
-	function<void(unsigned)> f = [&](unsigned i) {
-		destroyVertexbyID(i);
-	};
-	//vertices.at(index).setCollidersAction(f, vao.getID());
+	if (dest) {
+		function<void(unsigned)> f = [&](unsigned i) {
+			destroyVertexbyID(i);
+			notify(notificationType::ADD_NOTE, vector<void*>{this});
+		};
+		vertices.at(index).setCollidersAction(f, vao.getID());
+	}
+
+	updateColliders();
 
 	return index;
 }
@@ -465,7 +472,7 @@ Mesh Scene::retrieveMesh(const aiScene* pScene, aiMesh* aiMesh, const char* path
 	return Mesh(vertices, indices, textures, col);
 }
 
-vector<unsigned> Scene::loadMesh(const char* path, bool col) {
+vector<unsigned> Scene::loadMesh(const char* path, bool col, bool dest) {
 	vector<unsigned> ids;
 
 	Assimp::Importer importer;
@@ -478,7 +485,7 @@ vector<unsigned> Scene::loadMesh(const char* path, bool col) {
 	}
 
 	for (int i = 0; i < pScene->mNumMeshes; i++)
-		ids.push_back(addMesh(retrieveMesh(pScene, pScene->mMeshes[i], path, col)));
+		ids.push_back(addMesh(retrieveMesh(pScene, pScene->mMeshes[i], path, col), dest));
 
 	cout << "Successfully loading " << ids.size() << " models" << endl;
 	loadedFiles++;
@@ -505,8 +512,12 @@ unsigned Scene::addText(const char* text, unsigned width, unsigned height, float
 	return texts.size() - 1;
 }
 
-void Scene::editText(unsigned index, const char* text) {
+void Scene::editText(unsigned index, string text) {
 	texts.at(index).setText(text);
+}
+
+void Scene::editTextColor(unsigned index, float r, float g, float b) {
+	texts.at(index).setColor(r, g, b);
 }
 
 void Scene::bindVertexPosition(unsigned vertexIndex, DFloat posX, DFloat posY, DFloat posZ) {
@@ -554,19 +565,20 @@ void Scene::setCameraMatrix(Camera* camera) {
 	}
 }
 
-vector<Colliders> Scene::getColliders() {
-	vector<Colliders> colliders;
+void Scene::updateColliders() {
+	colliders.clear();
+
 	for (VAO vao : vertices) {
 		vector<Colliders> vaoC = vao.getColliders();
 		colliders.insert(colliders.end(), vaoC.begin(), vaoC.end());
 	}
-
-	return colliders;
 }
 
 void Scene::destroyVertex(unsigned index) {
 	vertices.at(index).destroy();
 	vertices.erase(vertices.begin() + index);
+
+	updateColliders();
 }
 
 void Scene::destroyVertexbyID(unsigned id) {
@@ -600,4 +612,8 @@ void Scene::enableCulling() {
 
 void Scene::disableCulling() {
 	glDisable(GL_CULL_FACE);
+}
+
+unsigned Scene::getVertexID(unsigned index) {
+	return vertices[index].getID();
 }

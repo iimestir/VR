@@ -140,6 +140,12 @@ void TextGUI::fillCharacters() {
     glEnable(GL_CULL_FACE);
 }
 
-void TextGUI::setText(const char* text) {
-    this->text = text;
+void TextGUI::setText(string text) {
+    this->text = text.c_str();
+}
+
+void TextGUI::setColor(float r, float g, float b) {
+    color.r = r;
+    color.g = g;
+    color.b = b;
 }

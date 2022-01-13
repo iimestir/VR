@@ -28,7 +28,7 @@ private:
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
 
-	vector<Colliders> colliders;
+	vector<Colliders>* colliders;
 
 	float d = 0.0f;
 
@@ -57,7 +57,7 @@ public:
 	void defineInputs(GLFWwindow*);
 
 	void setFOV(float);
-	void setColliders(vector<Colliders>);
+	void setColliders(vector<Colliders>*);
 
 	inline glm::mat4 getView() {
 		return view;

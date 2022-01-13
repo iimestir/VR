@@ -17,9 +17,9 @@ public:
 		observers.push_back(obs);
 	}
 
-	void notify(notificationType request) {
+	void notify(notificationType request, vector<void*> args) {
 		for (Observer* o : observers)
-			o->update(request);
+			o->update(request, args);
 	}
 };
 

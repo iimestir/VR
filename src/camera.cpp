@@ -1,7 +1,7 @@
 #include "headers/camera.h"
 
 bool Camera::checkCollisions(glm::vec3 pos) {
-	for (Colliders c : colliders) {
+	for (Colliders c : *colliders) {
 		if (c.collidesWith(pos.r, pos.g, pos.b)) return true;
 	}
 
@@ -110,7 +110,7 @@ void Camera::defineInputs(GLFWwindow* window) {
 	// DEBUG
 	if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
 		cout << "World Pos: " << position.r << " " << position.g << " " << position.b << " " << endl;
-		cout << "Colliders: " << colliders.size() << endl;
+		cout << "Colliders: " << colliders->size() << endl;
 		cout << "d: " << this->d << endl;
 	}
 
@@ -155,8 +155,8 @@ void Camera::setFOV(float fov) {
 	this->fov = fov;
 }
 
-void Camera::setColliders(vector<Colliders> colliders) {
-	this->colliders.clear();
+void Camera::setColliders(vector<Colliders>* colliders) {
+	cout << "Colliders loaded : " << colliders->size() << endl;
 	this->colliders = colliders;
 }
 

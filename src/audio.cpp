@@ -16,12 +16,19 @@ void Audio::playSound(unsigned index, unsigned channel, float volume) {
 		channel1.setBuffer(buffers.at(index));
 		channel1.setVolume(volume);
 		channel1.play();
-	}
-	else if (channel == 2 && channel2.getStatus() == sf::SoundSource::Stopped) {
+	} else if (channel == 2 && channel2.getStatus() == sf::SoundSource::Stopped) {
 		channel2.setBuffer(buffers.at(index));
 		channel2.setVolume(volume);
 		channel2.play();
-	}
+	} else if (channel == 3 && channel3.getStatus() == sf::SoundSource::Stopped) {
+		channel3.setBuffer(buffers.at(index));
+		channel3.setVolume(volume);
+		channel3.play();
+	} else if (channel == 4 && channel4.getStatus() == sf::SoundSource::Stopped) {
+		channel4.setBuffer(buffers.at(index));
+		channel4.setVolume(volume);
+		channel4.play();
+	}		   
 }
 
 void Audio::playMusic(const char* path, float volume) {

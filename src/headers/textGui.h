@@ -35,7 +35,7 @@ class TextGUI {
         unsigned int vbo;
         unsigned int texture;
 
-        const char* text;
+        string text;
         float x;
         float y; 
         float scale;
@@ -47,7 +47,8 @@ class TextGUI {
         void loadFont();
 
         void fillCharacters();
-        void setText(const char*);
+        void setText(string);
+        void setColor(float = 1.0f, float = 1.0f, float = 1.0f);
 };
 
 #endif

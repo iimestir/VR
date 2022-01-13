@@ -32,6 +32,8 @@ int main() {
 	Audio::getInstance().pushSound("sounds/paranormal3.wav");
 	Audio::getInstance().pushSound("sounds/paranormal4.wav");
 	Audio::getInstance().pushSound("sounds/paranormal5.wav");
+	Audio::getInstance().pushSound("sounds/paper.wav");
+	Audio::getInstance().pushSound("sounds/end.wav");
 
 	/*
 	SETUP
@@ -85,8 +87,10 @@ int main() {
 
 	// Load our hand-made maze by blender
 	vector<unsigned> maze = scene.loadMesh("models/maze/maze.obj", true);
-	vector<unsigned> notes = scene.loadMesh("models/notes/note.obj", true);
+	vector<unsigned> notes = scene.loadMesh("models/notes/note.obj", true, true);
 	vector<unsigned> fence = scene.loadMesh("models/fence/fence.obj", true);
+
+	game.setDoorID(scene.getVertexID(fence[0]));
 
 	scene.addText("Obtained notes 0/8", width, height, width * 0.75f, height * 0.9f, 0.4f, 0.2f, 0.65f, 0.5f);
 

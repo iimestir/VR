@@ -21,6 +21,8 @@ private:
 	sf::Music* music;
 	sf::Sound channel1;
 	sf::Sound channel2;
+	sf::Sound channel3;
+	sf::Sound channel4;
 	vector<sf::SoundBuffer> buffers;
 
 public:
