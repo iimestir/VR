@@ -28,15 +28,18 @@
 #include "postProcess.h"
 #include "dFloat.h"
 #include "skyBox.h"
+#include "subject.h"
+#include "textGui.h"
 
 using namespace std;
 using namespace glm;
 
-class Scene {
+class Scene : public Subject {
 private:
 	Shader program;
 	vector<VAO> vertices;
 	vector<Light> lights;
+	vector<TextGUI> texts;
 
 	PostProcess pp;
 	SkyBox sb;
@@ -68,6 +71,7 @@ private:
 	void drawVertices(Camera*, unsigned, unsigned);
 	void drawLights(Camera*, unsigned, unsigned);
 	void drawUnLightedObjects(Camera*, unsigned, unsigned);
+	void drawTexts();
 public:
 	Scene(const char*, const char*, const char*, unsigned, unsigned, vector<string>);
 
@@ -85,6 +89,7 @@ public:
 	unsigned addMesh(Mesh, float = 0.0f, float = 0.0f, float = 0.0f, float = 1.0f);
 	vector<unsigned> loadMesh(const char*, bool = false);
 	unsigned addLight(Light);
+	unsigned addText(const char*, unsigned, unsigned, float, float, float = 1.0f, float = 1.0f, float = 1.0f, float = 1.0f);
 
 	void bindVertexPosition(unsigned, DFloat, DFloat, DFloat);
 	void bindVertexOrientation(unsigned, DFloat, DFloat, DFloat);

@@ -11,6 +11,7 @@
 #include "headers/light.h"
 #include "headers/postProcess.h"
 #include "headers/audio.h"
+#include "headers/game.h"
 
 using namespace std;
 using namespace glm;
@@ -74,13 +75,18 @@ int main() {
 	};
 
 	// Generates shader object using vShader and fShader files
+	Game game = Game();
 	Scene scene("shaders/world.vs", "shaders/world.fs", "shaders/world.gs", width, height, sky);
 	Camera camera(width, height, vec3(0.0f, 0.0f, 3.0f), 80.0f, 0.015f, 100.0f);
 	scene.setBackgroundColor(window, width, height, 0.0f, 0.0f, 0.0f, 0.0f);
 	scene.setPPType(PPType::DEFAULT);
 
+	scene.registerObserver(&game);
+
 	// Load our hand-made maze by blender
 	vector<unsigned> maze = scene.loadMesh("models/maze/maze.obj", true);
+
+	scene.addText("Obtained notes 0/8", width, height, width * 0.75f, height * 0.9f, 0.4f, 0.2f, 0.65f, 0.5f);
 
 	// flash light
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,

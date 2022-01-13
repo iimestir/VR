@@ -108,6 +108,12 @@
     <ClCompile Include="src\audio.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
+    <ClCompile Include="src\game.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\textGui.cpp">
+      <Filter>Source Files\ShaderObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\diffuse\bidoof.jpg">
@@ -202,6 +208,21 @@
     <ClInclude Include="src\headers\audio.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
+    <ClInclude Include="src\headers\observer.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\subject.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\game.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\notificationType.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\textGui.h">
+      <Filter>Header Files\ShaderObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\framebuffer.vs">
@@ -230,6 +251,12 @@
     </None>
     <None Include="shaders\world.gs">
       <Filter>Resource Files\Shaders\Geometry</Filter>
+    </None>
+    <None Include="shaders\textGui.vs">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </None>
+    <None Include="shaders\textGui.fs">
+      <Filter>Resource Files\Shaders\Fragment</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

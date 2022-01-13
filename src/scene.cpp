@@ -190,6 +190,9 @@ void Scene::render(GLFWwindow* window, Camera* camera, unsigned width, unsigned 
 	pp.unbindFBO();
 	pp.draw();
 
+	// Draw texts GUI
+	drawTexts();
+
 	glfwSwapBuffers(window);						// Swap the back and front buffer
 	glfwPollEvents();								// Takes care of all GLFW events
 }
@@ -308,6 +311,11 @@ void Scene::drawUnLightedObjects(Camera* camera, unsigned width, unsigned height
 
 	// SkyBox
 	sb.draw(camera, width, height);
+}
+
+void Scene::drawTexts() {
+	for (unsigned i = 0; i < texts.size(); i++)
+		texts.at(i).fillCharacters();
 }
 
 void Scene::setGLColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) {
@@ -487,6 +495,15 @@ unsigned Scene::addLight(Light light) {
 	setLightColor(index, light.getR(), light.getG(), light.getB(), light.getAlpha());
 
 	return index;
+}
+
+unsigned Scene::addText(const char* text, unsigned width, unsigned height, float x, float y, float r, float g, float b, float scale) {
+	TextGUI t(text, "shaders/textGui.vs", "shaders/textGui.fs", width, height, x, y, r, g, b, scale);
+	t.loadFont();
+
+	texts.push_back(t);
+
+	return texts.size() - 1;
 }
 
 void Scene::bindVertexPosition(unsigned vertexIndex, DFloat posX, DFloat posY, DFloat posZ) {
