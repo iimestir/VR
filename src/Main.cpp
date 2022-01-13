@@ -98,7 +98,7 @@ int main() {
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		DFloat(camera.getPPosX()), DFloat(camera.getPPosY()), DFloat(camera.getPPosZ()),
 		DFloat(camera.getPOriX()), DFloat(camera.getPOriY()), DFloat(camera.getPOriZ()),
-		0.6f, 0.6f, 0.6f, 1.0f)
+		0.75, 0.75, 0.75, 1.0f)
 	);
 
 	// Red lights
@@ -112,47 +112,47 @@ int main() {
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		8.78f, 1.0f, 10.64f,
 		0.0f, -1.0f, 0.0f,
-		0.8f, 0.8f, 0.8f, 1.0f)
+		0.88f, 0.88f, 0.88f, 1.0f)
 	);
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		8.87f, 1.0f, 37.89f,
 		0.0f, -1.0f, 0.0f,
-		0.8f, 0.8f, 0.8f, 1.0f)
+		0.88f, 0.88f, 0.88f, 1.0f)
 	);
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		8.87f, 1.0f, 53.76f,
 		0.0f, -1.0f, 0.0f,
-		0.8f, 0.8f, 0.8f, 1.0f)
+		0.88f, 0.88f, 0.88f, 1.0f)
 	);
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		-0.15f, 1.0f, 70.38f,
 		0.0f, -1.0f, 0.0f,
-		0.8f, 0.8f, 0.8f, 1.0f)
+		0.88f, 0.88f, 0.88f, 1.0f)
 	);
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		-16.35f, 1.0f, 57.02f,
 		0.0f, -1.0f, 0.0f,
-		0.8f, 0.8f, 0.8f, 1.0f)
+		0.88f, 0.88f, 0.88f, 1.0f)
 	);
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		-14.72f, 1.0f, 41.59f,
 		0.0f, -1.0f, 0.0f,
-		0.8f, 0.8f, 0.8f, 1.0f)
+		0.88f, 0.88f, 0.88f, 1.0f)
 	);
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		-51.64f, 1.0f, 53.43f,
 		0.0f, -1.0f, 0.0f,
-		0.8f, 0.8f, 0.8f, 1.0f)
+		0.88f, 0.88f, 0.88f, 1.0f)
 	);
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		-68.62f, 1.0f, 54.54f,
 		0.0f, -1.0f, 0.0f,
-		0.8f, 0.8f, 0.8f, 1.0f)
+		0.88f, 0.88f, 0.88f, 1.0f)
 	);
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		-79.40f, 1.0f, 71.0f,
 		0.0f, -1.0f, 0.0f,
-		0.8f, 0.8f, 0.8f, 1.0f)
+		0.88f, 0.88f, 0.88f, 1.0f)
 	);
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		-66.43f, 1.0f, 113.51f,
@@ -166,6 +166,11 @@ int main() {
 	);
 	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		-8.4f, 1.0f, 94.34f,
+		0.0f, -1.0f, 0.0f,
+		0.8f, 0.8f, 0.8f, 1.0f)
+	);
+	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+		-100.f, 1.0f, 23.34f,
 		0.0f, -1.0f, 0.0f,
 		0.8f, 0.8f, 0.8f, 1.0f)
 	);
