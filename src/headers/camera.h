@@ -16,8 +16,9 @@
 #include "shader.h"
 #include "collider.h"
 #include "audio.h"
+#include "subject.h"
 
-class Camera
+class Camera : public Subject
 {
 private:
 	glm::vec3 position;

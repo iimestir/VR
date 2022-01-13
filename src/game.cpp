@@ -39,3 +39,7 @@ Game::Game() {
 void Game::setDoorID(unsigned id) {
 	doorID = id;
 }
+
+void Game::setFlashID(unsigned id) {
+	flashID = id;
+}

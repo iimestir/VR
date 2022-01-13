@@ -84,22 +84,24 @@ int main() {
 	scene.setPPType(PPType::DEFAULT);
 
 	scene.registerObserver(&game);
+	camera.registerObserver(&game);
 
 	// Load our hand-made maze by blender
 	vector<unsigned> maze = scene.loadMesh("models/maze/maze.obj", true);
 	vector<unsigned> notes = scene.loadMesh("models/notes/note.obj", true, true);
 	vector<unsigned> fence = scene.loadMesh("models/fence/fence.obj", true);
 
-	game.setDoorID(scene.getVertexID(fence[0]));
-
 	scene.addText("Obtained notes 0/8", width, height, width * 0.75f, height * 0.9f, 0.4f, 0.2f, 0.65f, 0.5f);
 
 	// flash light
-	scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
+	unsigned flash = scene.addLight(Light(ObjectEmpty(), "shaders/light.vs", "shaders/light.fs", LightType::SPOT,
 		DFloat(camera.getPPosX()), DFloat(camera.getPPosY()), DFloat(camera.getPPosZ()),
 		DFloat(camera.getPOriX()), DFloat(camera.getPOriY()), DFloat(camera.getPOriZ()),
 		0.75, 0.75, 0.75, 1.0f)
 	);
+
+	game.setDoorID(scene.getVertexID(fence[0]));
+
 
 	// Red lights
 	scene.addLight(Light(ObjectBlank(), "shaders/light.vs", "shaders/light.fs", LightType::SOURCE,

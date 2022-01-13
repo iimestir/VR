@@ -2,7 +2,8 @@
 #define NOTTYPE_H
 
 enum notificationType {
-	ADD_NOTE
+	ADD_NOTE,
+	TOGGLE_FLASHLIGHT
 };
 
 #endif

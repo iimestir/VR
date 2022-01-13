@@ -16,6 +16,7 @@ class Game : public Observer {
 private:
 	unsigned noteAmount;
 	unsigned doorID;
+	unsigned flashID;
 
 	void endGame(vector<void*>);
 	void handleAddNote(vector<void*>);
@@ -24,6 +25,7 @@ public:
 	Game();
 
 	void setDoorID(unsigned);
+	void setFlashID(unsigned);
 };
 
 #endif
